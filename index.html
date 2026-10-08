@@ -1,0 +1,997 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Amisha's Portfolio</title>
+<meta name="description" content="Power BI dashboards, AI assistants and automations built by Amisha for teams that run on Microsoft 365.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500..800&family=Hanken+Grotesk:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: an analyst's graph-paper notebook. Work is pinned up as framed exhibits with mono captions; a highlighter marks the phrases a busy reader should catch. */
+:root{
+  --paper:#F3F5F9;
+  --grid:rgba(36,71,214,.055);
+  --surface:#FFFFFF;
+  --surface-2:#F6F7FC;
+  --ink:#111833;
+  --ink-2:#48526F;
+  --ink-3:#737D9C;
+  --line:#DCE1ED;
+  --cobalt:#2447D6;
+  --cobalt-soft:#E7ECFD;
+  --on-accent:#FFFFFF;
+  --marker:#FFD54A;
+  --marker-ink:#111833;
+  --good:#1E8A5A;
+  --warn:#BF7406;
+  --bad:#CF3B32;
+  --idle:#9AA3BD;
+  --on-ink-accent:#FFD54A;
+  --shadow:0 1px 2px rgba(17,24,51,.06), 0 14px 34px -14px rgba(17,24,51,.22);
+  --font-display:"Bricolage Grotesque", "Segoe UI", system-ui, sans-serif;
+  --font-body:"Hanken Grotesk", "Segoe UI", system-ui, -apple-system, sans-serif;
+  --font-mono:"IBM Plex Mono", ui-monospace, "Cascadia Mono", Consolas, monospace;
+  --gutter:clamp(16px, 4vw, 44px);
+  --radius:14px;
+  color-scheme:light;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --paper:#0C1120; --grid:rgba(127,155,255,.06); --surface:#141B30; --surface-2:#19213A;
+    --ink:#E9EDF8; --ink-2:#AAB3CD; --ink-3:#7E88A7; --line:#28324F;
+    --cobalt:#839EFF; --cobalt-soft:#1D2950; --on-accent:#0C1120;
+    --marker:#F6CB45; --marker-ink:#111833;
+    --good:#3DBE85; --warn:#E9A63A; --bad:#F06A60; --idle:#5E6889; --on-ink-accent:#2447D6;
+    --shadow:0 1px 2px rgba(0,0,0,.3), 0 18px 40px -16px rgba(0,0,0,.65);
+    color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --paper:#0C1120; --grid:rgba(127,155,255,.06); --surface:#141B30; --surface-2:#19213A;
+  --ink:#E9EDF8; --ink-2:#AAB3CD; --ink-3:#7E88A7; --line:#28324F;
+  --cobalt:#839EFF; --cobalt-soft:#1D2950; --on-accent:#0C1120;
+  --marker:#F6CB45; --marker-ink:#111833;
+  --good:#3DBE85; --warn:#E9A63A; --bad:#F06A60; --idle:#5E6889; --on-ink-accent:#2447D6;
+  --shadow:0 1px 2px rgba(0,0,0,.3), 0 18px 40px -16px rgba(0,0,0,.65);
+  color-scheme:dark;
+}
+
+*,*::before,*::after{box-sizing:border-box}
+html{scroll-behavior:smooth;-webkit-text-size-adjust:100%;scroll-padding-top:84px}
+body{
+  margin:0;
+  padding-inline:var(--gutter);
+  background-color:var(--paper);
+  background-image:
+    linear-gradient(var(--grid) 1px, transparent 1px),
+    linear-gradient(90deg, var(--grid) 1px, transparent 1px);
+  background-size:32px 32px;
+  color:var(--ink);
+  font:400 1.0625rem/1.65 var(--font-body);
+  overflow-x:hidden;
+}
+img,video{max-width:100%;height:auto;display:block}
+a{color:inherit}
+:focus-visible{outline:3px solid var(--cobalt);outline-offset:3px;border-radius:6px}
+[hidden]{display:none!important}
+.page{max-width:1200px;margin-inline:auto}
+
+/* Type */
+h1,h2,h3{font-family:var(--font-display);color:var(--ink);text-wrap:balance;margin:0}
+h1{font-size:clamp(2.5rem, 5.6vw, 4.6rem);line-height:1.02;font-weight:750;letter-spacing:-.035em}
+h2{font-size:clamp(2rem, 3.8vw, 3.1rem);line-height:1.06;font-weight:720;letter-spacing:-.03em}
+h3{font-size:1.3rem;line-height:1.2;font-weight:680;letter-spacing:-.015em}
+p{margin:0}
+.eyebrow{font:500 .75rem/1.2 var(--font-mono);letter-spacing:.12em;text-transform:uppercase;color:var(--cobalt)}
+.lede{font-size:clamp(1.08rem, 1.5vw, 1.25rem);line-height:1.6;color:var(--ink-2);max-width:62ch}
+.muted{color:var(--ink-2)}
+.mono{font-family:var(--font-mono)}
+mark.hl{
+  color:var(--marker-ink);
+  background:linear-gradient(transparent 14%, var(--marker) 14%, var(--marker) 90%, transparent 90%) no-repeat 0 0 / 100% 100%;
+  padding:0 .1em;margin:0 -.04em;border-radius:4px;
+  -webkit-box-decoration-break:clone;box-decoration-break:clone;
+}
+.hero mark.hl{animation:sweep .9s cubic-bezier(.6,.1,.2,1) .35s both}
+.hero mark.hl + mark.hl, .hero h1 mark.hl:nth-of-type(2){animation-delay:.95s}
+@keyframes sweep{from{background-size:0% 100%}to{background-size:100% 100%}}
+
+/* Top bar */
+.topbar{
+  position:sticky;top:env(safe-area-inset-top, 0px);z-index:20;
+  margin-inline:calc(-1 * var(--gutter));padding:12px var(--gutter);
+  background:color-mix(in srgb, var(--paper) 86%, transparent);
+  backdrop-filter:saturate(1.4) blur(10px);-webkit-backdrop-filter:saturate(1.4) blur(10px);
+  border-bottom:1px solid var(--line);
+}
+.topbar-inner{max-width:1200px;margin-inline:auto;display:flex;align-items:center;justify-content:space-between;gap:16px}
+.brand{display:flex;align-items:center;gap:10px;text-decoration:none;font:700 1.1rem/1 var(--font-display);letter-spacing:-.01em}
+.brand-mark{width:32px;height:32px;border-radius:9px;display:grid;place-items:center;background:var(--ink);color:var(--paper);font-size:1rem}
+.topbar nav{display:flex;align-items:center;gap:clamp(10px,2vw,26px);font-size:.95rem}
+.topbar nav a{text-decoration:none;color:var(--ink-2)}
+.topbar nav a:hover{color:var(--ink)}
+.topbar nav .nav-cta{color:var(--on-accent);background:var(--cobalt);padding:8px 14px;border-radius:999px;font-weight:600}
+.topbar nav .nav-cta:hover{color:var(--on-accent)}
+@media (max-width:760px){.topbar nav a:not(.nav-cta){display:none}}
+
+/* Buttons */
+.btn{display:inline-flex;align-items:center;gap:10px;padding:13px 20px;border-radius:999px;font-weight:650;font-size:1rem;text-decoration:none;border:1.5px solid transparent;transition:transform .15s ease, background-color .15s ease}
+.btn:hover{transform:translateY(-1px)}
+.btn-primary{background:var(--cobalt);color:var(--on-accent)}
+.btn-ghost{border-color:var(--ink);color:var(--ink)}
+.btn svg{width:18px;height:18px}
+
+/* Sections */
+section{padding-block:clamp(56px, 8vw, 104px)}
+.section-head{display:grid;gap:16px;max-width:820px;margin-bottom:clamp(28px, 4vw, 48px)}
+
+/* Hero */
+.hero{display:grid;grid-template-columns:minmax(0,1.05fr) minmax(0,1fr);gap:clamp(32px,5vw,64px);align-items:center;padding-block:clamp(40px,7vw,88px) clamp(48px,6vw,72px)}
+.hero-copy{display:grid;gap:24px}
+.cta-row{display:flex;flex-wrap:wrap;gap:12px}
+.tools{display:flex;flex-wrap:wrap;gap:8px 14px;font:500 .78rem/1.4 var(--font-mono);color:var(--ink-3);letter-spacing:.04em}
+.tools span::before{content:"+ ";color:var(--cobalt)}
+.hero-art{position:relative;padding:28px 0 92px}
+.frame{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);overflow:hidden}
+.frame-bar{display:flex;align-items:center;gap:6px;padding:9px 12px;border-bottom:1px solid var(--line);background:var(--surface-2);font:500 .7rem/1 var(--font-mono);color:var(--ink-3);letter-spacing:.04em}
+.frame-bar i{width:9px;height:9px;border-radius:50%;background:var(--line);display:inline-block}
+.frame-bar b{font-weight:500;margin-left:8px}
+.float{position:absolute;background:var(--surface);border:1px solid var(--line);border-radius:14px;box-shadow:var(--shadow);font-size:.9rem}
+.float-ask{left:-18px;bottom:0;width:min(340px,78%);padding:14px;display:grid;gap:10px}
+.float-flow{right:-14px;top:0;padding:10px 14px;display:flex;align-items:center;gap:10px;max-width:290px;line-height:1.35}
+.float-flow .ico{flex:none;width:30px;height:30px;border-radius:8px;display:grid;place-items:center;background:var(--cobalt-soft);color:var(--cobalt)}
+.float-flow small{display:block;color:var(--ink-3);font:500 .68rem/1.3 var(--font-mono);letter-spacing:.05em;text-transform:uppercase}
+.mini-user{justify-self:end;background:var(--cobalt);color:var(--on-accent);padding:8px 12px;border-radius:14px 14px 4px 14px;font-weight:600;font-size:.86rem}
+.mini-pa{display:flex;gap:9px;align-items:flex-start}
+.mini-pa p{font-size:.85rem;line-height:1.45;color:var(--ink-2)}
+.mini-pa strong{color:var(--ink)}
+@media (max-width:1100px){.float-ask{left:0}.float-flow{right:0}}
+@media (max-width:900px){
+  .hero{grid-template-columns:minmax(0,1fr)}
+}
+@media (max-width:620px){
+  .hero-art{padding:0;display:grid;gap:12px}
+  .float{position:static;width:auto;max-width:none}
+  .float-flow{order:-1}
+}
+
+/* Proof strip */
+.proof{padding-block:0 clamp(24px,4vw,40px)}
+.proof-grid{display:grid;grid-template-columns:repeat(4, minmax(0,1fr));border-block:1px solid var(--line)}
+.stat{padding:22px 20px 22px 0;display:grid;gap:6px;align-content:start}
+.stat + .stat{padding-left:20px;border-left:1px solid var(--line)}
+.stat .num{font:740 clamp(2rem,3.4vw,2.8rem)/1 var(--font-display);letter-spacing:-.03em;font-variant-numeric:tabular-nums}
+.stat .lbl{font-size:.93rem;line-height:1.45;color:var(--ink-2);max-width:24ch}
+@media (max-width:820px){
+  .proof-grid{grid-template-columns:repeat(2, minmax(0,1fr))}
+  .stat:nth-child(3){padding-left:0;border-left:0}
+  .stat:nth-child(n+3){border-top:1px solid var(--line)}
+}
+
+/* What I build */
+.build-grid{display:grid;grid-template-columns:repeat(3, minmax(0,1fr));gap:clamp(14px,2vw,24px)}
+.build{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:26px;display:grid;gap:14px;align-content:start}
+.build .tag{display:inline-flex;align-items:center;gap:8px;font:500 .72rem/1 var(--font-mono);letter-spacing:.1em;text-transform:uppercase;color:var(--ink-3)}
+.build .tag svg{width:20px;height:20px;color:var(--cobalt)}
+.build p{color:var(--ink-2);font-size:1rem}
+.build .eg{font-size:.9rem;color:var(--ink-3);border-top:1px dashed var(--line);padding-top:12px}
+.build .eg a{color:var(--cobalt);font-weight:600;text-decoration:none}
+@media (max-width:900px){.build-grid{grid-template-columns:minmax(0,1fr)}}
+
+/* Project header */
+.project-head{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,1fr);gap:clamp(20px,4vw,56px);align-items:end;margin-bottom:clamp(28px,4vw,44px)}
+.project-head .left{display:grid;gap:16px}
+.facts{display:grid;gap:0;border-top:1px solid var(--line);font-size:.95rem}
+.facts div{display:grid;grid-template-columns:7.5rem minmax(0,1fr);gap:12px;padding:10px 0;border-bottom:1px solid var(--line)}
+.facts dt{font:500 .72rem/1.6 var(--font-mono);letter-spacing:.08em;text-transform:uppercase;color:var(--ink-3)}
+.facts dd{margin:0;color:var(--ink)}
+@media (max-width:900px){.project-head{grid-template-columns:minmax(0,1fr)}}
+
+/* Assistant demo */
+.assistant-grid{display:grid;grid-template-columns:minmax(0,340px) minmax(0,1fr);gap:clamp(16px,3vw,32px);align-items:start}
+.qpanel{display:grid;gap:18px}
+.qgroup{display:grid;gap:8px}
+.qgroup h3{font:500 .72rem/1.2 var(--font-mono);letter-spacing:.12em;text-transform:uppercase;color:var(--ink-3)}
+.qbtn{
+  text-align:left;font:600 .97rem/1.35 var(--font-body);color:var(--ink);
+  background:var(--surface);border:1.5px solid var(--line);border-radius:12px;padding:11px 14px;cursor:pointer;
+  display:flex;gap:10px;align-items:flex-start;transition:border-color .15s ease, background-color .15s ease;
+}
+.qbtn:hover{border-color:var(--cobalt)}
+.qbtn[aria-pressed="true"]{background:var(--cobalt);border-color:var(--cobalt);color:var(--on-accent)}
+.qbtn .q-ico{flex:none;margin-top:2px;font:500 .72rem/1 var(--font-mono);opacity:.7}
+.chat{background:var(--surface);border:1px solid var(--line);border-radius:18px;box-shadow:var(--shadow);overflow:hidden;display:flex;flex-direction:column;min-height:520px;min-width:0}
+.chat-head{display:flex;flex-wrap:wrap;align-items:center;gap:8px 12px;padding:14px 18px;border-bottom:1px solid var(--line);background:var(--surface-2)}
+.chat-head .who{display:grid;line-height:1.25}
+.chat-head .who b{font-weight:700}
+.chat-head .who span{font:500 .72rem/1.3 var(--font-mono);color:var(--ink-3);letter-spacing:.04em}
+.chat-head .live{margin-left:auto;display:flex;align-items:center;gap:6px;font:500 .72rem/1 var(--font-mono);color:var(--good)}
+.chat-head .live::before{content:"";width:8px;height:8px;border-radius:50%;background:var(--good)}
+.chat-body{flex:1;padding:20px;display:flex;flex-direction:column;gap:14px;min-width:0}
+.bubble-user{align-self:flex-end;max-width:85%;background:var(--cobalt);color:var(--on-accent);padding:10px 15px;border-radius:16px 16px 4px 16px;font-weight:600;animation:rise .3s ease both}
+.pa-msg{display:flex;gap:10px;align-items:flex-start;min-width:0;animation:rise .35s ease both}
+.pa-avatar{flex:none;width:32px;height:32px;border-radius:50%;display:grid;place-items:center;background:var(--cobalt);color:var(--on-accent);font:700 .72rem/1 var(--font-body);letter-spacing:.02em}
+.pa-stack{display:grid;gap:10px;min-width:0;flex:1}
+.pa-card{background:var(--surface-2);border:1px solid var(--line);border-radius:4px 14px 14px 14px;padding:14px 16px;min-width:0;font-size:.95rem}
+.pa-title{font-weight:700;margin-bottom:8px}
+.pa-list{list-style:none;margin:0;padding:0;display:grid;gap:9px}
+.pa-list li{display:grid;grid-template-columns:14px minmax(0,1fr);gap:8px;align-items:baseline}
+.pa-sub{display:block;color:var(--ink-3);font-size:.85rem;line-height:1.4}
+.dot{width:9px;height:9px;border-radius:50%;display:inline-block;background:var(--idle);transform:translateY(-1px)}
+.dot.bad{background:var(--bad)}.dot.warn{background:var(--warn)}.dot.good{background:var(--good)}
+.tick{color:var(--good);font-weight:700}.slip{color:var(--bad);font-weight:700}
+.pa-foot{margin-top:12px;padding:8px 10px;border-radius:8px;background:var(--cobalt-soft);color:var(--cobalt);font-size:.82rem;font-weight:600}
+.pa-table{width:100%;border-collapse:collapse;font-size:.9rem;font-variant-numeric:tabular-nums}
+.pa-table td{padding:6px 0;border-bottom:1px solid var(--line);vertical-align:middle}
+.pa-table tr:last-child td{border-bottom:0}
+.pa-table .st{font:500 .76rem/1 var(--font-mono);text-align:right;padding-right:10px;white-space:nowrap}
+.pa-table .st.bad{color:var(--bad)}.pa-table .st.warn{color:var(--warn)}.pa-table .st.good{color:var(--good)}
+.pa-table .pct{text-align:right;width:3.2rem;font-weight:600}
+.meter{height:6px;border-radius:99px;background:var(--line);overflow:hidden;width:100%;min-width:40px}
+.meter i{display:block;height:100%;border-radius:99px}
+.load{display:grid;grid-template-columns:6.5rem minmax(0,1fr) 5.5rem;gap:10px;align-items:center;font-size:.9rem;padding:5px 0}
+.load .bar{height:12px;border-radius:99px;background:var(--line);overflow:hidden}
+.load .bar i{display:block;height:100%;border-radius:99px}
+.load .st{font:500 .76rem/1 var(--font-mono)}
+.weeks{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.week{border:1px solid var(--line);border-radius:10px;padding:10px;background:var(--surface);display:grid;gap:8px;align-content:start}
+.week h4{margin:0;font:500 .72rem/1.3 var(--font-mono);letter-spacing:.04em;color:var(--ink-3)}
+.task{font-size:.86rem;line-height:1.3;font-weight:600}
+.pill{display:inline-block;margin-top:4px;font:500 .68rem/1 var(--font-mono);padding:4px 7px;border-radius:99px;letter-spacing:.02em}
+.pill.ok{background:color-mix(in srgb, var(--good) 16%, transparent);color:var(--good)}
+.pill.wait{background:color-mix(in srgb, var(--warn) 18%, transparent);color:var(--warn)}
+.shift{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:4px 12px;font-size:.9rem;padding:6px 0;border-bottom:1px solid var(--line);font-variant-numeric:tabular-nums}
+.shift:last-of-type{border-bottom:0}
+.shift .when{font-family:var(--font-mono);font-size:.8rem;color:var(--ink-2);white-space:nowrap}
+.alert{margin-top:10px;padding:8px 10px;border-radius:8px;background:color-mix(in srgb, var(--bad) 12%, transparent);color:var(--bad);font-size:.85rem;font-weight:600}
+.btn-row{display:flex;gap:8px;margin-top:10px}
+.fake-btn{font:600 .82rem/1 var(--font-body);padding:8px 12px;border-radius:8px;border:1px solid var(--line);background:var(--surface)}
+.fake-btn.go{background:var(--cobalt);border-color:var(--cobalt);color:var(--on-accent)}
+.gantt{display:grid;gap:6px;margin:10px 0}
+.gantt i{display:block;height:10px;border-radius:99px;background:var(--cobalt)}
+.gantt i:nth-child(3){background:var(--warn)}
+.gantt i:nth-child(5){background:var(--good)}
+.hand{font-style:italic;color:var(--cobalt);font-size:.92rem}
+.typing{display:flex;gap:5px;padding:14px 16px;background:var(--surface-2);border:1px solid var(--line);border-radius:4px 14px 14px 14px;width:max-content}
+.typing span{width:7px;height:7px;border-radius:50%;background:var(--ink-3);animation:blink 1s infinite ease-in-out}
+.typing span:nth-child(2){animation-delay:.15s}.typing span:nth-child(3){animation-delay:.3s}
+@keyframes blink{0%,80%,100%{opacity:.25;transform:translateY(0)}40%{opacity:1;transform:translateY(-3px)}}
+@keyframes rise{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+.why{display:flex;gap:12px;align-items:flex-start;padding:16px 18px;border-top:1px solid var(--line);background:var(--surface-2);font-size:.98rem;line-height:1.5}
+.why b{flex:none;font:500 .72rem/1.9 var(--font-mono);letter-spacing:.1em;text-transform:uppercase;color:var(--marker-ink);background:var(--marker);padding:0 7px;border-radius:4px}
+@media (max-width:900px){
+  .assistant-grid{grid-template-columns:minmax(0,1fr)}
+  .qpanel{grid-template-columns:minmax(0,1fr)}
+  .chat{min-height:0}
+}
+@media (max-width:520px){
+  .weeks{grid-template-columns:minmax(0,1fr)}
+  .load{grid-template-columns:5rem minmax(0,1fr)}
+  .load .st{grid-column:2}
+  .pa-table td:nth-child(3){display:none}
+  .chat-body{padding:16px 12px}
+}
+
+/* Safety */
+.safe{margin-top:clamp(36px,5vw,56px);display:grid;gap:18px}
+.safe-head{display:flex;flex-wrap:wrap;align-items:baseline;justify-content:space-between;gap:8px 24px}
+.safe-head p{color:var(--ink-2);font-size:.98rem;max-width:52ch}
+.safe ul{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:clamp(12px,2vw,20px)}
+.safe li{display:grid;gap:10px;align-content:start;background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:18px}
+.safe li svg{width:24px;height:24px;color:var(--cobalt)}
+.safe li b{display:block;margin-bottom:4px}
+.safe li span{color:var(--ink-2);font-size:.95rem}
+.sample-note{margin-top:12px;font:500 .74rem/1.4 var(--font-mono);color:var(--ink-3);letter-spacing:.03em}
+@media (max-width:900px){.safe ul{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (max-width:520px){.safe ul{grid-template-columns:minmax(0,1fr)}}
+
+/* Exhibit viewer (SOP) */
+.viewer{display:grid;grid-template-columns:minmax(0,260px) minmax(0,1fr);gap:clamp(16px,3vw,32px);align-items:start}
+.tablist{display:grid;gap:4px;position:sticky;top:96px}
+.tab{
+  text-align:left;background:none;border:0;border-left:2px solid var(--line);padding:10px 14px;cursor:pointer;
+  font:600 1rem/1.3 var(--font-body);color:var(--ink-2);display:grid;gap:2px;
+}
+.tab small{font:500 .7rem/1.3 var(--font-mono);letter-spacing:.08em;text-transform:uppercase;color:var(--ink-3)}
+.tab:hover{color:var(--ink)}
+.tab[aria-selected="true"]{color:var(--ink);border-left-color:var(--cobalt);background:linear-gradient(90deg, var(--cobalt-soft), transparent)}
+.tab[aria-selected="true"] small{color:var(--cobalt)}
+.panel{display:grid;gap:20px;min-width:0}
+.panel-text{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.15fr);gap:clamp(16px,3vw,36px);align-items:start}
+.panel-text h3{font-size:clamp(1.4rem,2.2vw,1.8rem)}
+.panel-text p{color:var(--ink-2);margin-top:10px}
+.checks{list-style:none;margin:0;padding:0;display:grid;gap:10px}
+.checks li{display:grid;grid-template-columns:22px minmax(0,1fr);gap:8px;font-size:.98rem;line-height:1.5}
+.checks li::before{content:"";width:16px;height:16px;margin-top:4px;border-radius:5px;background:var(--cobalt-soft) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M4 8.5l2.5 2.5L12 5.5' fill='none' stroke='%232447D6' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center/14px no-repeat}
+.checks b{font-weight:700}
+@media (max-width:1000px){
+  .viewer{grid-template-columns:minmax(0,1fr)}
+  .tablist{position:static;display:flex;overflow-x:auto;gap:6px;padding-bottom:6px;scrollbar-width:thin}
+  .tab{border-left:0;border-bottom:2px solid var(--line);white-space:nowrap;flex:none}
+  .tab[aria-selected="true"]{border-bottom-color:var(--cobalt);background:var(--cobalt-soft)}
+  .panel-text{grid-template-columns:minmax(0,1fr)}
+}
+
+/* Exhibit (screenshot) */
+.exhibit{margin:0;display:grid;gap:0}
+.zoom{all:unset;display:block;cursor:zoom-in;position:relative}
+.zoom:focus-visible{outline:3px solid var(--cobalt);outline-offset:3px}
+.zoom img{width:100%;height:auto;background:#fff}
+.zoom::after{
+  content:"Click to enlarge";position:absolute;right:12px;bottom:12px;
+  font:500 .7rem/1 var(--font-mono);letter-spacing:.06em;padding:7px 10px;border-radius:99px;
+  background:var(--ink);color:var(--paper);opacity:0;transition:opacity .2s ease;
+}
+.zoom:hover::after,.zoom:focus-visible::after{opacity:.92}
+.exhibit figcaption{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;padding:10px 14px;border-top:1px solid var(--line);font:500 .74rem/1.4 var(--font-mono);color:var(--ink-3);letter-spacing:.04em}
+
+.extras{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:clamp(14px,2vw,24px);margin-top:clamp(28px,4vw,44px)}
+.extra{display:grid;grid-template-columns:minmax(0,190px) minmax(0,1fr);gap:18px;align-items:center;background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:16px}
+.extra .zoom img{border-radius:8px;border:1px solid var(--line)}
+.extra p{color:var(--ink-2);font-size:.95rem;margin-top:6px}
+@media (max-width:900px){.extras{grid-template-columns:minmax(0,1fr)}}
+@media (max-width:460px){.extra{grid-template-columns:minmax(0,1fr)}}
+
+/* Orders grid */
+.orders-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:clamp(16px,2.5vw,28px)}
+.order-card{display:grid;gap:14px;align-content:start}
+.order-card .frame .zoom img{aspect-ratio:16/10.5;object-fit:cover;object-position:top}
+.order-card h3{font-size:1.2rem}
+.order-card p{color:var(--ink-2);font-size:.97rem;margin-top:6px}
+.kpis{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}
+.kpis span{font:500 .74rem/1 var(--font-mono);padding:6px 9px;border-radius:99px;border:1px solid var(--line);background:var(--surface);color:var(--ink-2);font-variant-numeric:tabular-nums}
+.kpis span b{color:var(--ink);font-weight:500}
+.confid{display:flex;align-items:center;gap:8px;margin-top:20px;font:500 .74rem/1.4 var(--font-mono);color:var(--ink-3);letter-spacing:.03em}
+.confid svg{width:16px;height:16px;flex:none}
+@media (max-width:820px){.orders-grid{grid-template-columns:minmax(0,1fr)}}
+
+/* Process */
+.process{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:0;border-top:2px solid var(--ink);counter-reset:step}
+.step{padding:22px 22px 8px 0;display:grid;gap:10px;align-content:start;counter-increment:step}
+.step + .step{padding-left:22px;border-left:1px solid var(--line)}
+.step::before{content:counter(step, decimal-leading-zero);font:500 .78rem/1 var(--font-mono);color:var(--cobalt);letter-spacing:.08em}
+.step p{color:var(--ink-2);font-size:.97rem}
+@media (max-width:900px){
+  .process{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .step:nth-child(3){padding-left:0;border-left:0}
+}
+@media (max-width:520px){
+  .process{grid-template-columns:minmax(0,1fr)}
+  .step + .step{padding-left:0;border-left:0;border-top:1px solid var(--line)}
+}
+.toolkit{display:flex;flex-wrap:wrap;gap:8px;margin-top:clamp(28px,4vw,40px)}
+.toolkit span{padding:8px 13px;border-radius:99px;background:var(--surface);border:1px solid var(--line);font-size:.92rem;font-weight:600}
+
+/* Contact */
+.contact{
+  display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,1fr);gap:clamp(24px,4vw,56px);align-items:center;
+  background:var(--ink);color:var(--paper);border-radius:22px;padding:clamp(28px,5vw,60px);
+}
+.contact h2{color:var(--paper)}
+.contact p{color:color-mix(in srgb, var(--paper) 78%, var(--ink))}
+.contact .eyebrow{color:var(--on-ink-accent)}
+.contact-box{display:grid;gap:12px}
+.email-row{display:flex;flex-wrap:wrap;gap:10px;align-items:center;background:color-mix(in srgb, var(--paper) 8%, var(--ink));border:1px solid color-mix(in srgb, var(--paper) 18%, var(--ink));border-radius:14px;padding:10px 10px 10px 16px}
+.email-row code{font:500 1rem/1.4 var(--font-mono);color:var(--paper);user-select:all;word-break:break-all;flex:1;min-width:0}
+.copy{font:650 .9rem/1 var(--font-body);padding:10px 14px;border-radius:10px;border:0;background:var(--marker);color:var(--marker-ink);cursor:pointer}
+.contact small{font:500 .74rem/1.4 var(--font-mono);color:color-mix(in srgb, var(--paper) 60%, var(--ink))}
+@media (max-width:900px){.contact{grid-template-columns:minmax(0,1fr)}}
+
+footer{padding-block:28px 40px;display:flex;flex-wrap:wrap;justify-content:space-between;gap:12px;font:500 .76rem/1.5 var(--font-mono);color:var(--ink-3);letter-spacing:.03em}
+
+/* Lightbox */
+dialog.lb{border:0;padding:0;background:transparent;max-width:min(96vw,1700px);width:100%;color:var(--ink)}
+dialog.lb::backdrop{background:rgba(8,12,24,.86)}
+.lb-inner{display:grid;gap:10px}
+.lb-top{display:flex;justify-content:space-between;align-items:center;gap:12px;color:#E9EDF8;font:500 .8rem/1.4 var(--font-mono)}
+.lb-top button,.lb-nav button{font:600 .9rem/1 var(--font-body);padding:9px 14px;border-radius:10px;border:1px solid rgba(233,237,248,.35);background:rgba(233,237,248,.08);color:#E9EDF8;cursor:pointer}
+.lb-img{max-height:80vh;width:auto;max-width:100%;margin-inline:auto;border-radius:10px;background:#fff}
+.lb-nav{display:flex;justify-content:center;gap:10px}
+
+@media (prefers-reduced-motion: reduce){
+  html{scroll-behavior:auto}
+  *,*::before,*::after{animation:none!important;transition:none!important}
+}
+</style>
+</head>
+<body>
+<header class="topbar">
+  <div class="topbar-inner">
+    <a class="brand" href="#top"><span class="brand-mark" aria-hidden="true">A</span>Amisha</a>
+    <nav aria-label="Sections">
+      <a href="#assistant">AI assistant</a>
+      <a href="#sop">Compliance dashboard</a>
+      <a href="#orders">Sales dashboard</a>
+      <a class="nav-cta" href="#contact">Work with me</a>
+    </nav>
+  </div>
+</header>
+
+<div class="page">
+
+<main>
+
+<!-- HERO -->
+<section class="hero" id="top">
+  <div class="hero-copy">
+    <p class="eyebrow">Power BI · AI assistants · Automation</p>
+    <h1>Dashboards that <mark class="hl">answer questions.</mark> Assistants that <mark class="hl">do the follow-up.</mark></h1>
+    <p class="lede">I'm Amisha. I build Power BI dashboards, AI assistants and automations for teams that run on Microsoft 365, so managers spend their time making decisions instead of digging through spreadsheets.</p>
+    <div class="cta-row">
+      <a class="btn btn-primary" href="#assistant">See the AI assistant
+        <svg viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M4 10h11m-4-4 4 4-4 4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+      <a class="btn btn-ghost" href="#sop">Browse the dashboards</a>
+    </div>
+    <div class="tools" aria-label="Tools used"><span>Power BI</span><span>DAX</span><span>Power Automate</span><span>Microsoft Teams</span><span>Microsoft Planner</span></div>
+  </div>
+
+  <div class="hero-art">
+    <div class="frame">
+      <div class="frame-bar"><i></i><i></i><i></i><b>SOP Intelligence · Overview</b></div>
+      <img src="assets/sop-overview.jpg" width="1800" height="1019" alt="SOP Intelligence dashboard overview showing 30 stores, 54% compliance rate and a compliance trend rising to 62%">
+    </div>
+    <div class="float float-flow" aria-hidden="true">
+      <span class="ico"><svg viewBox="0 0 20 20" width="18" height="18" fill="none"><path d="M3 5.5h14v9H3z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/><path d="m3.5 6 6.5 5 6.5-5" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/></svg></span>
+      <span><small>Power Automate</small>Compliance list emailed to the store supervisor</span>
+    </div>
+    <div class="float float-ask" aria-hidden="true">
+      <div class="mini-user">What needs attention across my projects?</div>
+      <div class="mini-pa">
+        <span class="pa-avatar">PA</span>
+        <p><strong>6 items need attention, most urgent first.</strong> Sunrise Heights is 9 days overdue on the critical path…</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PROOF -->
+<section class="proof" aria-label="The scale of recent work">
+  <div class="proof-grid">
+    <div class="stat"><span class="num">30</span><span class="lbl">stores and 252 employees tracked for SOP compliance</span></div>
+    <div class="stat"><span class="num">43,543</span><span class="lbl">retail outlets covered by one field sales team's dashboard</span></div>
+    <div class="stat"><span class="num">₹41 Lac</span><span class="lbl">of daily sales broken down by category, rep and product</span></div>
+    <div class="stat"><span class="num">160</span><span class="lbl">project tasks scheduled by the AI assistant in minutes</span></div>
+  </div>
+</section>
+
+<!-- WHAT I BUILD -->
+<section aria-labelledby="build-title">
+  <div class="section-head">
+    <p class="eyebrow">What I build</p>
+    <h2 id="build-title">Three kinds of tools, one goal: fewer hours lost to chasing information.</h2>
+  </div>
+  <div class="build-grid">
+    <article class="build">
+      <span class="tag"><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M4 20V10m6 10V4m6 16v-7m4 7H2" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>Power BI dashboards</span>
+      <h3>Your whole business on one screen</h3>
+      <p>Clear numbers with filters anyone can use. Start with the big picture, then click down to a single store, team or person to see what is going on.</p>
+      <p class="eg">For example: the <a href="#sop">SOP compliance dashboard</a> and the <a href="#orders">field sales tracker</a>.</p>
+    </article>
+    <article class="build">
+      <span class="tag"><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 3l1.8 4.6L18.5 9l-4.7 1.4L12 15l-1.8-4.6L5.5 9l4.7-1.4z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M18 15l.8 2 2 .8-2 .7-.8 2-.8-2-2-.7 2-.8z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/></svg>AI assistants</span>
+      <h3>Ask in plain English, get a straight answer</h3>
+      <p>Type a question in Microsoft Teams and get a ranked answer with the reasons spelled out. The assistant can also update your plans, but only after you confirm.</p>
+      <p class="eg">For example: the <a href="#assistant">Planner Assistant</a> built for a property developer.</p>
+    </article>
+    <article class="build">
+      <span class="tag"><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M13 2 4 14h7l-1 8 9-12h-7z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg>Automations</span>
+      <h3>The follow-up happens on its own</h3>
+      <p>Emails go to the right supervisor, meeting notes become tracked tasks and the weekly report drafts itself. Nobody has to remember to do it.</p>
+      <p class="eg">For example: the <a href="#sop">one-click supervisor email</a> built with Power Automate.</p>
+    </article>
+  </div>
+</section>
+
+<!-- AI ASSISTANT -->
+<section id="assistant" aria-labelledby="pa-title">
+  <div class="project-head">
+    <div class="left">
+      <p class="eyebrow">Featured project · AI assistant</p>
+      <h2 id="pa-title">Planner Assistant: ask your project plans a question and get a straight answer</h2>
+      <p class="lede">A property developer was running dozens of plans and thousands of tasks. Finding out what was late meant digging, exports and a round of calls. Now the team just asks, right inside Microsoft Teams.</p>
+    </div>
+    <dl class="facts">
+      <div><dt>Client</dt><dd>Property developer (name kept private)</dd></div>
+      <div><dt>Where it lives</dt><dd>Microsoft Teams chat</dd></div>
+      <div><dt>Works with</dt><dd>Microsoft Planner (basic boards and premium schedules), Outlook email, Teams meetings, Word</dd></div>
+      <div><dt>Result</dt><dd>Status answers without digging or phone calls, and new schedules in minutes instead of days</dd></div>
+    </dl>
+  </div>
+
+  <div class="assistant-grid">
+    <div class="qpanel" id="qpanel" aria-label="Example questions">
+      <div class="qgroup"><h3>Ask it</h3><div class="qgroup" id="q-ask"></div></div>
+      <div class="qgroup"><h3>Tell it to do something</h3><div class="qgroup" id="q-do"></div></div>
+    </div>
+    <div class="chat">
+      <div class="chat-head">
+        <span class="pa-avatar" aria-hidden="true">PA</span>
+        <span class="who"><b>Planner Assistant</b><span>Microsoft Teams · chat</span></span>
+        <span class="live">Sample data</span>
+      </div>
+      <div class="chat-body" id="chatBody" aria-live="polite"></div>
+      <div class="why"><b>Why it matters</b><span id="whyText"></span></div>
+    </div>
+  </div>
+
+  <p class="sample-note">Example conversation shown with sample projects, people and dates. The client's real data is kept private.</p>
+
+  <div class="safe">
+    <div class="safe-head">
+      <h3>Safe by design</h3>
+      <p>It runs inside the Microsoft 365 the team already uses. There is no new system to roll out or learn.</p>
+    </div>
+    <ul>
+      <li><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="8" r="4" stroke="currentColor" stroke-width="1.8"/><path d="M4 21c1.5-4 4.5-6 8-6s6.5 2 8 6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg><p><b>Acts as you</b><span>It sees only what you can see. Your access, nothing more.</span></p></li>
+      <li><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="m5 12.5 4.5 4.5L19 7.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg><p><b>Preview, then confirm</b><span>Every change is shown first. Nothing saves until you say yes.</span></p></li>
+      <li><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M4 8h14m-4-4 4 4-4 4M20 16H6m4-4-4 4 4 4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg><p><b>Verified changes</b><span>After saving, it reads Planner back to make sure what you confirmed is what happened.</span></p></li>
+      <li><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><rect x="5" y="3" width="14" height="18" rx="2" stroke="currentColor" stroke-width="1.8"/><path d="M9 8h6M9 12h6M9 16h4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg><p><b>Audit trail</b><span>Deleting anything needs an exact confirmation and leaves a record.</span></p></li>
+    </ul>
+  </div>
+</section>
+
+<!-- SOP INTELLIGENCE -->
+<section id="sop" aria-labelledby="sop-title">
+  <div class="project-head">
+    <div class="left">
+      <p class="eyebrow">Featured project · Power BI + Power Automate</p>
+      <h2 id="sop-title">SOP Intelligence: are 30 stores following the rules, and what should each one fix?</h2>
+      <p class="lede">A compliance command centre for a multi-city store chain. It scores every store and every employee on hygiene, operations and customer service, then turns each gap into a clear next step.</p>
+    </div>
+    <dl class="facts">
+      <div><dt>Built in</dt><dd>Power BI Desktop, DAX, Power Automate</dd></div>
+      <div><dt>Covers</dt><dd>30 stores, 252 employees, 6 months of compliance records</dd></div>
+      <div><dt>Pages</dt><dd>Overview, analysis, what-if planner, store and employee deep-dives</dd></div>
+      <div><dt>Automation</dt><dd>One click emails each supervisor their team's compliance list</dd></div>
+    </dl>
+  </div>
+
+  <div class="viewer">
+    <div class="tablist" role="tablist" aria-label="Dashboard pages">
+      <button class="tab" role="tab" id="t-overview" aria-controls="p-overview" aria-selected="true"><small>Big picture</small>Chain overview</button>
+      <button class="tab" role="tab" id="t-store" aria-controls="p-store" aria-selected="false" tabindex="-1"><small>Automation</small>Store deep-dive</button>
+      <button class="tab" role="tab" id="t-whatif" aria-controls="p-whatif" aria-selected="false" tabindex="-1"><small>Planning</small>What-if target planner</button>
+      <button class="tab" role="tab" id="t-analysis" aria-controls="p-analysis" aria-selected="false" tabindex="-1"><small>Ranking</small>Store league table</button>
+      <button class="tab" role="tab" id="t-employee" aria-controls="p-employee" aria-selected="false" tabindex="-1"><small>People</small>Employee profile</button>
+      <button class="tab" role="tab" id="t-team" aria-controls="p-team" aria-selected="false" tabindex="-1"><small>Coaching</small>Training and improvement</button>
+    </div>
+
+    <div>
+      <div class="panel" role="tabpanel" id="p-overview" aria-labelledby="t-overview">
+        <figure class="frame exhibit">
+          <button class="zoom" data-group="sop" data-caption="SOP Intelligence · Chain overview"><img src="assets/sop-overview.jpg" width="1800" height="1019" loading="lazy" alt="Overview page with total stores, best and worst store, compliance trend by month, compliance by SOP category and by city"></button>
+          <figcaption><span>Power BI · Overview page</span><span>Nov 2023 to Apr 2024</span></figcaption>
+        </figure>
+        <div class="panel-text">
+          <div><h3>The whole chain on one screen</h3><p>Leaders see in five seconds how the business is doing and where to look first.</p></div>
+          <ul class="checks">
+            <li><span><b>54% compliance</b> across 30 stores, with the best store (63%) and the weakest (47%) named automatically.</span></li>
+            <li><span>The monthly trend shows compliance <b>climbing to 62% in April</b>, so the team can see whether changes are working.</span></li>
+            <li><span>Filter by city, SOP category, department, store or date, and every chart updates together.</span></li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="panel" role="tabpanel" id="p-store" aria-labelledby="t-store" hidden>
+        <figure class="frame exhibit">
+          <button class="zoom" data-group="sop" data-caption="SOP Intelligence · Store deep-dive with one-click email"><img src="assets/sop-store.jpg" width="1800" height="1019" loading="lazy" alt="Store comparison page with this store's compliance, best and worst stores, a Send Email button, a monthly trend, compliance by department and customer ratings"></button>
+          <figcaption><span>Power BI · Store page</span><span>Send Email runs a Power Automate flow</span></figcaption>
+        </figure>
+        <div class="panel-text">
+          <div><h3>Click a store, see its story, email the fix</h3><p>Any store opens into its own page. The <b>Send Email</b> button sends the supervisor a list of their staff, each person's compliance rate and pending training.</p></div>
+          <ul class="checks">
+            <li><span>Compares the store against the best and the weakest store in the chain.</span></li>
+            <li><span>Shows which department is slipping. Here, <b>Front House and Kitchen</b> are at about 50%, while Management is at 91%.</span></li>
+            <li><span>Adds the customer's view: <b>2,004 ratings</b> averaging 3.11 out of 5.</span></li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="panel" role="tabpanel" id="p-whatif" aria-labelledby="t-whatif" hidden>
+        <figure class="frame exhibit">
+          <button class="zoom" data-group="sop" data-caption="SOP Intelligence · What-if target planner"><img src="assets/sop-whatif.jpg" width="1800" height="1019" loading="lazy" alt="What-if analysis page where the user enters a target compliance rate and weightages, and the dashboard calculates the gap and required rates"></button>
+          <figcaption><span>Power BI · What-if page</span><span>Inputs recalculate instantly</span></figcaption>
+        </figure>
+        <div class="panel-text">
+          <div><h3>Set a target and get the plan to reach it</h3><p>A manager types the goal, and the dashboard works out exactly how much each area has to improve.</p></div>
+          <ul class="checks">
+            <li><span>Enter a <b>target of 60%</b> and the store's current 51% shows a <b>9-point gap</b>, which means 67 more compliant checks.</span></li>
+            <li><span>Choose how much hygiene, operations and customer service should each contribute. The required rate for each area updates immediately.</span></li>
+            <li><span>A ready list of suggested actions sits alongside, such as "Complete safety checks daily".</span></li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="panel" role="tabpanel" id="p-analysis" aria-labelledby="t-analysis" hidden>
+        <figure class="frame exhibit">
+          <button class="zoom" data-group="sop" data-caption="SOP Intelligence · Store league table"><img src="assets/sop-analysis.jpg" width="1800" height="1019" loading="lazy" alt="Analysis page with average customer rating, compliance rates by area, compliance bins chart and a ranked store table with adjustable weightages"></button>
+          <figcaption><span>Power BI · Analysis page</span><span>Top or bottom N, your own weightings</span></figcaption>
+        </figure>
+        <div class="panel-text">
+          <div><h3>A fair league table you can tune</h3><p>Stores are ranked on a combined score, and the business decides what matters most.</p></div>
+          <ul class="checks">
+            <li><span>Set the weight of each area, for example 50% customer service, 20% hygiene and 30% operations, and the ranking re-orders.</span></li>
+            <li><span>Show the <b>top or bottom 10</b> stores, or any other number, with one input.</span></li>
+            <li><span>The spread chart shows 29 of 30 stores sitting between 50% and 75%, so the team knows how much headroom there is.</span></li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="panel" role="tabpanel" id="p-employee" aria-labelledby="t-employee" hidden>
+        <figure class="frame exhibit">
+          <button class="zoom" data-group="sop" data-caption="SOP Intelligence · Employee profile (contact details blurred)"><img src="assets/sop-employee.jpg" width="1800" height="1112" loading="lazy" alt="Employee profile page greeting the employee by name, with role, store, compliance trend, training status and most frequent incident"></button>
+          <figcaption><span>Power BI · Employee page</span><span>Contact details blurred</span></figcaption>
+        </figure>
+        <div class="panel-text">
+          <div><h3>Every person gets their own page</h3><p>Opens with a personal greeting, then shows how this person is doing and where they need support.</p></div>
+          <ul class="checks">
+            <li><span>Personal compliance (94%) next to the store's (53%), so strong performers stand out.</span></li>
+            <li><span>The <b>most frequent incident</b> is named in plain words: "Unprepared for Opening".</span></li>
+            <li><span>Training status by trainer, and a monthly trend that flags a slide from 100% to 82%.</span></li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="panel" role="tabpanel" id="p-team" aria-labelledby="t-team" hidden>
+        <figure class="frame exhibit">
+          <button class="zoom" data-group="sop" data-caption="SOP Intelligence · Training and areas of improvement"><img src="assets/sop-team.jpg" width="1800" height="1112" loading="lazy" alt="Employee details table with department, position, compliance rate, training and status, plus a list of areas of improvement"></button>
+          <figcaption><span>Power BI · Team page</span><span>Searchable by name</span></figcaption>
+        </figure>
+        <div class="panel-text">
+          <div><h3>From numbers to coaching</h3><p>Supervisors see who needs which training, next to practical tips they can use in the next shift.</p></div>
+          <ul class="checks">
+            <li><span>Search any employee by name and see their department, role, compliance and training.</span></li>
+            <li><span>Incomplete training stands out so supervisors know who to schedule next.</span></li>
+            <li><span>An "Areas of improvement" list gives concrete actions, such as "Prepare checklist the night before".</span></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="extras">
+    <div class="extra">
+      <button class="zoom" data-group="sop" data-caption="Hover tooltip: what each SOP means and how well it's followed"><img src="assets/sop-tooltip.jpg" width="1000" height="746" loading="lazy" alt="Tooltip listing SOP IDs with their descriptions and compliance rates"></button>
+      <div><h3>Hover to understand</h3><p>Point at any chart and a tooltip explains each rule in plain words, for example "Store must open at 10:00 and close at 22:00", with its compliance rate.</p></div>
+    </div>
+    <div class="extra">
+      <button class="zoom" data-group="sop" data-caption="Customer feedback for a store, summarised as a word cloud"><img src="assets/sop-wordcloud.jpg" width="498" height="378" loading="lazy" alt="Word cloud of customer feedback words such as inconsistent, outstanding, satisfactory and needs improvement"></button>
+      <div><h3>Customer voice at a glance</h3><p>Customer feedback comments turn into a word cloud, so the most repeated words, such as "inconsistent" or "outstanding", are easy to spot.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- ORDERS TRACKER -->
+<section id="orders" aria-labelledby="orders-title">
+  <div class="project-head">
+    <div class="left">
+      <p class="eyebrow">Power BI · Sales operations</p>
+      <h2 id="orders-title">Orders Tracker: the daily pulse of a field sales team</h2>
+      <p class="lede">Built for a consumer-goods brand whose sales reps visit thousands of shops every day. Managers open it each morning to see who is in the field, which shops ordered, and how this month compares with last.</p>
+    </div>
+    <dl class="facts">
+      <div><dt>Built in</dt><dd>Power BI, DAX</dd></div>
+      <div><dt>Covers</dt><dd>135 sales reps, 43,543 outlets</dd></div>
+      <div><dt>Views</dt><dd>Today, month to date, last 3 or 6 months</dd></div>
+      <div><dt>Used by</dt><dd>Leadership, from the CEO to regional sales managers</dd></div>
+    </dl>
+  </div>
+
+  <div class="orders-grid">
+    <article class="order-card">
+      <figure class="frame exhibit">
+        <button class="zoom" data-group="orders" data-caption="Orders Tracker · Daily summary (names blurred)"><img src="assets/orders-daily.jpg" width="1800" height="1690" loading="lazy" alt="Daily summary with reporting managers, call summary, user attendance, category-wise sales donut, rep-wise orders and subcategory sales"></button>
+        <figcaption><span>Daily summary</span><span>04 Mar 2024</span></figcaption>
+      </figure>
+      <div>
+        <h3>Today's sales in one view</h3>
+        <p>How many shops were visited, how many placed an order and what sold, by category, product and rep.</p>
+        <div class="kpis"><span><b>3,464</b> shop visits</span><span><b>1,531</b> orders</span><span><b>72%</b> coverage</span><span><b>₹41.08 Lac</b> sales</span></div>
+      </div>
+    </article>
+    <article class="order-card">
+      <figure class="frame exhibit">
+        <button class="zoom" data-group="orders" data-caption="Orders Tracker · Field attendance and calls (names blurred)"><img src="assets/orders-field.jpg" width="1800" height="1597" loading="lazy" alt="Field attendance page with average retailing time, attendance counts, user attendance summary with call times, and trend charts"></button>
+        <figcaption><span>Field team</span><span>Attendance and call times</span></figcaption>
+      </figure>
+      <div>
+        <h3>Who's in the field, and for how long</h3>
+        <p>Every rep's log-in time, first and last shop visit and route, plus the team's average time spent selling.</p>
+        <div class="kpis"><span><b>130</b> reps selling today</span><span><b>4h 35m</b> average selling time</span><span><b>₹41.07 Lac</b> net value</span></div>
+      </div>
+    </article>
+    <article class="order-card">
+      <figure class="frame exhibit">
+        <button class="zoom" data-group="orders" data-caption="Orders Tracker · Growth KPIs and targets (names blurred)"><img src="assets/orders-growth.jpg" width="1800" height="1202" loading="lazy" alt="Growth KPI cards comparing month to date with last month, a secondary targets table and channel-wise sales"></button>
+        <figcaption><span>Growth and targets</span><span>This month vs last month</span></figcaption>
+      </figure>
+      <div>
+        <h3>Are we ahead of last month?</h3>
+        <p>Green and red cards compare this month with the same point last month, and each rep's target sits next to what they've achieved.</p>
+        <div class="kpis"><span><b>+3.47%</b> revenue</span><span><b>68.2%</b> shops covered</span><span>Target vs achieved per rep</span></div>
+      </div>
+    </article>
+    <article class="order-card">
+      <figure class="frame exhibit">
+        <button class="zoom" data-group="orders" data-caption="Orders Tracker · Monthly trends and outlet health (names blurred)"><img src="assets/orders-trends.jpg" width="1800" height="1173" loading="lazy" alt="Past analysis with outlet status donut, orders summary by manager, cumulative call trend, order value trend and outlet status comparison"></button>
+        <figcaption><span>Past analysis</span><span>3 or 6 month view, CSV export</span></figcaption>
+      </figure>
+      <div>
+        <h3>Which shops are going quiet</h3>
+        <p>Outlets are grouped as active, dormant, never visited or new, and compared with last month so lost shops get a visit before they're gone.</p>
+        <div class="kpis"><span><b>43,543</b> outlets</span><span><b>71.7%</b> active</span><span><b>70.58%</b> conversion</span></div>
+      </div>
+    </article>
+  </div>
+  <p class="confid"><svg viewBox="0 0 20 20" fill="none" aria-hidden="true"><rect x="4" y="9" width="12" height="8" rx="2" stroke="currentColor" stroke-width="1.6"/><path d="M7 9V6.5a3 3 0 0 1 6 0V9" stroke="currentColor" stroke-width="1.6"/></svg>Employee names and the client's brand are blurred to protect confidentiality.</p>
+</section>
+
+<!-- PROCESS -->
+<section aria-labelledby="process-title">
+  <div class="section-head">
+    <p class="eyebrow">How we'd work together</p>
+    <h2 id="process-title">From "we have the data somewhere" to a tool your team opens every morning.</h2>
+  </div>
+  <div class="process">
+    <div class="step"><h3>Start with your decisions</h3><p>We list the questions you answer every week and the numbers you wish you had.</p></div>
+    <div class="step"><h3>Connect your data</h3><p>Excel, SQL, SharePoint or your app. I clean it and link it into one reliable model.</p></div>
+    <div class="step"><h3>Build it with your team</h3><p>You see working screens early, try them with real users and shape them as we go.</p></div>
+    <div class="step"><h3>Automate the follow-up</h3><p>Alerts, emails, tasks and reports run on their own once the numbers are trusted.</p></div>
+  </div>
+  <div class="toolkit" aria-label="Toolkit">
+    <span>Power BI Desktop and Service</span><span>DAX measures</span><span>Power Query</span><span>Data modelling</span><span>Drill-through pages</span><span>What-if parameters</span><span>Custom visuals</span><span>Power Automate</span><span>Microsoft Teams</span><span>Microsoft Planner</span><span>Outlook and Word</span><span>AI assistants</span>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section id="contact" aria-labelledby="contact-title">
+  <div class="contact">
+    <div style="display:grid;gap:16px">
+      <p class="eyebrow">Let's talk</p>
+      <h2 id="contact-title">Got a report nobody reads, or a task everyone dreads?</h2>
+      <p>Tell me about it. I'll show you what a dashboard, an assistant or an automation could do for your team, using your own data.</p>
+    </div>
+    <div class="contact-box">
+      <div class="email-row"><code id="email">29amishagupta@gmail.com</code><button class="copy" id="copyBtn" type="button">Copy email</button></div>
+      <small id="copyNote">Write to me and I'll reply within one working day.</small>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<footer>
+  <span>© 2026 Amisha · Power BI, AI and automation</span>
+  <span>Screenshots come from delivered work, with client names and personal details blurred. AI assistant examples use sample data.</span>
+</footer>
+</div>
+
+<dialog class="lb" id="lightbox" aria-label="Enlarged screenshot">
+  <div class="lb-inner">
+    <div class="lb-top"><span id="lbCap"></span><button type="button" id="lbClose">Close</button></div>
+    <img class="lb-img" id="lbImg" alt="">
+    <div class="lb-nav"><button type="button" id="lbPrev">Previous</button><button type="button" id="lbNext">Next</button></div>
+  </div>
+</dialog>
+
+<script>
+(() => {
+  const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  /* ---------- Planner Assistant replay ---------- */
+  const QA = [
+    { id:'attention', kind:'ask', q:'What needs attention across my projects?',
+      why:'Instead of opening five plans, the manager gets one ranked list with the reason for each item, and can act on it by replying with a number.',
+      a:`<div class="pa-card">
+          <div class="pa-title">6 items need attention, most urgent first</div>
+          <ul class="pa-list">
+            <li><span class="dot bad"></span><span>Building permit · Sunrise Heights<span class="pa-sub">Critical path · 9 days overdue · the finish date will slip</span></span></li>
+            <li><span class="dot warn"></span><span>Milestone "30% completion" · Greenfield Commons<span class="pa-sub">Due in 6 days · the task before it is running late</span></span></li>
+            <li><span class="dot warn"></span><span>4 tasks due this week · Willow Park<span class="pa-sub">Nobody is assigned yet</span></span></li>
+          </ul>
+          <div class="pa-foot">Reply with a number to act: 1 reassign · 2 move the date · 3 open in Planner</div>
+        </div>
+        <div class="pa-card">
+          <div class="pa-title">Portfolio health, worst first</div>
+          <table class="pa-table"><tbody>
+            <tr><td>Sunrise Heights</td><td class="st bad">behind</td><td><div class="meter"><i style="width:34%;background:var(--bad)"></i></div></td><td class="pct">34%</td></tr>
+            <tr><td>Greenfield Commons</td><td class="st warn">at risk</td><td><div class="meter"><i style="width:58%;background:var(--warn)"></i></div></td><td class="pct">58%</td></tr>
+            <tr><td>Lakeside Mill</td><td class="st warn">at risk</td><td><div class="meter"><i style="width:46%;background:var(--warn)"></i></div></td><td class="pct">46%</td></tr>
+            <tr><td>Bayside Towers</td><td class="st good">on track</td><td><div class="meter"><i style="width:88%;background:var(--good)"></i></div></td><td class="pct">88%</td></tr>
+            <tr><td>Willow Park</td><td class="st good">on track</td><td><div class="meter"><i style="width:71%;background:var(--good)"></i></div></td><td class="pct">71%</td></tr>
+          </tbody></table>
+        </div>` },
+    { id:'changed', kind:'ask', q:'What changed this week in Sunrise Heights?',
+      why:'The weekly status update writes itself. It compares progress with the approved plan and drafts the report in Word, ready to send.',
+      a:`<div class="pa-card">
+          <div class="pa-title">Since Monday · completion 22% → 30%</div>
+          <ul class="pa-list">
+            <li><span class="tick">✓</span><span>Permit drawings completed</span></li>
+            <li><span class="tick">✓</span><span>Soil test report completed</span></li>
+            <li><span class="slip">→</span><span>Utility relocation slipped 5 days<span class="pa-sub">Mar 10 → Mar 15 · on the critical path</span></span></li>
+          </ul>
+          <div class="pa-foot">Plan finish moved +3 working days → Jun 18</div>
+        </div>
+        <div class="pa-card">
+          <div class="pa-title">Compared with the approved February plan</div>
+          <ul class="pa-list">
+            <li><span class="dot warn"></span><span>2 tasks are later than approved<span class="pa-sub">Finish variance +3 days</span></span></li>
+            <li><span class="dot good"></span><span>Weekly status report drafted<span class="pa-sub">Health, progress, risks and decisions · ready in Word</span></span></li>
+          </ul>
+        </div>` },
+    { id:'workload', kind:'ask', q:"Who's overloaded?",
+      why:'Spot burnout and bottlenecks before they cause delays. The assistant also suggests who has room to take the work.',
+      a:`<div class="pa-card">
+          <div class="pa-title">Workload by person</div>
+          <div class="load"><span>Alex</span><span class="bar"><i style="width:96%;background:var(--bad)"></i></span><span class="st" style="color:var(--bad)">overloaded</span></div>
+          <div class="load"><span>Priya</span><span class="bar"><i style="width:70%;background:var(--warn)"></i></span><span class="st" style="color:var(--warn)">heavy</span></div>
+          <div class="load"><span>Sam</span><span class="bar"><i style="width:34%;background:var(--good)"></i></span><span class="st" style="color:var(--good)">ok</span></div>
+          <div class="load"><span>Unassigned</span><span class="bar"><i style="width:44%;background:var(--idle)"></i></span><span class="st" style="color:var(--ink-3)">5 open</span></div>
+          <div class="pa-foot">Suggestion: move "Bank documents" from Alex to Sam</div>
+        </div>` },
+    { id:'whatif', kind:'ask', q:'If zoning approval slips 15 days, what moves?',
+      why:'Test a delay before promising a date to anyone. This is a simulation, so nothing in the real plan changes.',
+      a:`<div class="pa-card">
+          <div class="pa-title">What-if simulation · nothing was changed</div>
+          <div class="shift"><span>Zoning approval</span><span class="when">Apr 7 → Apr 22</span></div>
+          <div class="shift"><span>Site plan sign-off</span><span class="when">Apr 21 → May 6</span></div>
+          <div class="shift"><span>Permit filing</span><span class="when">Apr 30 → May 15</span></div>
+          <div class="alert">4 tasks move · the handover date slips 6 working days</div>
+        </div>` },
+    { id:'lookahead', kind:'ask', q:"What's coming up in the next three weeks?",
+      why:'A three-week lookahead that shows what is actually ready to start and what is still waiting on something else.',
+      a:`<div class="pa-card">
+          <div class="pa-title">Three-week lookahead</div>
+          <div class="weeks">
+            <div class="week"><h4>Week 1 · Mar 3–7</h4><div class="task">Site clearing starts<br><span class="pill ok">ready</span></div><div class="task">Permit filing due<br><span class="pill ok">ready</span></div></div>
+            <div class="week"><h4>Week 2 · Mar 10–14</h4><div class="task">Foundations start<br><span class="pill wait">waiting on survey</span></div><div class="task">Bank site visit<br><span class="pill ok">ready</span></div></div>
+            <div class="week"><h4>Week 3 · Mar 17–21</h4><div class="task">Steel order due<br><span class="pill ok">ready</span></div><div class="task">Milestone: construction start<br><span class="pill wait">waiting on permit</span></div></div>
+          </div>
+        </div>` },
+    { id:'update', kind:'do', q:"Move 'Permit filing' to Friday and mark it 60%",
+      why:'Everyday updates take one sentence. It shows the change first, saves only after you confirm, then checks Planner to make sure it worked.',
+      a:`<div class="pa-card">
+          <div class="pa-title">Here's the change. Shall I save it?</div>
+          <div class="shift"><span>Permit filing · due date</span><span class="when">→ Friday</span></div>
+          <div class="shift"><span>Permit filing · progress</span><span class="when">→ 60%</span></div>
+          <div class="btn-row" aria-hidden="true"><span class="fake-btn go">Confirm</span><span class="fake-btn">Cancel</span></div>
+        </div>
+        <div class="pa-card"><div class="pa-title"><span class="tick">✓</span> Updated</div><span class="pa-sub">Previewed, confirmed, then verified against Planner.</span></div>` },
+    { id:'inbox', kind:'do', q:"Turn the bank's email and Monday's call into tasks",
+      why:"Emails and meetings become tracked tasks automatically, each one linked back to the original email or meeting, with duplicates flagged.",
+      a:`<div class="pa-card">
+          <div class="pa-title">Bank's email → 3 tracked tasks</div>
+          <span class="pa-sub">Notes keep the subject, the sender and a link back to the thread. Duplicates are flagged.</span>
+          <p class="hand" style="margin-top:8px">"Send the revised budget sheet by Friday"</p>
+        </div>
+        <div class="pa-card">
+          <div class="pa-title">Monday's call → 4 action items</div>
+          <span class="pa-sub">Pulled from the Teams meeting transcript. Each task links back to the meeting.</span>
+          <p class="hand" style="margin-top:8px">Who owes what, by when.</p>
+        </div>` },
+    { id:'template', kind:'do', q:'Build the schedule from our development template',
+      why:'A complete project schedule, worked back from the handover date, in minutes instead of days of manual planning.',
+      a:`<div class="pa-card">
+          <div class="pa-title">From template to schedule</div>
+          <span class="pa-sub">Template: residential development · worked back from handover on Dec 15, 2027</span>
+          <div class="gantt" aria-hidden="true"><i style="width:34%"></i><i style="width:44%;margin-left:8%"></i><i style="width:40%;margin-left:22%"></i><i style="width:46%;margin-left:36%"></i><i style="width:40%;margin-left:52%"></i></div>
+          <div class="pa-foot">160 tasks · 38 dependencies · minutes, not days</div>
+        </div>` }
+  ];
+
+  const body = document.getElementById('chatBody');
+  const whyText = document.getElementById('whyText');
+  const buttons = [];
+  let timer = null;
+
+  function show(item, animate) {
+    clearTimeout(timer);
+    body.textContent = '';
+    const u = document.createElement('div');
+    u.className = 'bubble-user';
+    u.textContent = item.q;
+    body.append(u);
+    whyText.textContent = item.why;
+    const answer = () => {
+      const m = document.createElement('div');
+      m.className = 'pa-msg';
+      m.innerHTML = '<span class="pa-avatar" aria-hidden="true">PA</span><div class="pa-stack">' + item.a + '</div>';
+      body.append(m);
+    };
+    if (animate && !reduce) {
+      const t = document.createElement('div');
+      t.className = 'pa-msg';
+      t.innerHTML = '<span class="pa-avatar" aria-hidden="true">PA</span><div class="typing" aria-label="Assistant is typing"><span></span><span></span><span></span></div>';
+      body.append(t);
+      timer = setTimeout(() => { t.remove(); answer(); }, 750);
+    } else {
+      answer();
+    }
+    buttons.forEach(b => b.setAttribute('aria-pressed', String(b.dataset.id === item.id)));
+  }
+
+  QA.forEach(item => {
+    const b = document.createElement('button');
+    b.type = 'button';
+    b.className = 'qbtn';
+    b.dataset.id = item.id;
+    b.setAttribute('aria-pressed', 'false');
+    b.innerHTML = '<span class="q-ico" aria-hidden="true">' + (item.kind === 'ask' ? '?' : '›') + '</span><span></span>';
+    b.lastChild.textContent = item.q;
+    b.addEventListener('click', () => show(item, true));
+    document.getElementById(item.kind === 'ask' ? 'q-ask' : 'q-do').append(b);
+    buttons.push(b);
+  });
+  show(QA[0], false);
+
+  /* ---------- Dashboard page tabs ---------- */
+  const tabs = Array.from(document.querySelectorAll('[role="tab"]'));
+  function selectTab(tab, focus) {
+    tabs.forEach(t => {
+      const on = t === tab;
+      t.setAttribute('aria-selected', String(on));
+      t.tabIndex = on ? 0 : -1;
+      document.getElementById(t.getAttribute('aria-controls')).hidden = !on;
+    });
+    if (focus) tab.focus();
+  }
+  tabs.forEach((t, i) => {
+    t.addEventListener('click', () => selectTab(t, false));
+    t.addEventListener('keydown', e => {
+      let j = null;
+      if (e.key === 'ArrowDown' || e.key === 'ArrowRight') j = (i + 1) % tabs.length;
+      if (e.key === 'ArrowUp' || e.key === 'ArrowLeft') j = (i - 1 + tabs.length) % tabs.length;
+      if (e.key === 'Home') j = 0;
+      if (e.key === 'End') j = tabs.length - 1;
+      if (j !== null) { e.preventDefault(); selectTab(tabs[j], true); }
+    });
+  });
+
+  /* ---------- Lightbox ---------- */
+  const dlg = document.getElementById('lightbox');
+  const lbImg = document.getElementById('lbImg');
+  const lbCap = document.getElementById('lbCap');
+  const zooms = Array.from(document.querySelectorAll('.zoom'));
+  let group = [], idx = 0;
+  function openAt(i) {
+    idx = (i + group.length) % group.length;
+    const z = group[idx], img = z.querySelector('img');
+    lbImg.src = img.currentSrc || img.src;
+    lbImg.alt = img.alt;
+    lbCap.textContent = z.dataset.caption || '';
+    document.getElementById('lbPrev').hidden = document.getElementById('lbNext').hidden = group.length < 2;
+  }
+  zooms.forEach(z => z.addEventListener('click', () => {
+    group = zooms.filter(o => o.dataset.group === z.dataset.group);
+    openAt(group.indexOf(z));
+    if (typeof dlg.showModal === 'function') dlg.showModal(); else dlg.setAttribute('open', '');
+  }));
+  document.getElementById('lbClose').addEventListener('click', () => dlg.close());
+  document.getElementById('lbPrev').addEventListener('click', () => openAt(idx - 1));
+  document.getElementById('lbNext').addEventListener('click', () => openAt(idx + 1));
+  dlg.addEventListener('click', e => { if (e.target === dlg) dlg.close(); });
+  dlg.addEventListener('keydown', e => {
+    if (e.key === 'ArrowRight') openAt(idx + 1);
+    if (e.key === 'ArrowLeft') openAt(idx - 1);
+  });
+
+  /* ---------- Copy email ---------- */
+  const copyBtn = document.getElementById('copyBtn');
+  const note = document.getElementById('copyNote');
+  copyBtn.addEventListener('click', () => {
+    const text = document.getElementById('email').textContent.trim();
+    const done = () => { copyBtn.textContent = 'Copied'; note.textContent = 'Email address copied to your clipboard.'; };
+    const fallback = () => {
+      const r = document.createRange(); r.selectNodeContents(document.getElementById('email'));
+      const s = window.getSelection(); s.removeAllRanges(); s.addRange(r);
+      note.textContent = 'Press Ctrl+C (or Cmd+C) to copy the selected address.';
+    };
+    if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(text).then(done, fallback);
+    else fallback();
+  });
+})();
+</script>
+</body>
+</html>
