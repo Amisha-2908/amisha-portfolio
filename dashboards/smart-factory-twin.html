@@ -1,0 +1,1363 @@
+<!doctype html>
+<html lang="en" data-status="loading" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Factory Digital Twin: OEE &amp; Predictive Maintenance · Amisha Gupta</title>
+<meta name="description" content="A multi-page blueprint-style digital-twin report for a synthetic manufacturer: executive overview, line, downtime and maintenance analysis, machine and technician profiles, with in-browser forecasting, anomaly detection and predictive-maintenance risk scores. Light and dark themes.">
+<script>(function(){var t=null;try{var q=(location.search+'&'+location.hash).match(/[?&]theme=(light|dark)/);if(q)t=q[1];else t=localStorage.getItem('sft-theme')}catch(e){}if(t!=='light'&&t!=='dark')t=(window.matchMedia&&matchMedia('(prefers-color-scheme: light)').matches)?'light':'dark';document.documentElement.setAttribute('data-theme',t)})();</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root,:root[data-theme="dark"]{
+  color-scheme:dark;
+  --bg:#0b0f14;--panel:#10161e;--panel2:#141c26;--panel3:#182230;
+  --line:rgba(56,189,248,.25);--line-soft:rgba(56,189,248,.12);--line-strong:rgba(56,189,248,.6);--corner:rgba(56,189,248,.75);
+  --ink:#e6edf3;--ink2:#aab7c4;--muted:#7d8b99;--accent:#38bdf8;
+  --cyan:#38bdf8;--lime:#a3e635;--amber:#fbbf24;--coral:#fb7185;--violet:#a78bfa;--steel:#94a3b8;
+  --good:#a3e635;--bad:#fb7185;--warn:#fbbf24;--violet-ink:#a78bfa;
+  --gridline:rgba(56,189,248,.055);--iso:rgba(56,189,248,.11);
+  --head-bg:rgba(11,15,20,.82);--side-bg:rgba(11,15,20,.72);--shadow:0 10px 30px rgba(0,0,0,.55);
+  --chip-bg:rgba(56,189,248,.14);--sel-bg:rgba(56,189,248,.16);--hover:rgba(56,189,248,.06);--track:rgba(148,163,184,.18);
+  --run-fg:#a3e635;--run-bg:rgba(163,230,53,.08);--run-bd:rgba(163,230,53,.45);
+  --idle-fg:#aab7c4;--idle-bg:rgba(148,163,184,.08);--idle-bd:rgba(148,163,184,.45);
+  --down-fg:#fb7185;--down-bg:rgba(251,113,133,.1);--down-bd:rgba(251,113,133,.5);
+  --mnt-fg:#fbbf24;--mnt-bg:rgba(251,191,36,.08);--mnt-bd:rgba(251,191,36,.5);
+}
+:root[data-theme="light"]{
+  color-scheme:light;
+  --bg:#f4f7fb;--panel:#ffffff;--panel2:#f1f5fa;--panel3:#e8eef6;
+  --line:rgba(37,99,235,.28);--line-soft:rgba(37,99,235,.14);--line-strong:rgba(37,99,235,.62);--corner:rgba(29,78,216,.8);
+  --ink:#0b1b30;--ink2:#33475f;--muted:#556579;--accent:#0369a1;
+  --cyan:#0284c7;--lime:#4d7c0f;--amber:#d97706;--coral:#be123c;--violet:#7c3aed;--steel:#64748b;
+  --good:#3f6212;--bad:#be123c;--warn:#92400e;--violet-ink:#6d28d9;
+  --gridline:rgba(37,99,235,.075);--iso:rgba(37,99,235,.12);
+  --head-bg:rgba(244,247,251,.9);--side-bg:rgba(255,255,255,.75);--shadow:0 10px 28px rgba(15,35,70,.16);
+  --chip-bg:rgba(2,132,199,.1);--sel-bg:rgba(2,132,199,.12);--hover:rgba(2,132,199,.06);--track:rgba(100,116,139,.18);
+  --run-fg:#3f6212;--run-bg:#ecfccb;--run-bd:rgba(77,124,15,.4);
+  --idle-fg:#334155;--idle-bg:#e2e8f0;--idle-bd:rgba(100,116,139,.45);
+  --down-fg:#9f1239;--down-bg:#ffe4e6;--down-bd:rgba(190,18,60,.4);
+  --mnt-fg:#92400e;--mnt-bg:#fef3c7;--mnt-bd:rgba(180,83,9,.4);
+}
+:root{--mono:'JetBrains Mono',ui-monospace,Menlo,Consolas,monospace;--sans:'Space Grotesk',system-ui,-apple-system,'Segoe UI',sans-serif;--r:8px;--focus:0 0 0 2px var(--bg),0 0 0 4px var(--accent);--side:196px;--gap:12px}
+*{box-sizing:border-box}
+html{height:100%;background:var(--bg)}
+body{margin:0;height:100%;overflow:hidden;background-color:var(--bg);color:var(--ink);font-family:var(--sans);font-size:clamp(12px,.86vw,14px);line-height:1.42;-webkit-font-smoothing:antialiased;
+  background-image:linear-gradient(var(--gridline) 1px,transparent 1px),linear-gradient(90deg,var(--gridline) 1px,transparent 1px);background-size:24px 24px;background-position:-1px -1px}
+.iso{position:fixed;top:0;right:0;width:620px;height:620px;pointer-events:none;z-index:0;
+  background-image:repeating-linear-gradient(30deg,var(--iso) 0 1px,transparent 1px 30px),repeating-linear-gradient(150deg,var(--iso) 0 1px,transparent 1px 30px);
+  -webkit-mask-image:radial-gradient(circle at top right,#000 0%,rgba(0,0,0,.5) 35%,transparent 70%);mask-image:radial-gradient(circle at top right,#000 0%,rgba(0,0,0,.5) 35%,transparent 70%)}
+a{color:var(--accent)}
+h1,h2,h3{margin:0;font-weight:600;letter-spacing:-.01em}
+button,select,input{font-family:inherit;font-size:inherit;color:inherit}
+:focus-visible{outline:none;box-shadow:var(--focus)}
+.mono{font-family:var(--mono);font-variant-numeric:tabular-nums}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+/* shell */
+.app{position:relative;z-index:1;height:100vh;display:grid;grid-template-columns:var(--side) minmax(0,1fr);grid-template-rows:auto minmax(0,1fr) auto;grid-template-areas:"head head" "side main" "stat stat"}
+.head{grid-area:head;padding:10px 20px;border-bottom:1px solid var(--line);background:var(--head-bg)}
+.toprow{display:flex;flex-wrap:wrap;gap:8px 18px;align-items:center;justify-content:space-between}
+.brand{display:flex;gap:12px;align-items:center;min-width:0}
+.brand svg{flex:none}
+.brand h1{font-size:clamp(16px,1.3vw,20px);line-height:1.15}
+.ws{font-family:var(--mono);font-size:10px;color:var(--muted);letter-spacing:.05em;margin-top:3px}
+.ws b{color:var(--ink2);font-weight:500}
+.hright{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.badge{font-family:var(--mono);font-size:10.5px;letter-spacing:.07em;text-transform:uppercase;padding:5px 9px;border:1px solid var(--line);border-radius:6px;color:var(--ink2);background:var(--panel);white-space:nowrap}
+.badge.demo{border-color:var(--mnt-bd);color:var(--warn)}
+.back{font-family:var(--mono);font-size:11.5px;text-decoration:none;padding:5px 9px;border:1px solid var(--line);border-radius:6px;background:var(--panel);white-space:nowrap}
+.back:hover{border-color:var(--line-strong)}
+.iconbtn{display:inline-grid;place-items:center;width:30px;height:30px;border:1px solid var(--line);border-radius:6px;background:var(--panel);color:var(--ink);cursor:pointer;padding:0}
+.iconbtn:hover{border-color:var(--line-strong)}
+.iconbtn svg{width:16px;height:16px}
+.user{display:inline-flex;align-items:center;gap:7px;padding:3px 9px 3px 3px;border:1px solid var(--line);border-radius:999px;background:var(--panel);font-family:var(--mono);font-size:10.5px;color:var(--ink2)}
+.user i{display:grid;place-items:center;width:24px;height:24px;border-radius:50%;background:var(--sel-bg);color:var(--accent);font-style:normal;font-weight:700;font-size:10px}
+.filters{display:flex;flex-wrap:wrap;gap:8px 12px;align-items:center;margin-top:8px}
+.fgroup{display:flex;align-items:center;gap:7px}
+.flabel{font-family:var(--mono);font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+.seg{display:inline-flex;border:1px solid var(--line);border-radius:6px;overflow:hidden;background:var(--panel)}
+.seg button{background:transparent;border:0;border-right:1px solid var(--line-soft);padding:6px 10px;font-family:var(--mono);font-size:12px;color:var(--ink2);cursor:pointer}
+.seg button:last-child{border-right:0}
+.seg button:hover{color:var(--ink);background:var(--panel2)}
+.seg button[aria-pressed="true"]{background:var(--sel-bg);color:var(--accent);font-weight:600}
+.seg.small button{padding:3px 8px;font-size:10.5px}
+select.sel{appearance:none;-webkit-appearance:none;background:var(--panel) url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'><path d='M1 1l4 4 4-4' fill='none' stroke='%2338bdf8' stroke-width='1.5'/></svg>") no-repeat right 10px center;border:1px solid var(--line);border-radius:6px;padding:6px 28px 6px 10px;font-family:var(--mono);font-size:12px;color:var(--ink);cursor:pointer;max-width:100%}
+:root[data-theme="light"] select.sel{background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'><path d='M1 1l4 4 4-4' fill='none' stroke='%230369a1' stroke-width='1.5'/></svg>")}
+.btn{background:var(--panel);border:1px solid var(--line);border-radius:6px;padding:6px 11px;font-family:var(--mono);font-size:12px;color:var(--ink2);cursor:pointer;white-space:nowrap;display:inline-flex;align-items:center;gap:6px}
+.btn:hover{color:var(--ink);border-color:var(--line-strong)}
+.btn svg{width:13px;height:13px}
+.chip{display:inline-flex;align-items:center;gap:8px;background:var(--chip-bg);border:1px solid var(--line-strong);border-radius:6px;padding:4px 6px 4px 10px;font-family:var(--mono);font-size:12px;color:var(--accent)}
+.chip button{background:transparent;border:0;color:var(--accent);cursor:pointer;font-size:14px;line-height:1;padding:0 4px;border-radius:4px}
+.chip button:hover{background:var(--sel-bg)}
+.toolbar{margin-left:auto;display:flex;gap:8px;align-items:center}
+/* side */
+.side{grid-area:side;min-height:0;display:flex;flex-direction:column;gap:12px;padding:12px 10px;border-right:1px solid var(--line);background:var(--side-bg)}
+.menu ul{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:2px}
+.menu .grp{font-family:var(--mono);font-size:9.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);padding:8px 10px 4px}
+.menu .grp:first-child{padding-top:0}
+.menu a{display:flex;align-items:center;gap:10px;padding:7px 10px;border-radius:6px;border:1px solid transparent;color:var(--ink2);text-decoration:none;font-size:13px;position:relative}
+.menu a svg{flex:none;width:16px;height:16px}
+.menu a .ix{font-family:var(--mono);font-size:9.5px;color:var(--muted);margin-left:auto}
+.menu a:hover{color:var(--ink);background:var(--panel2)}
+.menu a[aria-current="page"]{color:var(--ink);background:var(--sel-bg);border-color:var(--line);font-weight:600}
+.menu a[aria-current="page"]::before{content:"";position:absolute;left:-11px;top:7px;bottom:7px;width:2px;background:var(--accent);border-radius:2px}
+.menu a[aria-current="page"] svg{color:var(--accent)}
+.sidemeta{font-family:var(--mono);font-size:10px;color:var(--muted);line-height:1.6;padding:8px 10px;border:1px dashed var(--line);border-radius:6px}
+.sidemeta b{color:var(--ink2);font-weight:500}
+.foot{margin-top:auto;font-family:var(--mono);font-size:10px;color:var(--muted);line-height:1.55;padding:0 6px}
+main{grid-area:main;min-height:0;min-width:0;padding:12px 16px;overflow:hidden;position:relative}
+.status{grid-area:stat;display:flex;flex-wrap:wrap;gap:4px 18px;align-items:center;padding:4px 16px;border-top:1px solid var(--line);background:var(--head-bg);font-family:var(--mono);font-size:10px;color:var(--muted)}
+.status b{color:var(--ink2);font-weight:500}
+.status .dot{display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--good);margin-right:6px;vertical-align:1px}
+.status .sp{margin-left:auto}
+/* pages */
+.page{display:none;height:100%;min-height:0;gap:var(--gap)}
+.page.on{display:grid}
+.page>*{min-height:0;min-width:0}
+#pg-overview{grid-template-columns:minmax(0,7fr) minmax(0,5fr);grid-template-rows:auto minmax(0,1.2fr) minmax(0,1fr);grid-template-areas:"k k" "f t" "f s"}
+#kpis{grid-area:k}#floorPanel{grid-area:f}#trendP{grid-area:t}#sumP{grid-area:s}
+#pg-insights{grid-template-columns:minmax(0,5fr) minmax(0,1fr) minmax(0,3fr) minmax(0,3fr);grid-template-rows:repeat(2,minmax(0,1fr));grid-template-areas:"f n n a" "q q c l"}
+#fcP{grid-area:f}#narrP{grid-area:n}#anomP{grid-area:a}#askP{grid-area:q}#recP{grid-area:c}#riskP{grid-area:l}
+#pg-lines{grid-template-columns:repeat(3,minmax(0,1fr));grid-template-rows:minmax(0,1.35fr) minmax(0,1fr);grid-template-areas:"g b h" "s b h"}
+#gaugeP{grid-area:g}#shiftP{grid-area:s}#bulletP{grid-area:b}#heatP{grid-area:h}
+#pg-downtime{grid-template-columns:minmax(0,7fr) minmax(0,5fr);grid-template-rows:repeat(2,minmax(0,1fr));grid-template-areas:"p d" "x m"}
+#paretoP{grid-area:p}#defectsP{grid-area:d}#scatterP{grid-area:x}#topdnP{grid-area:m}
+#pg-maintenance{grid-template-columns:minmax(0,5fr) minmax(0,4fr) minmax(0,3fr);grid-template-rows:minmax(0,1fr) minmax(0,1.3fr);grid-template-areas:"g r k" "t t t"}
+#ganttP{grid-area:g}#rstackP{grid-area:r}#techP{grid-area:k}#tableP{grid-area:t}
+#pg-detail,#pg-tech{grid-template-columns:minmax(0,4fr) minmax(0,1fr) minmax(0,2fr) minmax(0,2fr) minmax(0,3fr);grid-template-rows:auto auto minmax(0,1fr) minmax(0,1fr);grid-template-areas:"h h h h h" "k k k k k" "t t s s r" "w d d c c"}
+.ph{grid-area:h}.pk{grid-area:k}.pt{grid-area:t}.ps{grid-area:s}.pr{grid-area:r}.pw{grid-area:w}.pd{grid-area:d}.pc{grid-area:c}
+/* kpis */
+.kpis{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:10px}
+.kpi{background:var(--panel);border:1px solid var(--line);border-radius:var(--r);padding:8px 12px 6px;position:relative;min-width:0}
+.kpi:hover{border-color:var(--line-strong)}
+.kpi .lab{display:flex;align-items:center;gap:6px;font-family:var(--mono);font-size:10px;letter-spacing:.11em;text-transform:uppercase;color:var(--muted);margin-bottom:4px;white-space:nowrap}
+.kpi .lab span{overflow:hidden;text-overflow:ellipsis}
+.kpi .val{font-family:var(--mono);font-weight:600;font-size:clamp(18px,1.55vw,24px);line-height:1.1;color:var(--ink)}
+.kpi .val small{font-size:12px;color:var(--ink2);font-weight:500;margin-left:2px}
+.kpi .delta{display:flex;align-items:baseline;gap:6px;margin-top:4px;font-family:var(--mono);font-size:10.5px;white-space:nowrap;overflow:hidden}
+.kpi .delta .d{font-weight:600}
+.kpi .delta .cap{color:var(--muted);font-size:10px;overflow:hidden;text-overflow:ellipsis}
+.up{color:var(--good)}.down{color:var(--bad)}.flat{color:var(--ink2)}
+.kpi svg.spk{display:block;width:100%;height:22px;margin-top:4px}
+/* panels */
+.panel{background:var(--panel);border:1px solid var(--line);border-radius:var(--r);padding:10px 14px;position:relative;min-width:0;min-height:0;display:flex;flex-direction:column}
+.panel:hover{border-color:color-mix(in srgb,var(--line-strong) 70%,transparent)}
+.panel::before,.panel::after{content:"";position:absolute;width:10px;height:10px;border-color:var(--corner);border-style:solid;pointer-events:none}
+.panel::before{top:-1px;left:-1px;border-width:1px 0 0 1px;border-top-left-radius:2px}
+.panel::after{bottom:-1px;right:-1px;border-width:0 1px 1px 0;border-bottom-right-radius:2px}
+.phead{flex:none;display:flex;gap:6px 10px;align-items:flex-start;justify-content:space-between;margin-bottom:6px}
+.phead>div:first-child{min-width:0}
+.ptitle{display:flex;align-items:center;gap:6px;font-family:var(--mono);font-size:11px;font-weight:600;letter-spacing:.11em;text-transform:uppercase;color:var(--ink2);white-space:nowrap}
+.ptitle::before{content:"//";color:var(--accent)}
+.ptitle.alt::before{content:"\25B8"}
+.psub{font-size:11.5px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pright{display:flex;flex-wrap:wrap;gap:6px;align-items:center;justify-content:flex-end;font-family:var(--mono);font-size:10.5px;color:var(--muted)}
+.chart{flex:1 1 0;min-height:0;width:100%}
+.ib{display:inline-grid;place-items:center;width:15px;height:15px;border-radius:50%;border:1px solid var(--line);background:transparent;color:var(--accent);font-family:var(--mono);font-size:9px;font-weight:700;cursor:help;padding:0;flex:none;text-transform:none;letter-spacing:0}
+.ib:hover{border-color:var(--line-strong)}
+.cm{background:transparent;border:1px solid transparent;border-radius:4px;color:var(--ink2);cursor:pointer;font-size:15px;line-height:1;padding:0 5px 3px;letter-spacing:1px}
+.cm:hover{border-color:var(--line);color:var(--ink)}
+.mcard{display:inline-flex;align-items:center;gap:6px;border:1px solid color-mix(in srgb,var(--violet) 45%,transparent);border-radius:6px;padding:2px 7px;font-family:var(--mono);font-size:10px;color:var(--violet-ink);background:color-mix(in srgb,var(--violet) 8%,transparent);white-space:nowrap}
+.legend{flex:none;display:flex;flex-wrap:wrap;gap:4px 12px;font-family:var(--mono);font-size:10px;color:var(--ink2);margin-bottom:4px}
+.legend span{display:inline-flex;align-items:center;gap:5px}
+.sw{display:inline-block;width:10px;height:10px;border-radius:2px}
+.lnk{font-family:var(--mono);font-size:10.5px;text-decoration:none}
+.lnk:hover{text-decoration:underline}
+.empty{position:absolute;left:14px;right:14px;top:44px;bottom:12px;display:grid;place-items:center;text-align:center;border:1px dashed var(--line);border-radius:6px;font-family:var(--mono);font-size:11px;color:var(--muted);background:var(--panel)}
+.empty[hidden]{display:none}
+/* floor */
+.floorwrap{flex:1 1 0;min-height:0;position:relative}
+#floor{position:absolute;inset:0}
+#floor svg{display:block;width:100%;height:100%}
+.lanehit{cursor:pointer}
+.lanehit:hover .lanebg{stroke:var(--line-strong)}
+.lanehit:focus-visible{outline:none}
+.lanehit:focus-visible .lanebg{stroke:var(--accent);stroke-width:2}
+.lane.sel .lanebg{stroke:var(--accent);stroke-width:1.5}
+.lane.dim{opacity:.4}
+.mach{cursor:pointer}
+.mach:hover rect.blk,.mach:focus-visible rect.blk{stroke:var(--ink);stroke-width:2}
+.mach:focus-visible{outline:none}
+.pulse{animation:pulse 1.7s ease-out infinite;transform-box:fill-box;transform-origin:center}
+@keyframes pulse{0%{transform:scale(.7);opacity:.95}100%{transform:scale(2.4);opacity:0}}
+.ftip{position:absolute;pointer-events:none;background:var(--panel2);border:1px solid var(--line-strong);border-radius:6px;padding:8px 10px;font-size:12px;min-width:200px;z-index:5;box-shadow:var(--shadow);display:none}
+.ftip b{font-family:var(--mono);font-weight:600}
+.trow{display:flex;justify-content:space-between;gap:12px;font-family:var(--mono);font-size:11px;color:var(--ink2)}
+.trow b{color:var(--ink)}
+/* lists */
+.fit{flex:1 1 0;min-height:0;overflow:hidden}
+.pager{flex:none;display:flex;align-items:center;justify-content:flex-end;gap:6px;margin-top:6px;font-family:var(--mono);font-size:10.5px;color:var(--muted)}
+.pager span{margin-right:auto}
+.pager button{background:var(--panel2);border:1px solid var(--line);border-radius:4px;color:var(--ink);font-family:var(--mono);min-width:24px;height:22px;cursor:pointer;line-height:1}
+.pager button:disabled{opacity:.35;cursor:default}
+.sent{display:flex;gap:8px;align-items:flex-start;margin:0 0 8px;font-size:12.5px;line-height:1.5;color:var(--ink)}
+.sent .tag{flex:none;margin-top:2px;font-family:var(--mono);font-size:9.5px;letter-spacing:.08em;text-transform:uppercase;padding:2px 6px;border-radius:4px;border:1px solid}
+.tag.high{color:var(--good);border-color:var(--run-bd)}
+.tag.med{color:var(--warn);border-color:var(--mnt-bd)}
+.anom{display:flex;gap:10px;align-items:flex-start;padding:7px 0;border-top:1px solid var(--line-soft)}
+.anom:first-child{border-top:0;padding-top:0}
+.anom .z{flex:none;width:54px;font-family:var(--mono);font-size:11px;color:var(--bad);font-weight:600}
+.anom .z.watch{color:var(--warn)}
+.anom .z small{display:block;color:var(--muted);font-weight:400;font-size:10px}
+.anom .t{font-size:12px;line-height:1.4}
+.anom .t b{font-family:var(--mono)}
+.anom .t .ex{color:var(--ink2)}
+.rec{border:1px solid var(--line-soft);border-radius:6px;padding:9px 11px;margin-bottom:8px;background:var(--panel2)}
+.rec:hover{border-color:var(--line-strong)}
+.rec .rt{font-weight:600;font-size:13px;margin-bottom:4px;display:flex;gap:8px;align-items:flex-start}
+.rec .rt .n{flex:none;font-family:var(--mono);font-size:10px;color:var(--accent);border:1px solid var(--line);border-radius:4px;padding:1px 5px;margin-top:2px}
+.rec .ev{font-size:12px;color:var(--ink2);line-height:1.45}
+.rec .imp{display:inline-block;margin-top:6px;font-family:var(--mono);font-size:10.5px;color:var(--good);border:1px solid var(--run-bd);border-radius:4px;padding:2px 7px}
+.rrow{all:unset;box-sizing:border-box;display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:10px;align-items:center;width:100%;padding:5px 4px;border-top:1px solid var(--line-soft);cursor:pointer;border-radius:4px}
+.rrow:first-child{border-top:0}
+.rrow:hover{background:var(--hover)}
+.rrow:focus-visible{box-shadow:var(--focus)}
+.rrow b{font-family:var(--mono);font-size:12px}
+.rrow .sub,.sub{display:block;font-size:10.5px;color:var(--muted);font-family:var(--sans);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.rrow .rn{font-family:var(--mono);font-size:10.5px;color:var(--ink2);text-align:right;white-space:nowrap}
+.av{display:grid;place-items:center;width:28px;height:28px;border-radius:50%;border:1px solid var(--line-strong);background:var(--sel-bg);color:var(--accent);font-family:var(--mono);font-weight:700;font-size:10.5px;flex:none}
+.av.big{width:44px;height:44px;font-size:15px}
+/* ask */
+.ask{flex:1 1 0;min-height:0;display:grid;grid-template-columns:minmax(0,.8fr) minmax(0,1.2fr);gap:12px}
+.askl{display:flex;flex-direction:column;gap:6px;min-height:0}
+.qchip{background:var(--panel2);border:1px solid var(--line);border-radius:6px;padding:5px 10px;font-size:12px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;cursor:pointer;color:var(--ink);text-align:left;line-height:1.3}
+.qchip:hover{border-color:var(--line-strong)}
+.qchip[aria-pressed="true"]{background:var(--sel-bg);border-color:var(--accent);color:var(--accent)}
+.askin{display:flex;gap:6px;margin-top:auto}
+.askin input{flex:1;min-width:0;background:var(--panel2);border:1px solid var(--line);border-radius:6px;padding:7px 10px;font-size:12px;color:var(--ink)}
+.askin input::placeholder{color:var(--muted)}
+.answer{background:var(--panel2);border:1px solid var(--line-soft);border-radius:6px;padding:10px 12px;min-height:0;display:flex;flex-direction:column;overflow:hidden}
+.answer .q{font-family:var(--mono);font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin-bottom:4px}
+.answer .q::before{content:"\25B8 ";color:var(--accent)}
+.answer .h{font-family:var(--mono);font-weight:600;font-size:17px;line-height:1.25;color:var(--ink);margin-bottom:4px}
+.answer .h small{font-size:11.5px;color:var(--ink2);font-weight:500}
+.answer .e{font-size:12px;color:var(--ink2);line-height:1.45;margin-bottom:4px}
+.answer .mini{flex:1 1 0;min-height:60px;width:100%}
+/* table */
+.tablewrap{flex:1 1 0;min-height:0;overflow:hidden;border:1px solid var(--line-soft);border-radius:6px}
+table{border-collapse:collapse;width:100%;font-size:12px}
+thead th{background:var(--panel3);text-align:left;padding:0;border-bottom:1px solid var(--line)}
+thead th button{all:unset;display:block;width:100%;box-sizing:border-box;padding:7px 10px;font-family:var(--mono);font-size:10px;letter-spacing:.09em;text-transform:uppercase;color:var(--ink2);cursor:pointer;white-space:nowrap}
+thead th button:hover{color:var(--ink)}
+thead th button:focus-visible{box-shadow:inset var(--focus)}
+thead th[aria-sort="ascending"] button::after{content:" \25B2";color:var(--accent)}
+thead th[aria-sort="descending"] button::after{content:" \25BC";color:var(--accent)}
+tbody tr{height:36px;cursor:pointer}
+tbody td{padding:2px 10px;border-bottom:1px solid var(--line-soft);font-family:var(--mono);font-variant-numeric:tabular-nums;white-space:nowrap;color:var(--ink);line-height:1.2}
+tbody tr:hover td,tbody tr:focus-visible td{background:var(--hover)}
+tbody tr:focus-visible{outline:none}
+tbody tr:focus-visible td:first-child{box-shadow:inset 3px 0 0 var(--accent)}
+.bar{display:inline-block;width:56px;height:6px;background:var(--track);border-radius:3px;vertical-align:middle;margin-right:8px;overflow:hidden}
+.bar i{display:block;height:100%;background:var(--cyan);border-radius:3px}
+.ring{display:inline-flex;align-items:center;gap:6px}
+.ring svg{width:26px;height:26px;flex:none}
+.pill{display:inline-flex;align-items:center;gap:5px;font-family:var(--mono);font-size:10.5px;padding:2px 8px;border-radius:999px;border:1px solid;font-weight:600;white-space:nowrap}
+.pill.Running{color:var(--run-fg);border-color:var(--run-bd);background:var(--run-bg)}
+.pill.Idle{color:var(--idle-fg);border-color:var(--idle-bd);background:var(--idle-bg)}
+.pill.Down{color:var(--down-fg);border-color:var(--down-bd);background:var(--down-bg)}
+.pill.Maintenance{color:var(--mnt-fg);border-color:var(--mnt-bd);background:var(--mnt-bg)}
+/* profile header */
+.phd{display:flex;flex-wrap:wrap;gap:8px 16px;align-items:center;justify-content:space-between;padding:0 2px 8px;border-bottom:1px solid var(--line)}
+.phl{display:flex;gap:12px;align-items:center;min-width:0}
+.crumbs{list-style:none;margin:0;padding:0;display:flex;flex-wrap:wrap;gap:2px;font-family:var(--mono);font-size:10.5px;color:var(--muted)}
+.crumbs li+li::before{content:"\203A";margin:0 6px 0 4px;color:var(--accent)}
+.crumbs a,.crumbbtn{color:var(--accent);text-decoration:none;background:none;border:0;padding:0;font:inherit;cursor:pointer}
+.crumbs a:hover,.crumbbtn:hover{text-decoration:underline}
+.crumbs [aria-current]{color:var(--ink)}
+.ptl{display:flex;flex-wrap:wrap;align-items:center;gap:4px 10px;margin-top:3px}
+.ptl h2{font-size:clamp(16px,1.3vw,20px)}
+.layer{font-family:var(--mono);font-size:9.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--violet-ink);border:1px solid color-mix(in srgb,var(--violet) 45%,transparent);border-radius:4px;padding:1px 6px}
+.pmeta{font-size:12px;color:var(--ink2)}
+.pmeta .crumbbtn{font-family:var(--mono);font-size:11.5px}
+.phr{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.switch{display:flex;gap:4px;align-items:center}
+.switch select{max-width:230px}
+.rpanel{flex:1 1 0;min-height:0;display:flex;flex-direction:column;gap:6px;overflow:hidden}
+.rtop{display:flex;gap:12px;align-items:center}
+.rtop svg{width:60px;height:60px;flex:none}
+.rtier{font-family:var(--mono);font-weight:600;font-size:13px}
+.fac{display:grid;grid-template-columns:minmax(0,1fr) 40px 44px;gap:8px;align-items:center;font-size:11.5px;line-height:1.25}
+.fac .fl{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.fac .fl small{color:var(--muted);font-family:var(--mono);font-size:10px;margin-left:4px}
+.fb{height:6px;background:var(--track);border-radius:3px;overflow:hidden}
+.fb i{display:block;height:100%;background:var(--cyan);border-radius:3px}
+.fv{font-family:var(--mono);text-align:right;font-size:11px}
+.fv small{color:var(--muted)}
+/* overlays */
+#ctx{position:fixed;z-index:60;min-width:200px;background:var(--panel2);border:1px solid var(--line-strong);border-radius:6px;padding:4px;box-shadow:var(--shadow)}
+#ctx[hidden]{display:none}
+#ctx button{display:block;width:100%;text-align:left;background:transparent;border:0;border-radius:4px;padding:7px 10px;font-family:var(--mono);font-size:11.5px;color:var(--ink);cursor:pointer}
+#ctx button:hover,#ctx button:focus-visible{background:var(--sel-bg);box-shadow:none}
+#itip{position:fixed;z-index:70;max-width:300px;background:var(--panel2);border:1px solid var(--line-strong);border-radius:6px;padding:8px 10px;font-size:12px;line-height:1.5;color:var(--ink2);box-shadow:var(--shadow);pointer-events:none}
+#itip[hidden]{display:none}
+#fs{position:fixed;inset:0;z-index:80;background:color-mix(in srgb,var(--bg) 82%,transparent);display:grid;place-items:center;padding:4vh 4vw}
+#fs[hidden]{display:none}
+.fsbox{width:100%;height:100%;background:var(--panel);border:1px solid var(--line-strong);border-radius:var(--r);padding:12px 16px;display:flex;flex-direction:column;box-shadow:var(--shadow)}
+#fsChart{flex:1 1 0;min-height:0}
+#toast{position:fixed;left:50%;bottom:40px;transform:translateX(-50%);z-index:90;background:var(--panel2);border:1px solid var(--line-strong);border-radius:6px;padding:8px 14px;font-family:var(--mono);font-size:12px;color:var(--ink);box-shadow:var(--shadow)}
+#toast[hidden]{display:none}
+#boot{position:fixed;inset:0;z-index:100;display:grid;place-items:center;background:var(--bg);font-family:var(--mono);font-size:12px;color:var(--muted);letter-spacing:.08em}
+#boot[hidden]{display:none}
+/* density refinements */
+.menu a{white-space:nowrap;font-size:12.5px}
+.menu a .ix{display:none}
+.menu a>span{overflow:hidden;text-overflow:ellipsis}
+.kpi .lab{letter-spacing:.08em}
+.kpi .delta{font-size:10px;gap:4px}
+.kpi .delta .cap{font-size:9.5px}
+.phead{flex-wrap:wrap}
+.pright{flex-wrap:nowrap;margin-left:auto}
+.phd{flex-wrap:nowrap}
+.phl{flex:1 1 auto;min-width:0}
+.phl>div{min-width:0}
+.pmeta{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.phr{flex:none}
+.rtop svg{width:34px;height:34px}
+.rtop{gap:10px}
+.rtop .rtier{font-size:12.5px;line-height:1.25}
+.rtop .sub{line-height:1.25}
+.rpanel{gap:2px}
+.fac{font-size:10.5px;line-height:1.15}
+.fac .fl small{font-size:9.5px}
+.pc .rec{padding:7px 10px;margin-bottom:6px}
+.pc .rec .rt{font-size:12.5px}
+.pc .rec .ev{font-size:11px;line-height:1.38}
+.pc .rec .imp{margin-top:4px}
+#pg-detail,#pg-tech{grid-template-rows:auto auto minmax(0,1fr) minmax(0,1.08fr)}
+/* phones & tablets */
+@media (max-width:999.98px),(max-height:599.98px){
+  .phd{flex-wrap:wrap}
+  .pmeta{white-space:normal}
+  .fit,.rpanel,.ask,.tablewrap,.answer{flex:none}
+  .page.on>*{flex:none}
+  html,body{height:auto}
+  body{overflow-x:hidden;overflow-y:auto}
+  .app{height:auto;display:flex;flex-direction:column}
+  .side{display:contents}
+  .head{order:1;padding:12px 16px}
+  .menu{order:2;padding:10px 16px 0}
+  main{order:3;padding:12px 16px;overflow:visible}
+  .sidemeta{order:4;margin:0 16px}
+  .foot{order:5;padding:12px 16px}
+  .status{order:6;padding:8px 16px 16px}
+  .status .sp{margin-left:0}
+  .menu .grp,.menu a .ix,.menu a svg,.lx{display:none}
+  .menu ul{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px}
+  .menu a{justify-content:center;padding:7px 4px;border-color:var(--line-soft);font-size:12px;text-align:center}
+  .menu a[aria-current="page"]::before{left:8px;right:8px;top:auto;bottom:-1px;width:auto;height:2px}
+  .page.on{display:flex;flex-direction:column}
+  .chart{flex:none;height:290px}
+  .chart.tall{height:470px}
+  .fit{overflow:visible}
+  .floorwrap{flex:none}
+  #floor{position:static}
+  #floor svg{height:auto}
+  .tablewrap{overflow-x:auto}
+  table{min-width:880px}
+  .kpis{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .ask{grid-template-columns:minmax(0,1fr)}
+  .answer .mini{flex:none;height:150px}
+  .toolbar{margin-left:0}
+  .psub{white-space:normal}
+  .rpanel{overflow:visible}
+  .switch select{max-width:150px}
+  .empty{position:static;min-height:80px;margin-top:8px}
+}
+@media (min-width:640px) and (max-width:999.98px){.kpis{grid-template-columns:repeat(3,minmax(0,1fr))}}
+@media (prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+<div class="iso" aria-hidden="true"></div>
+<div id="boot" role="status">Initialising digital twin · generating 64,800 shift records…</div>
+<div class="app">
+<header class="head">
+  <div class="toprow">
+    <div class="brand">
+      <svg width="36" height="36" viewBox="0 0 40 40" aria-hidden="true"><path d="M20 3 35 11.5v17L20 37 5 28.5v-17z" fill="none" stroke="var(--accent)" stroke-width="1.4"/><path d="M20 11 28 15.5v9L20 29l-8-4.5v-9z" fill="none" stroke="var(--accent)" stroke-width="1" opacity=".7"/><circle cx="20" cy="20" r="3" fill="var(--accent)"/><path d="M20 3v8M35 11.5l-7 4M35 28.5l-7-4M20 37v-8M5 28.5l7-4M5 11.5l7 4" stroke="var(--accent)" stroke-width="1" opacity=".55"/></svg>
+      <div>
+        <h1>Factory Digital Twin: OEE &amp; Predictive Maintenance</h1>
+        <div class="ws"><b>Helix Components</b> · Plant operations workspace · Last refreshed 27 Oct 2026 06:00 IST · refreshes hourly</div>
+      </div>
+    </div>
+    <div class="hright">
+      <span class="badge">Manufacturing · Digital twin</span>
+      <span class="badge demo">Demo dataset · synthetic</span>
+      <a class="back" href="../">&larr; amishaautomates.com</a>
+      <button type="button" class="iconbtn" id="themeBtn" aria-label="Switch to light theme"></button>
+      <span class="user" title="Signed in as a read-only demo viewer"><i>DV</i>Viewer</span>
+    </div>
+  </div>
+  <section class="filters" aria-label="Global filters">
+    <div class="fgroup"><span class="flabel" id="periodLbl">Period</span>
+      <div class="seg" role="group" aria-labelledby="periodLbl" id="periodSeg">
+        <button type="button" data-p="7" aria-pressed="false">7d</button><button type="button" data-p="30" aria-pressed="true">30d</button><button type="button" data-p="60" aria-pressed="false">60d</button><button type="button" data-p="90" aria-pressed="false">90d</button>
+      </div>
+    </div>
+    <div class="fgroup"><label class="flabel" for="plantSel">Plant</label>
+      <select class="sel" id="plantSel"><option value="ALL">All plants</option><option value="P1">P1 · Northgate Works</option><option value="P2">P2 · Riverside Plant</option><option value="P3">P3 · Eastfield Facility</option></select>
+    </div>
+    <div class="fgroup"><label class="flabel" for="shiftSel">Shift</label>
+      <select class="sel" id="shiftSel"><option value="ALL">All shifts</option><option value="0">Day (06–14)</option><option value="1">Evening (14–22)</option><option value="2">Night (22–06)</option></select>
+    </div>
+    <button type="button" class="btn" id="resetBtn" aria-label="Reset all filters">Reset</button>
+    <div id="chips" aria-live="polite"></div>
+    <div class="toolbar" role="toolbar" aria-label="Page actions">
+      <button type="button" class="btn" id="csvBtn"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M8 2v8m0 0 3-3m-3 3L5 7M3 12v2h10v-2" fill="none" stroke="currentColor" stroke-width="1.5"/></svg>Export CSV</button>
+      <button type="button" class="btn" id="linkBtn"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M6.5 9.5l3-3M7 4.5l1.2-1.2a2.6 2.6 0 0 1 3.7 3.7L10.7 8.2M9 11.5l-1.2 1.2a2.6 2.6 0 0 1-3.7-3.7L5.3 7.8" fill="none" stroke="currentColor" stroke-width="1.5"/></svg>Copy link</button>
+    </div>
+  </section>
+</header>
+
+<aside class="side">
+  <nav class="menu" aria-label="Report pages">
+    <ul id="menu">
+      <li class="grp" aria-hidden="true">L1 · Executive</li>
+      <li><a href="#overview" data-page="overview"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M2 2h5v5H2zM9 2h5v3H9zM9 7h5v7H9zM2 9h5v5H2z" fill="none" stroke="currentColor" stroke-width="1.3"/></svg><span>Overview</span><span class="ix">01</span></a></li>
+      <li><a href="#insights" data-page="insights"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M8 1.5l1.6 3.6L13.5 6l-3 2.6.9 3.9L8 10.6l-3.4 1.9.9-3.9-3-2.6 3.9-.9z" fill="none" stroke="currentColor" stroke-width="1.3"/></svg><span>AI Insights</span><span class="ix">02</span></a></li>
+      <li class="grp" aria-hidden="true">L2 · Analysis</li>
+      <li><a href="#lines" data-page="lines"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M2 4h12M2 8h12M2 12h12M5 2.5v3M10 6.5v3M7 10.5v3" fill="none" stroke="currentColor" stroke-width="1.3"/></svg><span>Lines<span class="lx"> &amp; production</span></span><span class="ix">03</span></a></li>
+      <li><a href="#downtime" data-page="downtime"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M2 14V9h2.5v5M6.75 14V5h2.5v9M11.5 14V2H14v12" fill="none" stroke="currentColor" stroke-width="1.3"/></svg><span>Downtime<span class="lx"> &amp; quality</span></span><span class="ix">04</span></a></li>
+      <li><a href="#maintenance" data-page="maintenance"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M10.5 2.2a3.3 3.3 0 0 0-3.9 4.4L2.2 11a1.4 1.4 0 0 0 2 2l4.4-4.4a3.3 3.3 0 0 0 4.4-3.9l-2 2-1.9-.4-.4-1.9z" fill="none" stroke="currentColor" stroke-width="1.3"/></svg><span>Maintenance</span><span class="ix">05</span></a></li>
+      <li class="grp" aria-hidden="true">L3 · Profiles</li>
+      <li><a href="#detail" data-page="detail" id="menuDetail"><svg viewBox="0 0 16 16" aria-hidden="true"><rect x="2.5" y="4" width="11" height="8" rx="1" fill="none" stroke="currentColor" stroke-width="1.3"/><path d="M5 4V2.5M11 4V2.5M5 14v-2M11 14v-2M6 8h4" stroke="currentColor" stroke-width="1.3"/></svg><span>Machine<span class="lx"> profile</span></span><span class="ix">06</span></a></li>
+      <li><a href="#tech" data-page="tech" id="menuTech"><svg viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="5.5" r="3" fill="none" stroke="currentColor" stroke-width="1.3"/><path d="M2.5 14c.7-3 2.9-4.5 5.5-4.5s4.8 1.5 5.5 4.5" fill="none" stroke="currentColor" stroke-width="1.3"/></svg><span>Technician<span class="lx"> profile</span></span><span class="ix">07</span></a></li>
+    </ul>
+  </nav>
+  <div class="sidemeta"><b>Statistical models</b><br>runs in your browser</div>
+  <footer class="foot">Built by Amisha Gupta · Synthetic data generated in the browser · <a href="../">amishaautomates.com</a></footer>
+</aside>
+
+<main id="main">
+<!-- L1 · Overview -->
+<section class="page" id="pg-overview" aria-label="Overview">
+  <section class="kpis" id="kpis" aria-label="Key performance indicators"></section>
+  <section class="panel" id="floorPanel">
+    <div class="phead">
+      <div><div class="ptitle">Floor plan · <span id="floorTitle">P1</span><button class="ib" type="button" aria-label="About the floor plan" data-info="Top view of the selected plant. Each lane is a production line; each block is a machine coloured by its live status. Block value = machine OEE for the selected period and shift. A ! badge marks a failure-risk score of 70 or more.">i</button></div><div class="psub">Click a lane to filter every page · click a machine to open its profile · right-click for options</div></div>
+      <div class="pright"><div class="seg small" id="floorTabs" role="group" aria-label="Plant shown on the floor plan"></div></div>
+    </div>
+    <div class="legend" id="floorLegend"></div>
+    <div class="floorwrap"><div id="floor" role="group" aria-label="Floor plan of the selected plant"></div></div>
+    <div class="ftip" id="ftip" role="tooltip"></div>
+  </section>
+  <section class="panel" id="trendP">
+    <div class="phead"><div><div class="ptitle">OEE trend by shift<button class="ib" type="button" aria-label="About the OEE trend" data-info="Daily OEE per shift and for the selected scope. The dashed line is a 14-day forecast (Holt linear smoothing with a weekday index); the band is an 80 % interval from one-step residuals. Diamonds mark days whose rolling 14-day z-score is beyond ±2.5.">i</button></div></div><div class="pright"><span class="mcard" id="trendCard">model</span><button class="cm" type="button" data-chart="trend" data-title="OEE trend by shift" aria-label="Chart options: OEE trend">⋯</button></div></div>
+    <div class="chart" id="trend" role="img" aria-label="OEE trend by shift with forecast and anomalies"></div>
+  </section>
+  <section class="panel" id="sumP">
+    <div class="phead"><div><div class="ptitle alt">AI summary<button class="ib" type="button" aria-label="About the AI summary" data-info="Three statements generated by rules from the filtered data: period performance, the largest anomaly and the forecast plus highest-risk machine. Confidence is High when the sample is at least 30 days, the anomaly |z| is at least 3, or the backtest MAPE is under 3 %.">i</button></div></div><div class="pright"><a class="lnk" href="#insights">Open AI Insights →</a></div></div>
+    <div class="fit" id="sumList"></div><div class="pager" id="sumPager"></div>
+  </section>
+</section>
+
+<!-- L1 · AI Insights -->
+<section class="page" id="pg-insights" aria-label="AI insights">
+  <section class="panel" id="fcP">
+    <div class="phead"><div><div class="ptitle alt">OEE forecast<button class="ib" type="button" aria-label="About the forecast" data-info="Holt's linear exponential smoothing on de-seasonalised daily OEE plus an additive weekday index. α and β are grid-searched on a 7-day holdout; MAPE is that holdout error. Band = ±1.28 σ √h of one-step residuals (80 %).">i</button></div></div><div class="pright"><span class="mcard" id="fcCard">model</span><button class="cm" type="button" data-chart="fcChart" data-title="OEE forecast" aria-label="Chart options: forecast">⋯</button></div></div>
+    <div class="chart" id="fcChart" role="img" aria-label="OEE forecast with confidence band"></div>
+  </section>
+  <section class="panel" id="narrP">
+    <div class="phead"><div><div class="ptitle alt">AI narrative<button class="ib" type="button" aria-label="About the narrative" data-info="Six rule-generated sentences over the filtered data. Each carries a confidence tag derived from sample size, anomaly strength and forecast backtest error.">i</button></div></div><div class="pright" id="narrMeta"></div></div>
+    <div class="fit" id="narrList"></div><div class="pager" id="narrPager"></div>
+  </section>
+  <section class="panel" id="anomP">
+    <div class="phead"><div><div class="ptitle alt">Anomalies<button class="ib" type="button" aria-label="About anomalies" data-info="z = (day OEE − mean of the previous 14 days) ÷ their standard deviation (floored at 0.6 pt). |z| ≥ 2.5 is flagged. Explanations come from event flags and the downtime reason with the largest excess over its 14-day mean.">i</button></div><div class="psub">Rolling z-score · window 14 d</div></div></div>
+    <div class="fit" id="anomList"></div><div class="pager" id="anomPager"></div>
+  </section>
+  <section class="panel" id="askP">
+    <div class="phead"><div><div class="ptitle alt">Ask the data<button class="ib" type="button" aria-label="About Ask the data" data-info="Four preset questions answered by statistics over the filtered data. Typed questions are matched to the presets by keyword. No language model is involved.">i</button></div><div class="psub">Preset questions · computed in your browser · no language model</div></div></div>
+    <div class="ask">
+      <div class="askl"><div id="qchips" class="askl"></div><form class="askin" id="askForm"><input type="text" id="askInput" placeholder="Ask about failures, downtime…" aria-label="Ask the data"><button type="submit" class="btn">Ask</button></form></div>
+      <div class="answer" id="answer" aria-live="polite"></div>
+    </div>
+  </section>
+  <section class="panel" id="recP">
+    <div class="phead"><div><div class="ptitle alt">Recommendations<button class="ib" type="button" aria-label="About recommendations" data-info="Rule candidates scored by estimated good units per week: pull forward maintenance on the top-risk machine, SMED on the line with most changeover, cut the largest non-changeover downtime reason, contain the top defect on the lowest-quality line.">i</button></div></div></div>
+    <div class="fit" id="recList"></div><div class="pager" id="recPager"></div>
+  </section>
+  <section class="panel" id="riskP">
+    <div class="phead"><div><div class="ptitle alt">Risk leaderboard<button class="ib" type="button" aria-label="About the risk score" data-info="Failure-risk score 0–100 = 25 × temperature drift + 30 × vibration (slope and level) + 20 × unplanned-downtime trend + 15 × wear (cycles since PM, age) + 10 × quality drift. Each feature is clamped to 0–1. ≥ 70 High · 40–69 Watch.">i</button></div><div class="psub">Click a machine for its profile</div></div></div>
+    <div class="fit" id="riskList"></div><div class="pager" id="riskPager"></div>
+  </section>
+</section>
+
+<!-- L2 · Lines -->
+<section class="page" id="pg-lines" aria-label="Lines and production">
+  <section class="panel" id="gaugeP">
+    <div class="phead"><div><div class="ptitle">OEE gauge cluster<button class="ib" type="button" aria-label="About the gauges" data-info="OEE = Availability × Performance × Quality for the filtered scope, with world-class targets: OEE 85 %, Availability 90 %, Performance 95 %, Quality 99 %.">i</button></div><div class="psub">vs world-class targets</div></div><button class="cm" type="button" data-chart="gauges" data-title="OEE gauge cluster" aria-label="Chart options: gauges">⋯</button></div>
+    <div class="chart" id="gauges" role="img" aria-label="Gauges for OEE, availability, performance and quality"></div>
+  </section>
+  <section class="panel" id="shiftP">
+    <div class="phead"><div><div class="ptitle">OEE by shift<button class="ib" type="button" aria-label="About OEE by shift" data-info="OEE of each shift for the current plant, line and period. Click a bar to filter every page to that shift; click again to clear.">i</button></div><div class="psub">Click a bar to filter the shift</div></div><button class="cm" type="button" data-chart="shiftc" data-title="OEE by shift" aria-label="Chart options: OEE by shift">⋯</button></div>
+    <div class="chart" id="shiftc" role="img" aria-label="OEE by shift"></div>
+  </section>
+  <section class="panel" id="bulletP">
+    <div class="phead"><div><div class="ptitle">Production vs plan<button class="ib" type="button" aria-label="About production vs plan" data-info="Actual units (bar) against planned units (track and tick). Plan = 85 % of ideal rate × planned time. Label = actual ÷ plan; ▼ marks lines under 95 %.">i</button></div><div class="psub" id="bulletSub">Units vs plan per line</div></div><button class="cm" type="button" data-chart="bullet" data-title="Production vs plan" aria-label="Chart options: production vs plan">⋯</button></div>
+    <div class="chart tall" id="bullet" role="img" aria-label="Bullet bars of actual production versus plan"></div>
+  </section>
+  <section class="panel" id="heatP">
+    <div class="phead"><div><div class="ptitle">Machine health<button class="ib" type="button" aria-label="About the heatmap" data-info="Lines × stations. Colour = machine OEE for the filtered period (or failure-risk score when Risk is selected), on a single-hue ramp. Click a cell to open that machine's profile.">i</button></div><div class="psub">Click a cell for the machine profile</div></div><div class="pright"><div class="seg small" id="heatSeg" role="group" aria-label="Heatmap metric"><button type="button" data-m="oee" aria-pressed="true">OEE %</button><button type="button" data-m="risk" aria-pressed="false">Risk</button></div><button class="cm" type="button" data-chart="heat" data-title="Machine health heatmap" aria-label="Chart options: heatmap">⋯</button></div></div>
+    <div class="chart tall" id="heat" role="img" aria-label="Heatmap of machine OEE or failure risk by line and station"></div>
+  </section>
+</section>
+
+<!-- L2 · Downtime & quality -->
+<section class="page" id="pg-downtime" aria-label="Downtime and quality">
+  <section class="panel" id="paretoP">
+    <div class="phead"><div><div class="ptitle">Downtime Pareto<button class="ib" type="button" aria-label="About the Pareto" data-info="Share of downtime minutes by reason code, sorted descending, with the cumulative share. Both measures are percentages on one axis.">i</button></div><div class="psub">Share by reason with cumulative %</div></div><button class="cm" type="button" data-chart="pareto" data-title="Downtime Pareto" aria-label="Chart options: Pareto">⋯</button></div>
+    <div class="chart" id="pareto" role="img" aria-label="Downtime Pareto by reason"></div>
+  </section>
+  <section class="panel" id="defectsP">
+    <div class="phead"><div><div class="ptitle">Defects by type<button class="ib" type="button" aria-label="About defects" data-info="Rejected units split across five defect types. Centre: total rejects and reject rate = rejects ÷ actual units.">i</button></div><div class="psub" id="defSub">Share of rejected units</div></div><button class="cm" type="button" data-chart="defects" data-title="Defects by type" aria-label="Chart options: defects">⋯</button></div>
+    <div class="chart" id="defects" role="img" aria-label="Donut of defect counts by type"></div>
+  </section>
+  <section class="panel" id="scatterP">
+    <div class="phead"><div><div class="ptitle">Energy intensity vs output<button class="ib" type="button" aria-label="About the scatter" data-info="x = machine output ÷ plan. y = kWh per unit indexed to the median of the same machine type (100). Bubble area = downtime hours. Symbol = risk tier. Click a bubble for the machine profile.">i</button></div><div class="psub">Bubble = downtime h · click for profile</div></div><button class="cm" type="button" data-chart="scatter" data-title="Energy intensity vs output" aria-label="Chart options: scatter">⋯</button></div>
+    <div class="chart" id="scatter" role="img" aria-label="Scatter of energy intensity versus output"></div>
+  </section>
+  <section class="panel" id="topdnP">
+    <div class="phead"><div><div class="ptitle">Top downtime machines<button class="ib" type="button" aria-label="About top downtime machines" data-info="Machines with the most downtime hours in the filtered scope. Click a bar to open the machine profile.">i</button></div><div class="psub">Hours · click for profile</div></div><button class="cm" type="button" data-chart="topdn" data-title="Top downtime machines" aria-label="Chart options: top downtime">⋯</button></div>
+    <div class="chart" id="topdn" role="img" aria-label="Ranked bars of machine downtime hours"></div>
+  </section>
+</section>
+
+<!-- L2 · Maintenance -->
+<section class="page" id="pg-maintenance" aria-label="Maintenance">
+  <section class="panel" id="ganttP">
+    <div class="phead"><div><div class="ptitle">Maintenance timeline<button class="ib" type="button" aria-label="About the timeline" data-info="Next 30 days: planned PM windows, AI pull-forwards for machines with risk ≥ 70 and condition inspections for Watch-tier machines. Earliest events first. Click a bar for the machine profile.">i</button></div><div class="psub" id="ganttSub">Next 30 days</div></div><button class="cm" type="button" data-chart="gantt" data-title="Maintenance timeline" aria-label="Chart options: timeline">⋯</button></div>
+    <div class="chart tall" id="gantt" role="img" aria-label="Maintenance timeline for the next 30 days"></div>
+  </section>
+  <section class="panel" id="rstackP">
+    <div class="phead"><div><div class="ptitle">Risk contributions<button class="ib" type="button" aria-label="About risk contributions" data-info="Top failure-risk machines with the score split into its five weighted features: temperature 25, vibration 30, downtime trend 20, wear 15, quality 10 (maximum points).">i</button></div><div class="psub">Weighted points per feature</div></div><button class="cm" type="button" data-chart="riskstack" data-title="Risk contributions" aria-label="Chart options: risk contributions">⋯</button></div>
+    <div class="chart" id="riskstack" role="img" aria-label="Stacked bars of failure-risk contributions"></div>
+  </section>
+  <section class="panel" id="techP">
+    <div class="phead"><div><div class="ptitle alt">Technicians<button class="ib" type="button" aria-label="About technicians" data-info="Maintenance technicians in scope with work orders closed, mean time to repair and first-time-fix rate for the selected period. Click a technician for the profile.">i</button></div><div class="psub">Click for profile</div></div></div>
+    <div class="fit" id="techList"></div><div class="pager" id="techPager"></div>
+  </section>
+  <section class="panel" id="tableP">
+    <div class="phead"><div><div class="ptitle">Machine register<button class="ib" type="button" aria-label="About the machine register" data-info="All machines in scope. Sort by clicking a header. MTBF = run hours ÷ unplanned failures. Risk ring = failure-risk score. Click or press Enter on a row to open the machine profile.">i</button></div><div class="psub" id="tableSub">Sortable</div></div></div>
+    <div class="tablewrap" id="tablewrap"><table id="mtable"><thead><tr id="thead"></tr></thead><tbody id="tbody"></tbody></table></div>
+    <div class="pager" id="tpager"></div>
+  </section>
+</section>
+
+<!-- L3 · Machine profile -->
+<section class="page" id="pg-detail" aria-label="Machine profile">
+  <div class="phd ph">
+    <div class="phl"><div>
+      <nav aria-label="Breadcrumb"><ol class="crumbs" id="dCrumbs"></ol></nav>
+      <div class="ptl"><h2 id="dTitle">—</h2><span class="layer">L3 · Machine profile</span><span id="dPill"></span></div>
+      <div class="pmeta" id="dMeta"></div>
+    </div></div>
+    <div class="phr">
+      <button class="btn" id="dBack" type="button">← Back</button>
+      <div class="switch" role="group" aria-label="Switch machine"><button class="btn" type="button" id="dPrev" aria-label="Previous machine">‹</button><select class="sel" id="dSel" aria-label="Machine"></select><button class="btn" type="button" id="dNext" aria-label="Next machine">›</button></div>
+    </div>
+  </div>
+  <section class="kpis pk" id="dKpis" aria-label="Machine KPIs"></section>
+  <section class="panel pt">
+    <div class="phead"><div><div class="ptitle">OEE trend &amp; forecast<button class="ib" type="button" aria-label="About machine trend" data-info="Daily OEE of this machine with its line average for context, a 14-day forecast with 80 % band and anomaly days (|z| ≥ 2.5).">i</button></div></div><div class="pright"><span class="mcard" id="dModel">model</span><button class="cm" type="button" data-chart="dTrend" data-title="Machine OEE trend" aria-label="Chart options: machine trend">⋯</button></div></div>
+    <div class="chart" id="dTrend" role="img" aria-label="Machine OEE trend with forecast"></div>
+  </section>
+  <section class="panel ps">
+    <div class="phead"><div><div class="ptitle">Sensor telemetry<button class="ib" type="button" aria-label="About sensor telemetry" data-info="Daily mean temperature and vibration with the 30-day least-squares trend that feeds the risk score. Two separate scales, never a shared axis.">i</button></div><div class="psub" id="dSensSub">30-day trend</div></div><button class="cm" type="button" data-chart="dSens" data-title="Sensor telemetry" aria-label="Chart options: sensors">⋯</button></div>
+    <div class="chart" id="dSens" role="img" aria-label="Temperature and vibration trends"></div>
+  </section>
+  <section class="panel pr">
+    <div class="phead"><div><div class="ptitle alt">Failure risk<button class="ib" type="button" aria-label="About machine risk" data-info="Score 0–100 = 25 × temperature drift + 30 × vibration + 20 × unplanned-downtime trend + 15 × wear + 10 × quality drift. Bars show points earned out of each feature's weight.">i</button></div></div></div>
+    <div class="rpanel" id="dRisk"></div>
+  </section>
+  <section class="panel pw">
+    <div class="phead"><div><div class="ptitle">Downtime by reason<button class="ib" type="button" aria-label="About machine downtime" data-info="This machine's downtime hours by reason code for the filtered period and shift.">i</button></div></div><button class="cm" type="button" data-chart="dReasons" data-title="Machine downtime by reason" aria-label="Chart options: downtime by reason">⋯</button></div>
+    <div class="chart" id="dReasons" role="img" aria-label="Machine downtime by reason"></div>
+  </section>
+  <section class="panel pd">
+    <div class="phead"><div><div class="ptitle">Defects<button class="ib" type="button" aria-label="About machine defects" data-info="This machine's rejected units by defect type.">i</button></div></div><button class="cm" type="button" data-chart="dDef" data-title="Machine defects" aria-label="Chart options: defects">⋯</button></div>
+    <div class="chart" id="dDef" role="img" aria-label="Machine defects by type"></div>
+  </section>
+  <section class="panel pc">
+    <div class="phead"><div><div class="ptitle alt">Machine recommendations<button class="ib" type="button" aria-label="About machine recommendations" data-info="Rules over this machine's risk, downtime reasons, quality vs its line and energy index vs its type median, ranked by estimated impact.">i</button></div></div></div>
+    <div class="fit" id="dRecs"></div><div class="pager" id="dRecsPager"></div>
+  </section>
+</section>
+
+<!-- L3 · Technician profile -->
+<section class="page" id="pg-tech" aria-label="Technician profile">
+  <div class="phd ph">
+    <div class="phl"><span class="av big" id="tAv" aria-hidden="true">—</span><div>
+      <nav aria-label="Breadcrumb"><ol class="crumbs" id="tCrumbs"></ol></nav>
+      <div class="ptl"><h2 id="tName">—</h2><span class="layer">L3 · Person profile</span></div>
+      <div class="pmeta" id="tMeta"></div>
+    </div></div>
+    <div class="phr">
+      <button class="btn" id="tBack" type="button">← Back</button>
+      <div class="switch" role="group" aria-label="Switch technician"><button class="btn" type="button" id="tPrev" aria-label="Previous technician">‹</button><select class="sel" id="tSel" aria-label="Technician"></select><button class="btn" type="button" id="tNext" aria-label="Next technician">›</button></div>
+    </div>
+  </div>
+  <section class="kpis pk" id="tKpis" aria-label="Technician KPIs vs peer median"></section>
+  <section class="panel pt">
+    <div class="phead"><div><div class="ptitle">Fleet OEE &amp; forecast<button class="ib" type="button" aria-label="About fleet trend" data-info="Daily OEE of the machines assigned to this technician, the all-plant average for context, and a 14-day forecast with 80 % band.">i</button></div></div><div class="pright"><span class="mcard" id="tModel">model</span><button class="cm" type="button" data-chart="tTrend" data-title="Assigned-fleet OEE" aria-label="Chart options: fleet trend">⋯</button></div></div>
+    <div class="chart" id="tTrend" role="img" aria-label="Assigned fleet OEE trend with forecast"></div>
+  </section>
+  <section class="panel ps">
+    <div class="phead"><div><div class="ptitle">Strengths &amp; gaps<button class="ib" type="button" aria-label="About strengths and gaps" data-info="Each performance metric as % better (right) or worse (left) than the median of the 12 technicians, ranked. Lower is better for repair time, downtime, repeat failures and fleet risk.">i</button></div><div class="psub">% vs peer median</div></div><button class="cm" type="button" data-chart="tSG" data-title="Strengths and gaps" aria-label="Chart options: strengths and gaps">⋯</button></div>
+    <div class="chart" id="tSG" role="img" aria-label="Diverging bars of strengths and gaps versus peer median"></div>
+  </section>
+  <section class="panel pr">
+    <div class="phead"><div><div class="ptitle alt">Reliability impact score<button class="ib" type="button" aria-label="About the reliability impact score" data-info="0–100 = 30 × first-time fix + 25 × repair speed vs peer median + 20 × fleet OEE + 15 × fleet risk kept low + 10 × work-order throughput per machine. Each feature clamped to 0–1.">i</button></div></div></div>
+    <div class="rpanel" id="tScore"></div>
+  </section>
+  <section class="panel pw">
+    <div class="phead"><div><div class="ptitle alt">Assigned machines<button class="ib" type="button" aria-label="About assigned machines" data-info="Machines this technician maintains, ranked by failure-risk score. Click to open the machine profile.">i</button></div></div></div>
+    <div class="fit" id="tMachList"></div><div class="pager" id="tMachPager"></div>
+  </section>
+  <section class="panel pd">
+    <div class="phead"><div><div class="ptitle">WO by cause<button class="ib" type="button" aria-label="About work orders by cause" data-info="Corrective work orders closed in the period by the failure cause of the stoppage. Corrective WO = unplanned stoppage of 35 min or more. Repeat = the same cause recurs on the same machine within 48 h of the repair.">i</button></div></div><button class="cm" type="button" data-chart="tWO" data-title="Work orders by cause" aria-label="Chart options: work orders">⋯</button></div>
+    <div class="chart" id="tWO" role="img" aria-label="Work orders by cause"></div>
+  </section>
+  <section class="panel pc">
+    <div class="phead"><div><div class="ptitle alt">Recommendations<button class="ib" type="button" aria-label="About technician recommendations" data-info="Performance rules over this technician's fleet risk, repeat failures and repair time by cause compared with peers, ranked by estimated impact.">i</button></div></div></div>
+    <div class="fit" id="tRecs"></div><div class="pager" id="tRecsPager"></div>
+  </section>
+</section>
+</main>
+
+<footer class="status" aria-label="Status bar">
+  <span><i class="dot"></i>Source <b>Synthetic generator · seed 0x5EED2026</b></span>
+  <span id="sbRows">—</span>
+  <span>Models <b>forecast v1.3 · risk v2.1 · tech-score v1.0</b></span>
+  <span class="sp" id="sbPage">—</span>
+</footer>
+</div>
+
+<div id="ctx" role="menu" hidden></div>
+<div id="itip" role="tooltip" hidden></div>
+<div id="toast" role="status" hidden></div>
+<div id="fs" role="dialog" aria-modal="true" aria-labelledby="fsTitle" hidden><div class="fsbox"><div class="phead"><div class="ptitle" id="fsTitle">Focus</div><button class="btn" type="button" id="fsClose" aria-label="Close focus view (Esc)">✕ Close</button></div><div id="fsChart" role="img" aria-label="Focused chart"></div></div></div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/echarts/5.5.0/echarts.min.js"></script>
+<script>
+(function(){
+'use strict';
+window.onerror=function(m){document.documentElement.dataset.status='error: '+m;};
+
+/* ───────── utils ───────── */
+function mulberry32(a){return function(){a|=0;a=a+0x6D2B79F5|0;let t=Math.imul(a^a>>>15,1|a);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296}}
+const R=mulberry32(0x5EED2026);
+const rr=(a,b)=>a+(b-a)*R();
+const ri=(a,b)=>Math.floor(rr(a,b+1));
+function gauss(){let u=0,v=0;while(u===0)u=R();while(v===0)v=R();return Math.sqrt(-2*Math.log(u))*Math.cos(2*Math.PI*v)}
+const clamp=(x,a,b)=>Math.max(a,Math.min(b,x));
+const $=id=>document.getElementById(id);
+const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const MON=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+const mean=a=>a.length?a.reduce((s,v)=>s+v,0)/a.length:0;
+const std=a=>{const m=mean(a);return Math.sqrt(mean(a.map(v=>(v-m)*(v-m))))};
+const median=a=>{const s=a.slice().sort((x,y)=>x-y);const n=s.length;return n?(n%2?s[(n-1)/2]:(s[n/2-1]+s[n/2])/2):0};
+function slope(xs,ys){const n=xs.length;if(n<2)return 0;const mx=mean(xs),my=mean(ys);let num=0,den=0;for(let i=0;i<n;i++){num+=(xs[i]-mx)*(ys[i]-my);den+=(xs[i]-mx)*(xs[i]-mx)}return den?num/den:0}
+const fint=x=>Math.round(x).toLocaleString('en-US');
+const f1=x=>(Math.round(x*10)/10).toFixed(1);
+const fk=x=>Math.abs(x)>=1e6?(x/1e6).toFixed(2)+'M':Math.abs(x)>=1e4?(x/1e3).toFixed(1)+'k':Math.abs(x)>=1000?(x/1e3).toFixed(2)+'k':fint(x);
+const fkAxis=v=>Math.abs(v)>=1e6?(v/1e6)+'M':Math.abs(v)>=1e3?Math.round(v/1e3)+'k':v;
+const r2=v=>v==null?null:+(+v).toFixed(2);
+const sgn=(v,d)=>(v>=0?'+':'−')+Math.abs(v).toFixed(d);
+function niceAxis(arr){const mn=Math.min(...arr),mx=Math.max(...arr);const raw=Math.max(1e-6,(mx-mn)/2);const p=Math.pow(10,Math.floor(Math.log10(raw)));const step=[1,2,2.5,5,10].map(k=>k*p).find(s=>s>=raw)||10*p;const lo=Math.floor(mn/step)*step,hi=Math.ceil(mx/step)*step;return{min:+lo.toFixed(4),max:+hi.toFixed(4),interval:step,axisLabel:{color:C.ink2,fontFamily:MONO,fontSize:9.5,formatter:v=>+v.toFixed(step<1?2:0)}}}
+const MONO="'JetBrains Mono', ui-monospace, Menlo, Consolas, monospace";
+const SANS="'Space Grotesk', system-ui, sans-serif";
+const reduceMotion=window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+const mqDesk=window.matchMedia('(min-width:1000px) and (min-height:600px)');const desk=()=>mqDesk.matches;
+
+/* ───────── themes ───────── */
+const THEMES={
+ dark:{name:'dark',page:'#0b0f14',panel:'#10161e',panel2:'#141c26',ink:'#e6edf3',ink2:'#aab7c4',muted:'#7d8b99',grid:'rgba(148,163,184,.12)',axis:'rgba(148,163,184,.3)',
+  cyan:'#38bdf8',lime:'#a3e635',amber:'#fbbf24',coral:'#fb7185',violet:'#a78bfa',steel:'#94a3b8',track:'rgba(148,163,184,.18)',tipBorder:'rgba(56,189,248,.5)',shadow:'0 8px 24px rgba(0,0,0,.55)',
+  ramp:['#0f2a44','#0c5a84','#0e9ad6','#38bdf8','#9adcfb','#ffffff'],hiText:'#0b0f14',onAccent:'#0b0f14',band:.14,zone:'rgba(56,189,248,.045)',planTrack:'rgba(148,163,184,.22)',other:'rgba(148,163,184,.45)',
+  laneBg:'#141c26',laneStroke:'rgba(56,189,248,.22)',hatch:'rgba(11,15,20,.35)',
+  block:{Running:{f:'#a3e635',s:'rgba(11,15,20,.5)',t:'#0b0f14'},Idle:{f:'rgba(148,163,184,.3)',s:'rgba(148,163,184,.75)',t:'#e6edf3'},Down:{f:'#fb7185',s:'rgba(11,15,20,.5)',t:'#0b0f14'},Maintenance:{f:'#fbbf24',s:'rgba(11,15,20,.5)',t:'#0b0f14'}}},
+ light:{name:'light',page:'#f4f7fb',panel:'#ffffff',panel2:'#f1f5fa',ink:'#0b1b30',ink2:'#33475f',muted:'#556579',grid:'rgba(51,71,95,.12)',axis:'rgba(51,71,95,.38)',
+  cyan:'#0284c7',lime:'#4d7c0f',amber:'#d97706',coral:'#be123c',violet:'#7c3aed',steel:'#64748b',track:'rgba(100,116,139,.18)',tipBorder:'rgba(37,99,235,.55)',shadow:'0 8px 24px rgba(15,35,70,.16)',
+  ramp:['#eef6fd','#bfe0f7','#7cc0ee','#2f93d6','#0b5e9c','#0b2f55'],hiText:'#ffffff',onAccent:'#ffffff',band:.12,zone:'rgba(2,132,199,.05)',planTrack:'rgba(100,116,139,.2)',other:'rgba(100,116,139,.45)',
+  laneBg:'#f1f5fa',laneStroke:'rgba(37,99,235,.25)',hatch:'rgba(146,64,14,.4)',
+  block:{Running:{f:'#d9f99d',s:'#4d7c0f',t:'#0b1b30'},Idle:{f:'#e2e8f0',s:'#64748b',t:'#0b1b30'},Down:{f:'#fecdd3',s:'#be123c',t:'#0b1b30'},Maintenance:{f:'#fde68a',s:'#b45309',t:'#0b1b30'}}}
+};
+let C=THEMES[document.documentElement.dataset.theme==='light'?'light':'dark'];
+const TT=()=>({backgroundColor:C.panel2,borderColor:C.tipBorder,borderWidth:1,padding:[8,10],textStyle:{color:C.ink,fontFamily:SANS,fontSize:12},extraCssText:'box-shadow:'+C.shadow+';border-radius:6px'});
+const AX=()=>({axisLine:{lineStyle:{color:C.axis}},axisTick:{show:false},axisLabel:{color:C.ink2,fontFamily:MONO,fontSize:10},splitLine:{show:true,lineStyle:{color:C.grid,type:'solid'}},nameTextStyle:{color:C.muted,fontFamily:MONO,fontSize:10}});
+const LEG=x=>Object.assign({top:0,left:0,itemWidth:14,itemHeight:8,itemGap:10,textStyle:{color:C.ink2,fontFamily:MONO,fontSize:10},pageTextStyle:{color:C.ink2},pageIconColor:C.cyan,pageIconInactiveColor:C.muted},x||{});
+const BASE=()=>({animation:!reduceMotion,animationDuration:400,textStyle:{fontFamily:SANS,color:C.ink}});
+const key=(color,v)=>`<span style="display:inline-block;width:12px;height:2px;background:${color};vertical-align:middle;margin-right:6px"></span>${v}`;
+const row=(label,val)=>`<div style="display:flex;justify-content:space-between;gap:14px"><span style="color:${C.ink2}">${label}</span><b style="font-family:${MONO}">${val}</b></div>`;
+const hint=t=>`<div style="color:${C.muted};font-size:11px;margin-top:4px">${t}</div>`;
+
+/* ───────── constants ───────── */
+const D=180,S=3,SHIFT_NAMES=['Day','Evening','Night'];
+const END_UTC=Date.UTC(2026,9,26);
+const dayDate=d=>new Date(END_UTC-(D-1-d)*86400000);
+const dow=d=>dayDate(d).getUTCDay();
+const dstr=d=>{const t=dayDate(d);return t.getUTCDate()+' '+MON[t.getUTCMonth()]};
+const diso=d=>dayDate(d).toISOString().slice(0,10);
+const PLANTS=[{id:'P1',name:'Northgate Works',hall:'Hall A'},{id:'P2',name:'Riverside Plant',hall:'Hall C'},{id:'P3',name:'Eastfield Facility',hall:'Hall B'}];
+const LINES=['Housings','Shafts','Brackets','Assemblies','Seals'];
+const MT=[{t:'CNC mill',c:'CNC',rate:.26,kw:18,tempB:46,vibB:2.4},{t:'Press',c:'PRS',rate:1.3,kw:32,tempB:52,vibB:3.4},{t:'Extruder',c:'EXT',rate:.85,kw:40,tempB:68,vibB:2.1},{t:'Lathe',c:'LTH',rate:.32,kw:14,tempB:44,vibB:2.6},{t:'Robot welder',c:'WLD',rate:.48,kw:22,tempB:58,vibB:1.8},{t:'Assembler',c:'ASM',rate:.62,kw:9,tempB:38,vibB:1.5},{t:'Inspection cell',c:'INS',rate:.72,kw:6,tempB:34,vibB:1.1},{t:'Packer',c:'PCK',rate:1.05,kw:11,tempB:36,vibB:1.9}];
+const REASONS=['Changeover','Material shortage','Tool wear','Sensor fault','Jam','Operator','Power','Unplanned maintenance'];
+const RSHORT=['Changeover','Material','Tool wear','Sensor','Jam','Operator','Power','Unpl. maint.'];
+const UNPL=[0,0,1,1,1,0,0,1];
+const DEFECTS=['Dimensional','Surface scratch','Porosity','Misalignment','Contamination'];
+const RSHARE=[[.22,.08,.30,.08,.06,.10,.04,.12],[.18,.10,.12,.08,.26,.08,.04,.14],[.14,.24,.08,.12,.14,.08,.06,.14],[.20,.08,.28,.08,.08,.12,.04,.12],[.16,.10,.10,.18,.10,.12,.06,.18],[.20,.14,.04,.10,.14,.22,.04,.12],[.10,.06,.04,.34,.10,.18,.06,.12],[.22,.12,.06,.10,.26,.10,.04,.10]];
+const DSHARE=[[.40,.20,.10,.22,.08],[.30,.30,.05,.25,.10],[.20,.25,.35,.05,.15],[.42,.22,.08,.20,.08],[.18,.15,.30,.25,.12],[.15,.20,.05,.45,.15],[.30,.25,.15,.20,.10],[.10,.35,.05,.30,.20]];
+const STATUS_META={Running:{glyph:'●',label:'Running'},Idle:{glyph:'‖',label:'Idle'},Down:{glyph:'×',label:'Down'},Maintenance:{glyph:'⚙',label:'Maintenance'}};
+const EVENT={outageDay:D-12,outageLine:'P1-L3',matDay:D-34,matLine:'P2-L4',qDay:D-6,qLine:'P3-L1'};
+const PAGE_ORDER=['overview','insights','lines','downtime','maintenance','detail','tech'];
+const PAGES={overview:'Overview',insights:'AI Insights',lines:'Lines & production',downtime:'Downtime & quality',maintenance:'Maintenance',detail:'Machine profile',tech:'Technician profile'};
+
+/* ───────── machines ───────── */
+const machines=[];
+PLANTS.forEach((p,pi)=>{const pMod=[0.012,-0.016,0.004][pi];
+  LINES.forEach((ln,li)=>{const lMod=rr(-0.022,0.022);const lineKey=p.id+'-L'+(li+1);
+    for(let k=0;k<8;k++){const mt=MT[k];const age=ri(1,14);
+      machines.push({idx:machines.length,id:lineKey+'-M'+(k+1),plant:p.id,plantName:p.name,line:'L'+(li+1),lineName:ln,lineKey,station:k+1,type:mt.t,code:mt.c,rate:mt.rate,kw:mt.kw,age,typeIdx:k,
+        baseA:clamp(0.888+pMod+lMod-age*0.0035+gauss()*0.028,0.74,0.965),baseP:clamp(0.905+gauss()*0.03-age*0.002,0.74,0.985),baseQ:clamp(0.978+gauss()*0.008,0.945,0.996),
+        tempB:mt.tempB+rr(-2,2),vibB:mt.vibB+rr(-0.3,0.3),driftT:0,driftV:0,driftA:0,driftStart:D+1,
+        pmAgo:ri(5,50),pmInterval:[45,60,90][ri(0,2)],nextPM:ri(1,38),pf:null,status:'Running',installed:2026-age,tech:-1});
+    }});});
+const DRIFT=[{m:65,t:.17,v:.029,a:.0017,start:D-62},{m:9,t:.09,v:.018,a:.0010,start:D-48},{m:27,t:.06,v:.014,a:.0007,start:D-40},{m:44,t:.11,v:.021,a:.0012,start:D-55},{m:88,t:.07,v:.012,a:.0006,start:D-36},{m:102,t:.12,v:.016,a:.0011,start:D-45},{m:118,t:.05,v:.010,a:.0005,start:D-30}];
+DRIFT.forEach(o=>{const mc=machines[o.m];mc.driftT=o.t;mc.driftV=o.v;mc.driftA=o.a;mc.driftStart=o.start;mc.nextPM=ri(16,34)});
+machines.forEach(mc=>{const r=R();mc.status=r<0.04?'Down':r<0.11?'Maintenance':r<0.19?'Idle':'Running'});
+[65,9,44].forEach(i=>machines[i].status='Running');
+[18,100,57].forEach(i=>machines[i].status='Down');
+[33,76].forEach(i=>machines[i].status='Maintenance');
+
+/* ───────── technicians (invented) ───────── */
+const TECH_NAMES=[['Arjun','Kulkarni'],['Priya','Nair'],['Vikram','Sethi'],['Meera','Joshi'],['Rohan','Das'],['Kavya','Menon'],['Imran','Shaikh'],['Neha','Bhatt'],['Tarun','Gill'],['Ananya','Rao'],['Dev','Malhotra'],['Sana','Qureshi']];
+const SPECS=[{name:'Machining',types:[0,3]},{name:'Forming & extrusion',types:[1,2]},{name:'Welding & assembly',types:[4,5]},{name:'Inspection & packing',types:[6,7]}];
+const TECHS=[];
+PLANTS.forEach((p,pi)=>SPECS.forEach((sp,k)=>{const n=TECH_NAMES[pi*4+k];const t={idx:TECHS.length,id:'T'+String(TECHS.length+1).padStart(2,'0'),name:n[0]+' '+n[1],short:n[0][0]+'. '+n[1],initials:n[0][0]+n[1][0],plant:p.id,plantName:p.name,spec:sp.name,specTypes:sp.types.map(x=>MT[x].t).join(', '),since:2014+((pi*4+k)*3)%10,shift:SHIFT_NAMES[(pi+k)%3],machines:[]};
+  machines.forEach(mc=>{if(mc.plant===p.id&&sp.types.includes(mc.typeIdx)){t.machines.push(mc.idx);mc.tech=t.idx}});TECHS.push(t)}));
+
+/* ───────── records ───────── */
+const N=machines.length*D*S;
+const A_pl=new Int16Array(N),A_dn=new Int16Array(N),A_run=new Int16Array(N),A_act=new Int32Array(N),A_plU=new Int32Array(N),A_def=new Int32Array(N),A_kwh=new Float32Array(N),A_temp=new Float32Array(N),A_vib=new Float32Array(N),A_fail=new Uint8Array(N),A_flag=new Uint8Array(N);
+const A_dr=new Int16Array(N*8),A_df=new Int32Array(N*5);
+function allocate(total,w,out){const sum=w.reduce((a,b)=>a+b,0)||1;let used=0;const raw=w.map(x=>total*x/sum);const fl=raw.map(Math.floor);let rem=total-fl.reduce((a,b)=>a+b,0);const order=raw.map((x,i)=>[x-fl[i],i]).sort((a,b)=>b[0]-a[0]);for(let j=0;j<rem;j++)fl[order[j%fl.length][1]]++;for(let i=0;i<w.length;i++){if(fl[i]>0&&fl[i]<3){fl[order[0][1]]+=fl[i];fl[i]=0}}for(let i=0;i<w.length;i++){out[i]=fl[i];used+=fl[i]}return used}
+(function generate(){const rw=new Array(8),dw=new Array(5),ro=new Array(8),dout=new Array(5);
+for(const mc of machines){const sh=RSHARE[mc.typeIdx],ds=DSHARE[mc.typeIdx];
+  for(let d=0;d<D;d++){const wd=dow(d);const trend=0.02*d/D;const season=0.012*Math.sin(d/180*Math.PI*2-1);const dd=d-mc.driftStart;
+    for(let s=0;s<S;s++){const i=(mc.idx*D+d)*S+s;let pl=450;let flag=0,forcedR=-1,forcedD=-1;
+      let A=clamp(mc.baseA+trend+season+[0.01,0,-0.025][s]+(wd===1?-0.016:0)+((wd===0||wd===6)?-0.01:0)+gauss()*0.034,0.35,0.995);
+      let P=clamp(mc.baseP+[0.005,0,-0.02][s]+(wd===1?-0.01:0)+gauss()*0.03,0.4,1);
+      let Q=clamp(mc.baseQ+(s===2?-0.005:0)+gauss()*0.009,0.85,1);
+      if(dd>0){A-=Math.min(0.12,dd*mc.driftA);Q-=Math.min(0.02,dd*0.00025)}
+      if(mc.lineKey==='P3-L2'&&d>=120){A+=0.03;P+=0.02}
+      if(R()<0.0035){A=rr(0.2,0.45);flag|=8;forcedR=[2,3,4,7][ri(0,3)]}
+      if(mc.lineKey===EVENT.outageLine&&d===EVENT.outageDay){if(s<2){A=rr(0.03,0.08);flag|=1;forcedR=6}else{A=rr(0.6,0.7);forcedR=7}}
+      if(mc.lineKey===EVENT.matLine&&d===EVENT.matDay){A=rr(0.3,0.4);flag|=2;forcedR=1}
+      if(mc.lineKey===EVENT.qLine&&d===EVENT.qDay&&s>=1){Q=rr(0.88,0.92);flag|=4;forcedD=4}
+      if(d===D-1&&s===2){if(mc.status==='Down'){A=rr(0.3,0.5);forcedR=[3,7,4][ri(0,2)]}else if(mc.status==='Maintenance'){pl=0}else if(mc.status==='Idle'){P=rr(0.5,0.65);A=rr(0.8,0.9);forcedR=[1,5][ri(0,1)]}}
+      const dn=pl?Math.round(pl*(1-A)):0;const run=pl-dn;
+      for(let j=0;j<8;j++){rw[j]=sh[j]*rr(0.35,1.65)*(dd>0&&(j===2||j===3)?1+dd*0.05:1)}
+      if(forcedR>=0)rw[forcedR]*=14;
+      allocate(dn,rw,ro);let fails=0;for(let j=0;j<8;j++){A_dr[i*8+j]=ro[j];if(UNPL[j]&&ro[j]>=20)fails++}
+      const act=Math.round(mc.rate*run*P);const plU=Math.round(mc.rate*pl*0.85);const def=Math.round(act*(1-Q));
+      for(let j=0;j<5;j++)dw[j]=ds[j]*rr(0.5,1.5);if(forcedD>=0)dw[forcedD]*=8;
+      allocate(def,dw,dout);for(let j=0;j<5;j++)A_df[i*5+j]=dout[j];
+      A_pl[i]=pl;A_dn[i]=dn;A_run[i]=run;A_act[i]=act;A_plU[i]=plU;A_def[i]=def;A_fail[i]=fails;A_flag[i]=flag;
+      A_kwh[i]=mc.kw*(run/60)*(0.65+0.35*P)+mc.kw*0.12*(dn/60);
+      A_temp[i]=mc.tempB+[0,1.6,-1.2][s]+1.2*Math.cos((d-165)/180*Math.PI*2)+(dd>0?mc.driftT*dd:0)+gauss()*0.9;
+      A_vib[i]=mc.vibB+(dd>0?mc.driftV*dd:0)+gauss()*0.15+(P>0.95?0.08:0);
+    }}}})();
+
+/* ───────── aggregation ───────── */
+function newTot(){return{pl:0,dn:0,run:0,act:0,plU:0,def:0,ideal:0,kwh:0,fail:0,n:0,dr:new Float64Array(8),df:new Float64Array(5),flag:0}}
+function add(t,i,mc){t.pl+=A_pl[i];t.dn+=A_dn[i];t.run+=A_run[i];t.act+=A_act[i];t.plU+=A_plU[i];t.def+=A_def[i];t.ideal+=mc.rate*A_run[i];t.kwh+=A_kwh[i];t.fail+=A_fail[i];t.n++;t.flag|=A_flag[i];for(let j=0;j<8;j++)t.dr[j]+=A_dr[i*8+j];for(let j=0;j<5;j++)t.df[j]+=A_df[i*5+j]}
+function oeeOf(t){const A=t.pl?t.run/t.pl:0,P=t.ideal?t.act/t.ideal:0,Q=t.act?(t.act-t.def)/t.act:0;return{A,P,Q,oee:A*P*Q}}
+function aggregate(f,opts){opts=opts||{};const days=f.d1-f.d0+1;const T=newTot();const daily=Array.from({length:days},newTot);const dailyShift=[0,1,2].map(()=>Array.from({length:days},newTot));const perLine=new Map(),perMachine=new Map();
+  for(const m of f.ms){const mc=machines[m];let lt=perLine.get(mc.lineKey);if(!lt){lt=newTot();lt.mc=mc;perLine.set(mc.lineKey,lt)}const mt=newTot();perMachine.set(m,mt);
+    for(let d=f.d0;d<=f.d1;d++){for(let s=0;s<3;s++){if(!(f.shiftMask&(1<<s)))continue;const i=(m*D+d)*S+s;add(T,i,mc);add(lt,i,mc);add(mt,i,mc);if(!opts.totalsOnly){add(daily[d-f.d0],i,mc);add(dailyShift[s][d-f.d0],i,mc)}}}}
+  return{T,daily,dailyShift,perLine,perMachine,days,d0:f.d0,d1:f.d1}}
+const oeeSeries=arr=>arr.map(t=>t.pl?oeeOf(t).oee*100:null);
+function fillNull(a){let last=null;const out=a.map(v=>{if(v==null)return last;last=v;return v});const first=out.find(v=>v!=null);return out.map(v=>v==null?(first==null?0:first):v)}
+
+/* ───────── models ───────── */
+function holt(y,alpha,beta){let l=y[0],b=y.length>1?y[1]-y[0]:0;const errs=[];for(let t=1;t<y.length;t++){errs.push(y[t]-(l+b));const nl=alpha*y[t]+(1-alpha)*(l+b);b=beta*(nl-l)+(1-beta)*b;l=nl}return{l,b,errs}}
+function forecastModel(y,startDow,h,k){const n=y.length;const seas=new Array(7).fill(0),cnt=new Array(7).fill(0);
+  for(let i=3;i<n-3;i++){let s=0;for(let j=-3;j<=3;j++)s+=y[i+j];const dw=(startDow+i)%7;seas[dw]+=y[i]-s/7;cnt[dw]++}
+  for(let d=0;d<7;d++)seas[d]=cnt[d]?seas[d]/cnt[d]:0;const mS=mean(seas);for(let d=0;d<7;d++)seas[d]-=mS;
+  const ds=y.map((v,i)=>v-seas[(startDow+i)%7]);let best=null;
+  for(const a of[.2,.35,.5,.65,.8])for(const b of[.02,.05,.1,.2]){const m=holt(ds.slice(0,n-k),a,b);let ape=0;for(let i=0;i<k;i++){const idx=n-k+i;const f=m.l+m.b*(i+1)+seas[(startDow+idx)%7];ape+=Math.abs((y[idx]-f)/Math.max(1,y[idx]))}const mape=ape/k*100;if(!best||mape<best.mape)best={a,b,mape}}
+  const full=holt(ds,best.a,best.b);const e=full.errs.slice(-28);const sigma=Math.sqrt(mean(e.map(v=>v*v)))||0.5;const fc=[],lo=[],hi=[];
+  for(let i=1;i<=h;i++){const v=full.l+full.b*i+seas[(startDow+n-1+i)%7];const w=1.28*sigma*Math.sqrt(i);fc.push(clamp(v,0,100));lo.push(clamp(v-w,0,100));hi.push(clamp(v+w,0,100))}
+  return{fc,lo,hi,mape:best.mape,alpha:best.a,beta:best.b,sigma,trend:full.b}}
+const modelCard=m=>`Holt + weekday · α ${m.alpha} β ${m.beta} · h 14 d · MAPE ${f1(m.mape)} %`;
+function zscores(y,w){const out=[];for(let i=w;i<y.length;i++){const win=y.slice(i-w,i);const m=mean(win);const sd=Math.max(0.6,std(win));out.push({i,z:(y[i]-m)/sd,v:y[i],m})}return out}
+function computeRisk(m,shiftMask){const mc=machines[m];const W=30;const xs=[],tS=[],vS=[];
+  for(let d=D-W;d<D;d++){let ts=0,vs=0,n=0;for(let s=0;s<3;s++){if(!(shiftMask&(1<<s)))continue;const i=(m*D+d)*S+s;ts+=A_temp[i];vs+=A_vib[i];n++}if(n){xs.push(d-(D-W));tS.push(ts/n);vS.push(vs/n)}}
+  const tSlope=slope(xs,tS),vSlope=slope(xs,vS);const vLast=mean(vS.slice(-3)),tLast=mean(tS.slice(-3));
+  let u14=0,u28=0,def14=0,act14=0,defB=0,actB=0;
+  for(let d=D-90;d<D;d++){for(let s=0;s<3;s++){if(!(shiftMask&(1<<s)))continue;const i=(m*D+d)*S+s;let u=0;for(let j=0;j<8;j++)if(UNPL[j])u+=A_dr[i*8+j];if(d>=D-14){u14+=u;def14+=A_def[i];act14+=A_act[i]}else if(d>=D-28)u28+=u;if(d<D-14){defB+=A_def[i];actB+=A_act[i]}}}
+  const ratio=(u14+30)/(u28+30);const level=u14/14;const r14=act14?def14/act14:0,rB=actB?defB/actB:0;
+  const f={temp:clamp(tSlope/0.15,0,1),vib:clamp(0.6*vSlope/0.025+0.4*(vLast-3)/3,0,1),down:clamp(0.6*(ratio-1)+0.4*level/60,0,1),cyc:0.6*clamp(mc.pmAgo/mc.pmInterval,0,1)+0.4*clamp(mc.age/14,0,1),q:clamp((r14-rB)/0.015,0,1)};
+  const contrib=[['temperature drift',25*f.temp],['vibration',30*f.vib],['unplanned-downtime trend',20*f.down],['wear / cycles',15*f.cyc],['quality drift',10*f.q]];
+  const score=Math.round(contrib.reduce((s,c)=>s+c[1],0));const tier=score>=70?'High':score>=40?'Watch':'Low';
+  return{score,tier,tSlope,vSlope,vLast,tLast,ratio,level,f,drivers:contrib.slice().sort((a,b)=>b[1]-a[1]),r14,rB}}
+const TECH_PACE=[0.92,1.08,0.85,1.18,1.0,0.88,1.22,0.95,1.05,0.82,1.12,0.97],TECH_REP=[0.12,0.18,0.09,0.21,0.14,0.10,0.19,0.13,0.16,0.10,0.15,0.11];
+const CAUSE_H={2:2.2,3:2.8,4:1.8,7:4.6};
+function whash(a,b,c,d){let h=2166136261;for(const v of [a,b,c,d]){h^=v;h=Math.imul(h,16777619);h^=h>>>13}h=Math.imul(h,0x5bd1e995);h^=h>>>15;return(h>>>0)/4294967296}
+function techStats(t,d0,d1,sm){const days=d1-d0+1;let wo=0,rep=0,repairMin=0;const byR=new Float64Array(8),byRmin=new Float64Array(8),byRrep=new Float64Array(8);const woDaily=new Array(days).fill(0);const wk=Math.ceil(days/7);const wWo=new Array(wk).fill(0),wMin=new Array(wk).fill(0),wRep=new Array(wk).fill(0);const perM=new Map();
+  /* corrective work orders: an unplanned stoppage of ≥ 35 min opens a WO; same machine + same cause within 48 h stays on that WO.
+     Repair time = cause base × technician pace × stoppage length × hashed noise. Repeat = same-cause recurrence within 48 h of the repair,
+     assigned deterministically from the technician's recurrence rate (higher on machines with sensor drift). */
+  const ev=[];for(const m of t.machines){const drift=machines[m].driftStart<=D?1:0;const open={};for(let d=d0;d<=d1;d++)for(let s=0;s<3;s++){if(!(sm&(1<<s)))continue;const i=(m*D+d)*S+s;let top=-1,tv=0;for(let j=0;j<8;j++)if(UNPL[j]&&A_dr[i*8+j]>tv){tv=A_dr[i*8+j];top=j}if(tv<35)continue;const tt=d*3+s;if(open[top]!=null&&tt-open[top]<=6)continue;open[top]=tt;
+    const z=Math.sqrt(-2*Math.log(Math.max(1e-9,whash(m,d,s,1))))*Math.cos(2*Math.PI*whash(m,d,s,2));const h=CAUSE_H[top]*TECH_PACE[t.idx]*(0.75+0.5*Math.min(1,tv/120))*Math.exp(0.22*z);ev.push({m,d,s,j:top,h,p:TECH_REP[t.idx]*(1+0.6*drift)})}}
+  ev.sort((a,b)=>(a.d*3+a.s)-(b.d*3+b.s)||a.m-b.m);let acc=0.5;
+  for(const e of ev){acc+=e.p;const isRep=acc>=1;if(isRep)acc-=1;const pm0=perM.get(e.m)||{wo:0,rep:0};pm0.wo++;if(isRep)pm0.rep++;perM.set(e.m,pm0);const mins=e.h*60;wo++;repairMin+=mins;byR[e.j]++;byRmin[e.j]+=mins;if(isRep){rep++;byRrep[e.j]++}woDaily[e.d-d0]++;const w=Math.floor((e.d-d0)/7);wWo[w]++;wMin[w]+=mins;if(isRep)wRep[w]++}
+  for(const m of t.machines)if(!perM.has(m))perM.set(m,{wo:0,rep:0});
+  const nSh=(sm&1?1:0)+(sm&2?1:0)+(sm&4?1:0);const pm=Math.round(t.machines.reduce((s,m)=>s+days/machines[m].pmInterval,0)*nSh/3);
+  const fleet=aggregate({ms:t.machines,shiftMask:sm,d0,d1},{totalsOnly:true});const o=oeeOf(fleet.T);
+  const risks=t.machines.map(m=>CUR_RISK_ALL.get(m).score);
+  return{wo,rep,pm,closed:wo+pm,mttr:wo?repairMin/wo/60:0,ftf:wo?1-rep/wo:1,oee:o.oee,dnH:fleet.T.dn/60,dnPerM:fleet.T.dn/60/t.machines.length,repPerM:rep/t.machines.length,woPerM:(wo+pm)/t.machines.length,risk:mean(risks),risks,byR,byRmin,byRrep,woDaily,mttrW:wWo.map((w,i)=>w?wMin[i]/w/60:null),ftfW:wWo.map((w,i)=>w?(1-wRep[i]/w)*100:null),perM}}
+let CUR_RISK_ALL=new Map();
+function techScore(st,med){const f={ftf:clamp((st.ftf-0.5)/0.5,0,1),mttr:clamp(1.5-st.mttr/Math.max(0.05,med.mttr),0,1),oee:clamp((st.oee-0.6)/0.3,0,1),risk:clamp(1-st.risk/60,0,1),thr:clamp(0.5*st.woPerM/Math.max(0.01,med.woPerM),0,1)};
+  const parts=[['First-time fix',30,f.ftf,`${f1(st.ftf*100)} %`],['Repair speed',25,f.mttr,`${f1(st.mttr)} h`],['Fleet OEE',20,f.oee,`${f1(st.oee*100)} %`],['Fleet risk',15,f.risk,`avg ${f1(st.risk)}`],['Throughput',10,f.thr,`${f1(st.woPerM)}/mc`]];
+  return{score:Math.round(parts.reduce((s,p)=>s+p[1]*p[2],0)),parts}}
+
+/* ───────── state ───────── */
+const state={period:30,plant:'ALL',shift:'ALL',drill:null,floorPlant:'P1',heatMode:'oee',sort:{key:'risk',dir:-1},question:0,page:null,detailId:null,techId:null,from:'overview',techFrom:'overview',techFromMachine:null,tablePage:0,fit:{}};
+function scope(){const plant=state.drill?state.drill.plant:state.plant;const line=state.drill?state.drill.line:null;const ms=machines.filter(m=>(plant==='ALL'||m.plant===plant)&&(!line||m.line===line)).map(m=>m.idx);const shiftMask=state.shift==='ALL'?7:(1<<+state.shift);return{plant,line,ms,shiftMask,d0:D-state.period,d1:D-1}}
+let CUR=null;
+const charts={},OPT={};
+const ro=new ResizeObserver(entries=>{for(const e of entries){const ch=charts[e.target.id];if(ch&&e.target.offsetParent!==null)ch.resize()}});
+function chart(id){const el=$(id);if(charts[id]&&charts[id].getDom()!==el){charts[id].dispose();delete charts[id]}if(!charts[id]){charts[id]=echarts.init(el,null,{renderer:'canvas'});ro.observe(el)}return charts[id]}
+function setChart(id,opt,onClick){const ch=chart(id);OPT[id]=opt;ch.setOption(opt,true);ch.off('click');if(onClick)ch.on('click',onClick);emptyOverlay($(id),false);return ch}
+function emptyOverlay(el,on,msg){const host=el.closest('.panel')||el.parentElement;let e=host.querySelector(':scope > .empty');if(on){if(!e){e=document.createElement('div');e.className='empty';host.appendChild(e)}e.textContent=msg||'No data for this filter';e.hidden=false}else if(e)e.hidden=true}
+
+/* ───────── compute ───────── */
+function compute(){const sc=scope();const period=state.period;
+  const cur=aggregate(sc);const prev=aggregate({...sc,d0:sc.d0-period,d1:sc.d0-1},{totalsOnly:true});
+  const ext=aggregate({...sc,d0:sc.d0-14});
+  const fitLen=Math.max(period,56);const fit=aggregate({...sc,d0:D-fitLen});
+  const shiftIdx=state.shift==='ALL'?-1:+state.shift;
+  const seriesOf=agg=>fillNull(oeeSeries(shiftIdx<0?agg.daily:agg.dailyShift[shiftIdx]));
+  const fitSeries=seriesOf(fit);const model=forecastModel(fitSeries,dow(fit.d0),14,7);
+  const extSeries=seriesOf(ext);const zs=zscores(extSeries,14);
+  const anomalies=zs.map(o=>({...o,d:ext.d0+o.i})).sort((a,b)=>Math.abs(b.z)-Math.abs(a.z)).slice(0,6).map(o=>({...o,...explainDay(o,sc,ext)}));
+  const flagged=zs.filter(o=>Math.abs(o.z)>=2.5).map(o=>ext.d0+o.i);
+  CUR_RISK_ALL=new Map();machines.forEach(mc=>CUR_RISK_ALL.set(mc.idx,computeRisk(mc.idx,sc.shiftMask)));
+  const risk=new Map();for(const m of sc.ms)risk.set(m,CUR_RISK_ALL.get(m));
+  machines.forEach(mc=>{const r=CUR_RISK_ALL.get(mc.idx);mc.pf=r.score>=70?Math.min(mc.nextPM,2+(mc.idx%5)):null});
+  const all=aggregate({ms:machines.map(m=>m.idx),shiftMask:sc.shiftMask,d0:sc.d0,d1:sc.d1});
+  const typeMed={};MT.forEach((t,k)=>{const v=[];all.perMachine.forEach((tt,m)=>{if(machines[m].typeIdx===k&&tt.act>0)v.push(tt.kwh/tt.act)});typeMed[k]=median(v)||1});
+  const eIdx=new Map();all.perMachine.forEach((tt,m)=>{if(tt.act>0)eIdx.set(m,(tt.kwh/tt.act)/typeMed[machines[m].typeIdx]*100)});
+  CUR={sc,cur,prev,ext,fit,fitSeries,model,anomalies,flagged,risk,all,period,shiftIdx,eIdx};
+  const tstats=TECHS.map(t=>techStats(t,sc.d0,sc.d1,sc.shiftMask));const tmed={};['closed','mttr','ftf','oee','dnPerM','repPerM','woPerM','risk'].forEach(k=>tmed[k]=median(tstats.map(s=>s[k])));
+  CUR.tstats=tstats;CUR.tmed=tmed;CUR.tscore=tstats.map(s=>techScore(s,tmed));
+  return CUR}
+function explainDay(o,sc,ext){const d=o.d;const perLine=new Map();const tot=newTot();let flag=0,worstM=null,worstDn=0;
+  for(const m of sc.ms){const mc=machines[m];let lt=perLine.get(mc.lineKey);if(!lt){lt=newTot();lt.mc=mc;perLine.set(mc.lineKey,lt)}let mdn=0;for(let s=0;s<3;s++){if(!(sc.shiftMask&(1<<s)))continue;const i=(m*D+d)*S+s;add(tot,i,mc);add(lt,i,mc);flag|=A_flag[i];mdn+=A_dn[i]}if(mdn>worstDn){worstDn=mdn;worstM=mc}}
+  const di=d-ext.d0;const base=newTot();let nb=0;for(let j=Math.max(0,di-14);j<di;j++){const t=ext.daily[j];for(let r=0;r<8;r++)base.dr[r]+=t.dr[r];base.dn+=t.dn;nb++}
+  const excess=REASONS.map((r,j)=>[j,tot.dr[j]-(nb?base.dr[j]/nb:0)]).sort((a,b)=>b[1]-a[1])[0];
+  const lineTop=[...perLine.values()].sort((a,b)=>b.dn-a.dn)[0];
+  const exH=(tot.dn-(nb?base.dn/nb:0))/60;const lk=lineTop?lineTop.mc.lineKey+' '+lineTop.mc.lineName:'';
+  let text,cause;
+  if(flag&1){cause='Power outage';text=`Line-wide power outage on ${lk}: all 8 machines down for two shifts (+${f1(exH)} h downtime vs 14-day mean).`}
+  else if(flag&2){cause='Material shortage';text=`Material shortage on ${lk}: feedstock starvation across the line (+${f1(exH)} h vs 14-day mean).`}
+  else if(flag&4&&o.z<0){cause='Quality excursion';text=`Quality excursion on ${lk}: contamination defects spiked on evening and night shifts.`}
+  else if(o.z>0){cause='Strong run';text=`Unusually clean day: downtime ${f1(Math.abs(exH))} h below the 14-day mean; ${lk} led the scope.`}
+  else if(flag&8&&worstM){cause='Machine breakdown';text=`${worstM.id} (${worstM.type}) breakdown: ${REASONS[excess[0]]} +${f1(excess[1]/60)} h vs 14-day mean.`}
+  else{cause=REASONS[excess[0]];text=`${REASONS[excess[0]]} downtime +${f1(Math.max(0,excess[1])/60)} h vs 14-day mean, concentrated on ${lk}.`}
+  return{text,cause}}
+function topRisk(){let best=0,bs=-1;(CUR.risk.size?CUR.risk:CUR_RISK_ALL).forEach((r,m)=>{if(r.score>bs){bs=r.score;best=m}});return best}
+const weakestFactor=o=>[['availability',o.A/0.90],['performance',o.P/0.95],['quality',o.Q/0.99]].sort((a,b)=>a[1]-b[1])[0][0];
+const lineLabel=k=>{const mc=machines.find(m=>m.lineKey===k);return k+' '+(mc?mc.lineName:'')};
+
+/* ───────── shared renderers ───────── */
+function spark(vals,accent){const w=100,h=22;const v=vals.filter(x=>x!=null);if(v.length<2)return'<svg class="spk" aria-hidden="true"></svg>';const mn=Math.min(...v),mx=Math.max(...v);const sx=i=>i/(vals.length-1)*w;const sy=x=>h-3-(mx===mn?0.5:(x-mn)/(mx-mn))*(h-6);let dp='',last=null;vals.forEach((x,i)=>{if(x==null)return;dp+=(dp?'L':'M')+sx(i).toFixed(1)+' '+sy(x).toFixed(1)+' ';last=[sx(i),sy(x)]});
+  return`<svg class="spk" viewBox="0 0 ${w} ${h}" preserveAspectRatio="none" aria-hidden="true"><path d="${dp}L${w} ${h} L0 ${h} Z" fill="${accent}" opacity=".10"/><path d="${dp}" fill="none" stroke="${C.steel}" stroke-width="1.4" vector-effect="non-scaling-stroke" stroke-linejoin="round"/><circle cx="${last[0].toFixed(1)}" cy="${last[1].toFixed(1)}" r="2.6" fill="${accent}" stroke="${C.panel}" stroke-width="1.5" vector-effect="non-scaling-stroke"/></svg>`}
+function sparkBars(vals,accent){const w=100,h=22;if(!vals.length)return'';const mx=Math.max(...vals,1);const bw=w/vals.length;return`<svg class="spk" viewBox="0 0 ${w} ${h}" preserveAspectRatio="none" aria-hidden="true">${vals.map((v,i)=>`<rect x="${(i*bw+bw*.15).toFixed(1)}" y="${(h-Math.max(1.5,v/mx*(h-2))).toFixed(1)}" width="${(bw*.7).toFixed(1)}" height="${Math.max(1.5,v/mx*(h-2)).toFixed(1)}" fill="${i===0?accent:C.steel}" opacity="${i===0?1:.55}"/>`).join('')}</svg>`}
+const KPI_INFO={OEE:'OEE = Availability × Performance × Quality, from summed minutes and units across the selected machines, days and shifts.',Availability:'Run time ÷ planned production time. All eight downtime reasons reduce it.',Performance:'Actual units ÷ (ideal rate × run time).',Quality:'Good units ÷ actual units; rejects come from five defect types.','Units vs plan':'Actual units ÷ planned units. Plan = 85 % of ideal rate × planned time.',Downtime:'Downtime minutes across all reason codes, in hours.'};
+function tileHTML(it){const sign=it.d>0.05?1:it.d<-0.05?-1:0;const cls=sign===0?'flat':(sign*it.good>0?'up':'down');const arrow=sign>0?'▲':sign<0?'▼':'■';const dv=(sign>0?'+':sign<0?'−':'')+(Math.abs(it.d)>=100?fint(Math.abs(it.d)):f1(Math.abs(it.d)))+it.ds;
+  return`<div class="kpi"><div class="lab"><span>${esc(it.lab)}</span><button class="ib" type="button" aria-label="About ${esc(it.lab)}" data-info="${esc(it.info)}">i</button></div><div class="val">${it.val}<small>${it.unit}</small></div><div class="delta"><span class="d ${cls}">${arrow} ${dv}</span><span class="cap">${esc(it.cap)}</span></div>${it.svg}</div>`}
+function renderKPIs(el,cur,prev,period){const o=oeeOf(cur.T),p=oeeOf(prev.T);const daily=cur.daily;const sOf=fn=>daily.map(t=>t.pl?fn(t):null);const cap='vs prev. '+period+' d';
+  const items=[
+    {lab:'OEE',val:f1(o.oee*100),unit:'%',d:(o.oee-p.oee)*100,ds:' pts',good:1,sp:sOf(t=>oeeOf(t).oee)},
+    {lab:'Availability',val:f1(o.A*100),unit:'%',d:(o.A-p.A)*100,ds:' pts',good:1,sp:sOf(t=>oeeOf(t).A)},
+    {lab:'Performance',val:f1(o.P*100),unit:'%',d:(o.P-p.P)*100,ds:' pts',good:1,sp:sOf(t=>oeeOf(t).P)},
+    {lab:'Quality',val:f1(o.Q*100),unit:'%',d:(o.Q-p.Q)*100,ds:' pts',good:1,sp:sOf(t=>oeeOf(t).Q)},
+    {lab:'Units vs plan',val:f1(cur.T.plU?cur.T.act/cur.T.plU*100:0),unit:'%',d:(cur.T.plU?cur.T.act/cur.T.plU:0)*100-(prev.T.plU?prev.T.act/prev.T.plU:0)*100,ds:' pts',good:1,sp:sOf(t=>t.plU?t.act/t.plU:null)},
+    {lab:'Downtime',val:fk(cur.T.dn/60),unit:'h',d:(cur.T.dn-prev.T.dn)/60,ds:' h',good:-1,sp:sOf(t=>t.dn/60)}];
+  el.innerHTML=items.map(it=>tileHTML({...it,cap,info:KPI_INFO[it.lab],svg:spark(it.sp,C.cyan)})).join('')}
+function ring(score,tier,size){const col=tier==='High'?C.coral:tier==='Watch'?C.amber:C.lime;const r=10,c=2*Math.PI*r;return`<span class="ring"><svg viewBox="0 0 26 26" aria-hidden="true"><circle cx="13" cy="13" r="${r}" fill="none" stroke="${C.track}" stroke-width="3"/><circle cx="13" cy="13" r="${r}" fill="none" stroke="${col}" stroke-width="3" stroke-dasharray="${(score/100*c).toFixed(1)} ${c.toFixed(1)}" stroke-linecap="round" transform="rotate(-90 13 13)"/></svg><span>${score}<span class="sub">${tier}</span></span></span>`}
+function bigRing(score,col,label){const r=26,c=2*Math.PI*r;return`<svg viewBox="0 0 60 60" aria-hidden="true"><circle cx="30" cy="30" r="${r}" fill="none" stroke="${C.track}" stroke-width="5"/><circle cx="30" cy="30" r="${r}" fill="none" stroke="${col}" stroke-width="5" stroke-dasharray="${(score/100*c).toFixed(1)} ${c.toFixed(1)}" stroke-linecap="round" transform="rotate(-90 30 30)"/><text x="30" y="34" text-anchor="middle" font-family="${MONO}" font-weight="700" font-size="15" fill="${C.ink}">${score}</text></svg><span class="sr">${label}</span>`}
+const sentHTML=s=>`<p class="sent"><span class="tag ${s[1]}">${s[1]==='high'?'High':'Medium'}</span><span>${esc(s[0])}</span></p>`;
+const recHTML=(r,i)=>`<div class="rec"><div class="rt"><span class="n">0${i+1}</span><span>${esc(r.title)}</span></div><div class="ev">${esc(r.ev)}</div><span class="imp">${esc(r.impact)}</span></div>`;
+function fitList(key,listId,pagerId,htmls,label,emptyMsg){const list=$(listId),pg=$(pagerId);const st=state.fit[key]||(state.fit[key]={start:0,stack:[]});const n=htmls.length;
+  if(!n){list.innerHTML=`<div class="empty" style="position:static;min-height:60px">${esc(emptyMsg||'No data for this filter')}</div>`;pg.innerHTML='<span>0 '+label+'</span>';return}
+  if(st.start>=n){st.start=0;st.stack=[]}
+  if(!desk()){list.innerHTML=htmls.join('');pg.innerHTML=`<span>${n} ${label}</span>`;return}
+  list.innerHTML=htmls.slice(st.start).join('');
+  const lim=list.getBoundingClientRect().bottom+0.5;const kids=[...list.children];let cut=kids.length;
+  for(let i=1;i<kids.length;i++){if(kids[i].getBoundingClientRect().bottom>lim){cut=i;break}}
+  for(let i=kids.length-1;i>=cut;i--)kids[i].remove();
+  const end=st.start+cut;
+  pg.innerHTML=`<span>${st.start+1}–${end} of ${n} ${label}</span><button type="button" data-d="-1" aria-label="Previous ${label}" ${st.start===0?'disabled':''}>‹</button><button type="button" data-d="1" aria-label="Next ${label}" ${end>=n?'disabled':''}>›</button>`;
+  pg.onclick=e=>{const b=e.target.closest('button');if(!b||b.disabled)return;if(+b.dataset.d>0){st.stack.push(st.start);st.start=end}else{st.start=st.stack.pop()||0}fitList(key,listId,pagerId,htmls,label,emptyMsg);measureSoon()}}
+const catsFor=(d0,period)=>{const c=[];for(let i=0;i<period;i++)c.push(dstr(d0+i));for(let j=1;j<=14;j++)c.push(dstr(D-1+j));return c};
+function trendOption({cats,period,lines,model,last,anom,anomText,w}){const series=[];const legend=[];
+  lines.forEach(l=>{series.push({name:l.name,type:'line',data:l.data,smooth:.15,showSymbol:false,symbol:'circle',symbolSize:7,lineStyle:{width:l.w,color:l.c,opacity:l.op||1},itemStyle:{color:l.c,borderColor:C.panel,borderWidth:2},emphasis:{focus:'series'},z:3});legend.push(l.name)});
+  const pad=new Array(Math.max(0,period-1)).fill(null);
+  series.push({name:'Forecast',type:'line',data:pad.concat([r2(last)],model.fc.map(r2)),showSymbol:false,lineStyle:{width:2,color:C.ink,type:'dashed'},itemStyle:{color:C.ink},z:4});legend.push('Forecast');
+  series.push({name:'bandLo',type:'line',stack:'band',data:pad.concat([r2(last)],model.lo.map(r2)),showSymbol:false,lineStyle:{opacity:0},areaStyle:{opacity:0},silent:true,tooltip:{show:false},z:1});
+  series.push({name:'bandHi',type:'line',stack:'band',data:pad.concat([0],model.hi.map((v,i)=>r2(v-model.lo[i]))),showSymbol:false,lineStyle:{opacity:0},areaStyle:{color:C.cyan,opacity:C.band},silent:true,tooltip:{show:false},z:1});
+  series.push({name:'Anomaly',type:'scatter',data:anom,symbol:'diamond',symbolSize:13,itemStyle:{color:C.coral,borderColor:C.panel,borderWidth:2},z:6,tooltip:{show:false},markArea:{silent:true,itemStyle:{color:C.zone},label:{show:true,position:'insideTop',color:C.muted,fontFamily:MONO,fontSize:10,formatter:'FORECAST →'},data:[[{xAxis:period-1},{xAxis:period+13}]]}});legend.push('Anomaly');
+  const anomSet=new Set(anom.map(p=>p[0]));
+  return{...BASE(),legend:LEG({type:w<470?'scroll':'plain',data:legend}),grid:{left:42,right:12,top:30,bottom:22},
+    tooltip:{...TT(),trigger:'axis',axisPointer:{type:'line',lineStyle:{color:C.axis}},formatter:ps=>{const i=ps[0].dataIndex;const isF=i>=period;let h=`<div style="font-family:${MONO};color:${C.muted};font-size:11px;margin-bottom:4px">${cats[i]}${isF?' · forecast':''}</div>`;ps.forEach(p=>{if(/^band/.test(p.seriesName)||p.value==null||p.seriesName==='Anomaly')return;const v=Array.isArray(p.value)?p.value[1]:p.value;if(v==null)return;h+=`<div style="display:flex;justify-content:space-between;gap:16px">${key(p.color,p.seriesName)}<b style="font-family:${MONO}">${f1(v)}%</b></div>`});if(isF){const j=i-period;h+=`<div style="color:${C.muted};font-size:11px;margin-top:3px;font-family:${MONO}">80 % band ${f1(model.lo[j])}–${f1(model.hi[j])}%</div>`}if(anomSet.has(i)){const t=anomText(i);h+=`<div style="margin-top:5px;color:${C.coral};font-size:11px">◆ anomaly${t?' · '+esc(t):''}</div>`}return h}},
+    xAxis:{type:'category',data:cats,boundaryGap:false,...AX(),axisLabel:{...AX().axisLabel,hideOverlap:true}},
+    yAxis:{type:'value',...AX(),axisLabel:{...AX().axisLabel,formatter:v=>v+'%'},min:v=>Math.floor((v.min-2)/5)*5,max:v=>Math.min(100,Math.ceil((v.max+2)/5)*5),scale:true},series}}
+
+/* ───────── L1 · overview ───────── */
+function renderFloor(){const host=$('floor');if(!CUR||state.page!=='overview')return;const{sc,cur,risk}=CUR;const plantId=sc.plant!=='ALL'?sc.plant:state.floorPlant;const plant=PLANTS.find(p=>p.id===plantId);
+  $('floorTitle').textContent=plantId+' · '+plant.name;
+  const tabs=$('floorTabs');if(sc.plant==='ALL'){tabs.style.display='';tabs.innerHTML=PLANTS.map(p=>`<button type="button" data-fp="${p.id}" aria-pressed="${p.id===plantId}">${p.id}</button>`).join('')}else{tabs.style.display='none'}
+  const fixed=desk();const W=Math.max(300,host.clientWidth||700);const compact=W<520;const labelW=compact?0:(W>=760?156:118),padL=8,padR=8;const top=compact?40:36;
+  const laneGap=fixed?clamp(Math.round(host.clientHeight/60),5,9):8;const laneH=fixed?clamp((host.clientHeight-top-4)/5-laneGap,34,104):(compact?76:62);const laneX=padL+labelW,laneW=W-laneX-padR;const bg=compact?6:8,blockW=(laneW-16-bg*7)/8,blockH=compact?30:clamp(laneH-14,20,46);const H=fixed?Math.max(host.clientHeight,top+5*(laneH+laneGap)):top+5*(laneH+laneGap)+8;const twoLine=blockH>=30;
+  const src=sc.line||![...cur.perLine.keys()].some(k=>k.startsWith(plantId))?aggregate({ms:machines.filter(m=>m.plant===plantId).map(m=>m.idx),shiftMask:sc.shiftMask,d0:sc.d0,d1:sc.d1},{totalsOnly:true}):cur;
+  let s=`<svg viewBox="0 0 ${W} ${H.toFixed(0)}" xmlns="http://www.w3.org/2000/svg" font-family="${MONO}" preserveAspectRatio="xMinYMin meet">`;
+  s+=`<defs><pattern id="hatch" patternUnits="userSpaceOnUse" width="6" height="6" patternTransform="rotate(45)"><line x1="0" y1="0" x2="0" y2="6" stroke="${C.hatch}" stroke-width="1.6"/></pattern></defs>`;
+  s+=`<text x="${padL}" y="12" font-size="9.5" fill="${C.cyan}" letter-spacing="1.4">PLANT ${plantId} · ${esc(plant.hall.toUpperCase())} · TOP VIEW</text>`;
+  if(!compact)s+=`<text x="${W-padR}" y="12" font-size="9" fill="${C.muted}" text-anchor="end" letter-spacing="1">SCALE 1:200 · GRID 24 · N ▲</text>`;
+  s+=`<line x1="${laneX+8}" y1="${top-8}" x2="${laneX+laneW-8}" y2="${top-8}" stroke="${C.steel}" stroke-opacity=".4"/>`;
+  for(let k=0;k<8;k++){const cx=laneX+8+k*(blockW+bg)+blockW/2;s+=`<line x1="${cx}" y1="${top-12}" x2="${cx}" y2="${top-4}" stroke="${C.steel}" stroke-opacity=".55"/><text x="${cx}" y="${top-14}" font-size="9" fill="${C.muted}" text-anchor="middle">S${k+1}</text>`}
+  for(let li=0;li<5;li++){const lineKey=plantId+'-L'+(li+1);const y=top+li*(laneH+laneGap);const lt=src.perLine.get(lineKey);const o=lt?oeeOf(lt):{oee:0};const ms=machines.filter(m=>m.lineKey===lineKey);const nDown=ms.filter(m=>m.status==='Down').length,nM=ms.filter(m=>m.status==='Maintenance').length;
+    const sel=sc.line&&sc.plant===plantId&&sc.line==='L'+(li+1);const dim=sc.line&&!sel;
+    s+=`<g class="lane${sel?' sel':''}${dim?' dim':''}"><g class="lanehit" data-line="L${li+1}" data-plant="${plantId}" role="button" tabindex="0" aria-pressed="${!!sel}" aria-label="Line ${lineKey} ${LINES[li]}, OEE ${f1(o.oee*100)} percent. ${sel?'Clear the line filter':'Filter every page to this line'}">`;
+    s+=`<rect class="lanebg" x="${compact?laneX:padL}" y="${y}" width="${compact?laneW:W-padL-padR}" height="${laneH}" rx="6" fill="${C.laneBg}" stroke="${C.laneStroke}"/>`;
+    const cy=y+laneH-4;s+=`<line x1="${laneX+8}" y1="${cy}" x2="${laneX+laneW-8}" y2="${cy}" stroke="${C.steel}" stroke-opacity=".35"/>`;
+    for(let a=0;a<6;a++){const ax=laneX+40+a*((laneW-80)/5);s+=`<path d="M${ax} ${cy-3} l4 3 -4 3" fill="none" stroke="${C.steel}" stroke-opacity=".55"/>`}
+    if(compact){s+=`<text x="${laneX+8}" y="${y+13}" font-size="10" fill="${C.ink}" font-weight="600">L${li+1} · ${LINES[li].toUpperCase()}</text><text x="${laneX+laneW-8}" y="${y+13}" font-size="10" fill="${C.ink}" text-anchor="end">${f1(o.oee*100)}%</text>`}
+    else{const fz=labelW>=150?11:10;const tall=laneH>=50;s+=`<text x="${padL+8}" y="${y+(tall?laneH/2-8:laneH/2-3)}" font-size="${fz}" fill="${C.ink}" font-weight="600">L${li+1} · ${LINES[li].toUpperCase()}</text><text x="${padL+8}" y="${y+(tall?laneH/2+9:laneH/2+12)}" font-size="${tall?fz+4:fz+2}" fill="${C.ink}" font-weight="700">${f1(o.oee*100)}<tspan font-size="9.5" fill="${C.ink2}">% OEE</tspan></text>${tall?`<text x="${padL+8}" y="${y+laneH/2+22}" font-size="8.5" fill="${C.muted}">${nDown?nDown+' DOWN ':''}${nM?nM+' MAINT':''}${!nDown&&!nM?'8 MACHINES':''}</text>`:''}`}
+    s+=`</g>`;
+    ms.forEach((mc,k)=>{const bx=laneX+8+k*(blockW+bg),by=compact?y+20:y+(laneH-4-blockH)/2;const mt=src.perMachine.get(mc.idx);const mo=mt?oeeOf(mt):{oee:0};const st=mc.status;const B=C.block[st];const r=CUR_RISK_ALL.get(mc.idx);
+      s+=`<g class="mach" data-m="${mc.idx}" tabindex="0" role="link" aria-label="${mc.id} ${mc.type}, ${st}, OEE ${f1(mo.oee*100)} percent, risk ${r.score}. Open machine profile">`;
+      s+=`<rect class="blk" x="${bx.toFixed(1)}" y="${by.toFixed(1)}" width="${blockW.toFixed(1)}" height="${blockH.toFixed(1)}" rx="3" fill="${B.f}" stroke="${B.s}" stroke-width="1"${st==='Idle'?' stroke-dasharray="3 2"':''}/>`;
+      if(st==='Maintenance')s+=`<rect x="${bx.toFixed(1)}" y="${by.toFixed(1)}" width="${blockW.toFixed(1)}" height="${blockH.toFixed(1)}" rx="3" fill="url(#hatch)" opacity=".55" pointer-events="none"/>`;
+      const midY=by+blockH/2;s+=`<text x="${(bx+blockW/2).toFixed(1)}" y="${(compact||!twoLine?midY+4:midY-2).toFixed(1)}" font-size="${compact?10:11}" font-weight="700" fill="${B.t}" text-anchor="middle" pointer-events="none">${mc.code}</text>`;
+      if(!compact&&twoLine)s+=`<text x="${(bx+blockW/2).toFixed(1)}" y="${(midY+11).toFixed(1)}" font-size="9.5" fill="${B.t}" text-anchor="middle" opacity=".88" pointer-events="none">${st==='Maintenance'?'MAINT':st==='Down'?'DOWN':st==='Idle'?'IDLE':f1(mo.oee*100)+'%'}</text>`;
+      if(st==='Down'){const cx=bx+blockW-6,cyy=by+6;s+=`<circle class="pulse" cx="${cx}" cy="${cyy}" r="6" fill="none" stroke="${C.coral}" stroke-width="1.5"/><circle cx="${cx}" cy="${cyy}" r="6" fill="${C.coral}" stroke="${C.panel}" stroke-width="1.5"/><path d="M${cx-2.5} ${cyy-2.5}l5 5m0 -5l-5 5" stroke="${C.onAccent}" stroke-width="1.6"/>`}
+      if(st==='Maintenance'){const cx=bx+blockW-6,cyy=by+6;s+=`<circle cx="${cx}" cy="${cyy}" r="6" fill="${C.amber}" stroke="${C.panel}" stroke-width="1.5"/><text x="${cx}" y="${cyy+3}" font-size="8" font-weight="700" fill="${C.onAccent==='#ffffff'?'#0b1b30':'#0b0f14'}" text-anchor="middle">M</text>`}
+      if(r.score>=70){const cx=bx+6,cyy=by+6;s+=`<circle cx="${cx}" cy="${cyy}" r="5.5" fill="${C.panel}" stroke="${C.coral}" stroke-width="1.5"/><text x="${cx}" y="${cyy+3}" font-size="8" font-weight="700" fill="${C.coral}" text-anchor="middle">!</text>`}
+      s+=`</g>`});
+    s+=`</g>`}
+  s+=`</svg>`;host.innerHTML=s;
+  const B=C.block;$('floorLegend').innerHTML=`<span><i class="sw" style="background:${B.Running.f};border:1px solid ${B.Running.s}"></i>● Running</span><span><i class="sw" style="background:${B.Idle.f};border:1px dashed ${B.Idle.s}"></i>‖ Idle</span><span><i class="sw" style="background:${B.Down.f};border:1px solid ${B.Down.s}"></i>× Down (pulse)</span><span><i class="sw" style="background:${B.Maintenance.f};border:1px solid ${B.Maintenance.s};background-image:repeating-linear-gradient(45deg,${C.hatch} 0 1px,transparent 1px 3px)"></i>⚙ Maintenance</span><span><i class="sw" style="border:1.5px solid ${C.coral};background:${C.panel}"></i>! risk ≥ 70</span>`}
+function floorTip(m,ev){const tip=$('ftip');const mc=machines[m];const{cur,sc}=CUR;const src=aggregate({ms:[m],shiftMask:sc.shiftMask,d0:sc.d0,d1:sc.d1},{totalsOnly:true});const o=oeeOf(src.T);const r=CUR_RISK_ALL.get(m);const i=(m*D+(D-1))*S+2;const meta=STATUS_META[mc.status];const t=TECHS[mc.tech];
+  tip.innerHTML=`<div style="display:flex;justify-content:space-between;gap:10px;margin-bottom:4px"><b>${mc.id}</b><span style="font-family:${MONO};font-size:11px">${meta.glyph} ${meta.label}</span></div><div style="color:var(--muted);font-size:11px;margin-bottom:6px">${esc(mc.type)} · station ${mc.station} · ${esc(mc.lineName)}</div><div class="trow"><span>OEE (period)</span><b>${f1(o.oee*100)}%</b></div><div class="trow"><span>Availability</span><b>${f1(o.A*100)}%</b></div><div class="trow"><span>Temperature</span><b>${f1(A_temp[i])} °C</b></div><div class="trow"><span>Vibration</span><b>${f1(A_vib[i])} mm/s</b></div><div class="trow"><span>Failure risk</span><b>${r.score} · ${r.tier}</b></div><div class="trow"><span>Technician</span><b>${esc(t.short)}</b></div>`;
+  tip.style.display='block';const wrap=$('floorPanel').getBoundingClientRect();let x=ev.clientX-wrap.left+14,y=ev.clientY-wrap.top+14;const tw=tip.offsetWidth,th=tip.offsetHeight;if(x+tw>wrap.width-8)x=ev.clientX-wrap.left-tw-10;if(y+th>wrap.height-8)y=ev.clientY-wrap.top-th-10;tip.style.left=Math.max(4,x)+'px';tip.style.top=Math.max(4,y)+'px'}
+function renderTrend(){const{cur,model,flagged,period,shiftIdx,fitSeries,anomalies}=CUR;const cats=catsFor(cur.d0,period);const lines=[];const sc=[C.amber,C.coral,C.cyan];
+  if(shiftIdx<0)for(let s=0;s<3;s++)lines.push({name:SHIFT_NAMES[s],data:oeeSeries(cur.dailyShift[s]).map(r2),c:sc[s],w:1.4,op:.9});
+  const main=oeeSeries(shiftIdx<0?cur.daily:cur.dailyShift[shiftIdx]).map(r2);lines.push({name:shiftIdx<0?'All shifts':SHIFT_NAMES[shiftIdx]+' shift',data:main,c:C.ink,w:2.2});
+  const anom=flagged.filter(d=>d>=cur.d0).map(d=>[d-cur.d0,main[d-cur.d0]]).filter(p=>p[1]!=null);
+  setChart('trend',trendOption({cats,period,lines,model,last:fitSeries[fitSeries.length-1],anom,anomText:i=>{const a=anomalies.find(x=>x.d-cur.d0===i);return a?'z '+f1(a.z)+' · '+a.cause:''},w:$('trend').clientWidth}));
+  $('trendCard').textContent=`MAPE ${f1(model.mape)} % · h 14 d`}
+function renderSummary(){const{cur,prev,model,anomalies,period,flagged}=CUR;const o=oeeOf(cur.T),p=oeeOf(prev.T);const d=(o.oee-p.oee)*100;const nF=flagged.filter(x=>x>=cur.d0).length;const a0=anomalies[0];const tm=machines[topRisk()];const tr=CUR_RISK_ALL.get(tm.idx);const nw=mean(model.fc.slice(0,7)),band=mean(model.hi.slice(0,7).map((h,i)=>(h-model.lo[i])/2));
+  const s=[[`OEE ${f1(o.oee*100)} % over ${period} days, ${d>=0?'up':'down'} ${f1(Math.abs(d))} pts on the previous ${period}; ${weakestFactor(o)} is the weakest factor.`,period>=30?'high':'med'],
+    [nF?`${nF} anomaly day${nF>1?'s':''} flagged; the largest, ${dstr(a0.d)} (z ${f1(a0.z)}), traces to ${a0.cause.toLowerCase()}.`:`No day crossed |z| ≥ 2.5; the largest deviation was ${dstr(a0.d)} (z ${f1(a0.z)}).`,Math.abs(a0.z)>=3||!nF?'high':'med'],
+    [`Next week ≈ ${f1(nw)} % OEE (± ${f1(band)}); highest failure risk is ${tm.id} (${tm.type}) at ${tr.score}/100.`,model.mape<3?'high':'med']];
+  fitList('sum','sumList','sumPager',s.map(sentHTML),'insights')}
+
+/* ───────── L1 · insights ───────── */
+function renderForecast(){const{cur,model,flagged,period,shiftIdx,fitSeries,anomalies}=CUR;const cats=catsFor(cur.d0,period);const main=oeeSeries(shiftIdx<0?cur.daily:cur.dailyShift[shiftIdx]).map(r2);
+  const anom=flagged.filter(d=>d>=cur.d0).map(d=>[d-cur.d0,main[d-cur.d0]]).filter(p=>p[1]!=null);
+  setChart('fcChart',trendOption({cats,period,lines:[{name:shiftIdx<0?'Actual OEE':SHIFT_NAMES[shiftIdx]+' OEE',data:main,c:C.ink,w:2.2}],model,last:fitSeries[fitSeries.length-1],anom,anomText:i=>{const a=anomalies.find(x=>x.d-cur.d0===i);return a?'z '+f1(a.z)+' · '+a.cause:''},w:$('fcChart').clientWidth}));
+  $('fcCard').textContent=`Holt + weekday · h 14 d · MAPE ${f1(model.mape)} %`;$('fcCard').title=modelCard(model)+' (7-day backtest)'}
+function renderNarrative(){const{cur,prev,model,anomalies,risk,period,sc}=CUR;const o=oeeOf(cur.T),p=oeeOf(prev.T);const lines=[...cur.perLine.entries()].map(([k,t])=>({k,t,o:oeeOf(t)})).sort((a,b)=>b.o.oee-a.o.oee);const best=lines[0],worst=lines[lines.length-1];
+  const scopeName=sc.line?sc.plant+'-'+sc.line+' '+worst.t.mc.lineName:sc.plant==='ALL'?'all three plants':PLANTS.find(x=>x.id===sc.plant).name;
+  const topReason=REASONS.map((r,j)=>[r,cur.T.dr[j]]).sort((a,b)=>b[1]-a[1])[0];const worstReason=REASONS.map((r,j)=>[r,worst.t.dr[j]]).sort((a,b)=>b[1]-a[1])[0];
+  const highs=[...risk.values()].filter(r=>r.score>=70).length;const top=[...risk.entries()].sort((a,b)=>b[1].score-a[1].score)[0];const nextWeek=mean(model.fc.slice(0,7)),band=mean(model.hi.slice(0,7).map((h,i)=>(h-model.lo[i])/2));
+  const dOee=(o.oee-p.oee)*100;const a0=anomalies[0];const nFlag=CUR.flagged.filter(d=>d>=cur.d0).length;const pms=[...cur.perMachine.values()].map(t=>oeeOf(t).oee*100);
+  const sents=[
+    [`Over the last ${period} days ${scopeName} ran at ${f1(o.oee*100)} % OEE, ${dOee>=0?'up':'down'} ${f1(Math.abs(dOee))} pts on the previous ${period} days, with ${weakestFactor(o)} the weakest factor against target.`,period>=30?'high':'med'],
+    lines.length>1?[`${lineLabel(best.k)} leads at ${f1(best.o.oee*100)} %; ${lineLabel(worst.k)} lags at ${f1(worst.o.oee*100)} %, a ${f1((best.o.oee-worst.o.oee)*100)} pt gap driven mainly by ${worstReason[0].toLowerCase()} downtime.`,'high']:[`Station-level OEE inside the line ranges from ${f1(Math.min(...pms))} % to ${f1(Math.max(...pms))} %.`,'high'],
+    [`Downtime totalled ${fint(cur.T.dn/60)} h, ${f1(topReason[1]/Math.max(1,cur.T.dn)*100)} % of it from ${topReason[0].toLowerCase()}; output reached ${f1(cur.T.plU?cur.T.act/cur.T.plU*100:0)} % of plan.`,'high'],
+    [nFlag?`${nFlag} anomaly day${nFlag>1?'s were':' was'} flagged (|z| ≥ 2.5); the largest, ${dstr(a0.d)} at ${f1(a0.v)} % OEE (z ${f1(a0.z)}), was a ${a0.cause.toLowerCase()}.`:`No day crossed the |z| ≥ 2.5 threshold; the largest deviation was ${dstr(a0.d)} (z ${f1(a0.z)}).`,Math.abs(a0.z)>=3||!nFlag?'high':'med'],
+    [`${highs} machine${highs===1?' carries':'s carry'} a failure-risk score of 70 or more; ${machines[top[0]].id} (${machines[top[0]].type}) is highest at ${top[1].score}, led by ${top[1].drivers[0][0]}.`,'med'],
+    [`The forecast expects ${f1(nextWeek)} % OEE (± ${f1(band)}) next week, trend ${model.trend>=0?'+':'−'}${f1(Math.abs(model.trend*7))} pts/week; backtested MAPE ${f1(model.mape)} % over the last 7 days.`,model.mape<3?'high':'med']];
+  fitList('narr','narrList','narrPager',sents.map(sentHTML),'sentences');$('narrMeta').textContent=`${cur.T.n.toLocaleString('en-US')} records`}
+function renderAnomalies(){const{anomalies}=CUR;fitList('anom','anomList','anomPager',anomalies.map(a=>{const w=Math.abs(a.z)<2.5;return`<div class="anom"><div class="z${w?' watch':''}">z ${a.z>0?'+':'−'}${f1(Math.abs(a.z))}<small>${w?'below thr.':'anomaly'}</small></div><div class="t"><b>${dstr(a.d)}</b> · ${f1(a.v)} % vs ${f1(a.m)} % (${a.v-a.m>0?'+':'−'}${f1(Math.abs(a.v-a.m))} pts)<br><span class="ex">${esc(a.text)}</span></div></div>`}),'days')}
+function buildRecs(){const{cur,risk,period}=CUR;const weeks=period/7;const recs=[];
+  const top=[...risk.entries()].map(([m,r])=>({mc:machines[m],r})).sort((a,b)=>b.r.score-a.r.score)[0];
+  if(top&&top.r.score>=50){const hAvoid=top.r.score/100*18;const units=hAvoid*60*top.mc.rate*0.9;recs.push({title:`Pull forward maintenance on ${top.mc.id} (${top.mc.type})`,ev:`Risk ${top.r.score}/100: temperature ${sgn(top.r.tSlope,2)} °C/day, vibration ${sgn(top.r.vSlope,3)} mm/s/day over 30 days; unplanned downtime ×${f1(top.r.ratio)} vs prior fortnight. PM due ${dstr(D-1+top.mc.nextPM)} → bring to ${dstr(D-1+(top.mc.pf!=null?top.mc.pf:4))}.`,impact:`est. −${f1(hAvoid)} h unplanned downtime · +${fint(units)} units`,score:units/weeks*2})}
+  const lines=[...cur.perLine.entries()].map(([k,t])=>({k,t,co:t.dr[0],share:t.dr[0]/Math.max(1,t.dn),rate:t.ideal/Math.max(1,t.run)}));const coL=lines.sort((a,b)=>b.co-a.co)[0];
+  if(coL){const saved=coL.co*0.3;const units=saved*coL.rate*0.9/weeks;recs.push({title:`Reduce changeovers on ${lineLabel(coL.k)} (SMED)`,ev:`Changeover is ${f1(coL.share*100)} % of the line's downtime (${fint(coL.co/60)} h in ${period} days). A 30 % cut through quick-change tooling and sequencing recovers ${fint(saved/60)} h.`,impact:`est. +${fint(units)} units/week`,score:units})}
+  const reasons=REASONS.map((r,j)=>({r,j,min:cur.T.dr[j]})).filter(x=>x.j!==0).sort((a,b)=>b.min-a.min)[0];
+  if(reasons){const lineTop=[...cur.perLine.entries()].sort((a,b)=>b[1].dr[reasons.j]-a[1].dr[reasons.j])[0];const rate=cur.T.ideal/Math.max(1,cur.T.run);const units=reasons.min*0.4*rate*0.9/weeks;recs.push({title:`Fix top downtime cause: ${reasons.r}`,ev:`${fint(reasons.min/60)} h (${f1(reasons.min/Math.max(1,cur.T.dn)*100)} % of downtime), heaviest on ${lineLabel(lineTop[0])} with ${fint(lineTop[1].dr[reasons.j]/60)} h. Target a 40 % cut via ${reasons.j===4?'sensor-guarded feed and a jam-clear routine':reasons.j===2?'condition-based tool change':reasons.j===3?'a sensor recalibration cycle':reasons.j===1?'a kanban buffer at the line feed':'root-cause review'}.`,impact:`est. +${fint(units)} units/week`,score:units})}
+  const qL=[...cur.perLine.entries()].map(([k,t])=>({k,t,q:oeeOf(t).Q,def:t.def})).sort((a,b)=>a.q-b.q)[0];
+  if(qL&&qL.q<0.975){const dt=DEFECTS.map((d,i)=>[d,qL.t.df[i]]).sort((a,b)=>b[1]-a[1])[0];const units=qL.def*0.5/weeks;recs.push({title:`Contain ${dt[0].toLowerCase()} defects on ${lineLabel(qL.k)}`,ev:`Quality ${f1(qL.q*100)} % is the lowest in scope; ${dt[0].toLowerCase()} is ${f1(dt[1]/Math.max(1,qL.def)*100)} % of its ${fint(qL.def)} rejects. Halving it through inline inspection recovers good units directly.`,impact:`est. +${fint(units)} good units/week`,score:units})}
+  return recs.sort((a,b)=>b.score-a.score).slice(0,3)}
+function renderRecs(){fitList('recs','recList','recPager',buildRecs().map(recHTML),'actions','No recommendation triggered for this filter')}
+function renderRiskList(){const rows=[...CUR.risk.entries()].sort((a,b)=>b[1].score-a[1].score).slice(0,20);fitList('risk','riskList','riskPager',rows.map(([m,r])=>{const mc=machines[m];return`<button type="button" class="rrow" data-id="${mc.id}" aria-label="${mc.id}, risk ${r.score}. Open machine profile">${ring(r.score,r.tier)}<span><b>${mc.id}</b><span class="sub">${esc(mc.type)} · ${esc(r.drivers[0][0])}</span></span><span class="rn">${mc.pf!=null?'PM ↑ '+dstr(D-1+mc.pf):'PM '+dstr(D-1+mc.nextPM)}</span></button>`}),'machines')}
+const QUESTIONS=['Which machine will fail next?','What is our biggest downtime cause?','Which line is under plan?','What OEE do we expect next week?'];
+const QCHIP=['Which machine fails next?','Biggest downtime cause?','Which line is under plan?','OEE next week?'];
+function answer(qi){const{cur,risk,model,sc}=CUR;const a=$('answer');let h='',e='',opt=null,click=null;
+  const mb=()=>({...BASE(),grid:{left:78,right:40,top:4,bottom:4},tooltip:{...TT()},yAxis:{type:'category',inverse:true,...AX(),splitLine:{show:false},axisLabel:{...AX().axisLabel,fontSize:9.5}},xAxis:{type:'value',...AX(),axisLabel:{show:false},splitLine:{show:false}}});
+  const lab=f=>({show:true,position:'right',color:C.ink2,fontFamily:MONO,fontSize:10,formatter:f});
+  if(qi===0){const top=[...risk.entries()].map(([m,r])=>({mc:machines[m],r})).sort((a,b)=>b.r.score-a.r.score).slice(0,5);const t=top[0];h=`${t.mc.id} <small>${esc(t.mc.type)} · risk ${t.r.score}/100</small>`;e=`Vibration ${sgn(t.r.vSlope,3)} mm/s/day, temperature ${sgn(t.r.tSlope,2)} °C/day over 30 days; unplanned downtime ×${f1(t.r.ratio)}. PM due in ${t.mc.nextPM} d${t.mc.pf!=null?' → pull to '+dstr(D-1+t.mc.pf):''}.`;
+    const b=mb();opt={...b,yAxis:{...b.yAxis,data:top.map(x=>x.mc.id)},xAxis:{...b.xAxis,max:100},series:[{type:'bar',data:top.map(x=>x.r.score),barWidth:9,itemStyle:{color:C.cyan,borderRadius:[0,4,4,0]},label:lab('{c}'),cursor:'pointer'}],tooltip:{...TT(),formatter:p=>`<b>${p.name}</b> · risk ${p.value}${hint('Click for machine profile')}`}};click=p=>goDetail(top[p.dataIndex].mc.id)}
+  else if(qi===1){const items=REASONS.map((r,j)=>({r,j,min:cur.T.dr[j]})).sort((a,b)=>b.min-a.min);const t=items[0];const lt=[...cur.perLine.entries()].sort((a,b)=>b[1].dr[t.j]-a[1].dr[t.j])[0];h=`${esc(t.r)} <small>${fint(t.min/60)} h · ${f1(t.min/Math.max(1,cur.T.dn)*100)} %</small>`;e=`${lineLabel(lt[0])} contributes ${fint(lt[1].dr[t.j]/60)} h. Next: ${items[1].r.toLowerCase()} ${fint(items[1].min/60)} h, ${items[2].r.toLowerCase()} ${fint(items[2].min/60)} h.`;
+    const b=mb();opt={...b,yAxis:{...b.yAxis,data:items.slice(0,5).map(x=>RSHORT[x.j])},series:[{type:'bar',data:items.slice(0,5).map(x=>Math.round(x.min/60)),barWidth:9,itemStyle:{color:C.cyan,borderRadius:[0,4,4,0]},label:lab(p=>fint(p.value)+' h')}],tooltip:{...TT(),formatter:p=>`<b>${p.name}</b> · ${fint(p.value)} h`}}}
+  else if(qi===2){const lines=[...cur.perLine.entries()].map(([k,t])=>({k,t,p:t.plU?t.act/t.plU*100:0})).sort((a,b)=>a.p-b.p);const w=lines[0];h=`${w.k} <small>${f1(w.p)} % of plan · ${fint(w.t.plU-w.t.act)} short</small>`;e=`${lines.filter(l=>l.p<100).length} of ${lines.length} lines under plan. ${lineLabel(w.k)} runs at ${f1(oeeOf(w.t).A*100)} % availability; best is ${lines[lines.length-1].k} at ${f1(lines[lines.length-1].p)} %.`;
+    const b=mb();opt={...b,yAxis:{...b.yAxis,data:lines.slice(0,5).map(x=>x.k)},xAxis:{...b.xAxis,max:110},series:[{type:'bar',data:lines.slice(0,5).map(x=>+x.p.toFixed(1)),barWidth:9,itemStyle:{color:C.cyan,borderRadius:[0,4,4,0]},label:lab(p=>f1(p.value)+'%'),markLine:{silent:true,symbol:'none',lineStyle:{color:C.ink,opacity:.6,type:'solid'},label:{show:false},data:[{xAxis:100}]}}],tooltip:{...TT(),formatter:p=>`<b>${p.name}</b> · ${f1(p.value)} % of plan`}}}
+  else{const nw=mean(model.fc.slice(0,7)),band=mean(model.hi.slice(0,7).map((v,i)=>(v-model.lo[i])/2));const lastW=mean(CUR.fitSeries.slice(-7));h=`${f1(nw)} % <small>± ${f1(band)} · next 7 days</small>`;e=`Holt + weekday index vs ${f1(lastW)} % last week (${nw-lastW>=0?'+':'−'}${f1(Math.abs(nw-lastW))} pts). Backtest MAPE ${f1(model.mape)} %; 80 % band.`;
+    const hist=CUR.fitSeries.slice(-14).map(r2);const cats=[];for(let i=14;i>0;i--)cats.push(dstr(D-i));for(let j=1;j<=7;j++)cats.push(dstr(D-1+j));
+    opt={...BASE(),grid:{left:38,right:10,top:6,bottom:20},tooltip:{...TT(),trigger:'axis',formatter:ps=>ps.filter(p=>p.value!=null&&!/band/.test(p.seriesName)).map(p=>`${key(p.color,p.seriesName)} <b style="font-family:${MONO}">${f1(p.value)}%</b>`).join('<br>')},xAxis:{type:'category',data:cats,boundaryGap:false,...AX(),axisLabel:{...AX().axisLabel,hideOverlap:true}},yAxis:{type:'value',scale:true,...AX(),axisLabel:{...AX().axisLabel,formatter:v=>v+'%'},min:v=>Math.floor(v.min-1),max:v=>Math.ceil(v.max+1)},
+      series:[{name:'Actual',type:'line',data:hist.concat(new Array(7).fill(null)),showSymbol:false,lineStyle:{width:2,color:C.ink},itemStyle:{color:C.ink}},{name:'Forecast',type:'line',data:new Array(13).fill(null).concat([hist[13]],model.fc.slice(0,7).map(r2)),showSymbol:false,lineStyle:{width:2,color:C.cyan,type:'dashed'},itemStyle:{color:C.cyan}},{name:'bandLo',type:'line',stack:'b',data:new Array(13).fill(null).concat([hist[13]],model.lo.slice(0,7).map(r2)),showSymbol:false,lineStyle:{opacity:0},areaStyle:{opacity:0},silent:true},{name:'bandHi',type:'line',stack:'b',data:new Array(13).fill(null).concat([0],model.hi.slice(0,7).map((v,i)=>r2(v-model.lo[i]))),showSymbol:false,lineStyle:{opacity:0},areaStyle:{color:C.cyan,opacity:C.band},silent:true}]}}
+  a.innerHTML=`<div class="q">${esc(QUESTIONS[qi])}</div><div class="h">${h}</div><div class="e">${esc(e)}</div><div class="mini" id="askChart" role="img" aria-label="Mini chart for the answer"></div>`;
+  setChart('askChart',opt,click);document.querySelectorAll('#qchips .qchip').forEach((b,i)=>b.setAttribute('aria-pressed',String(i===qi)))}
+function renderAsk(){if(state.askMiss){return}answer(state.question)}
+
+/* ───────── L2 · lines ───────── */
+function renderGauges(){const o=oeeOf(CUR.cur.T);const items=[['OEE',o.oee*100,85],['Availability',o.A*100,90],['Performance',o.P*100,95],['Quality',o.Q*100,99]];const centers=[['27%','30%'],['74%','30%'],['27%','77%'],['74%','77%']];const el=$('gauges');const rad=Math.min(el.clientWidth,el.clientHeight)/2*0.4;const fs=clamp(Math.round(rad*0.3),12,20);
+  setChart('gauges',{...BASE(),series:items.map((it,i)=>({type:'gauge',center:centers[i],radius:'40%',startAngle:215,endAngle:-35,min:0,max:100,splitNumber:5,
+    axisLine:{lineStyle:{width:7,color:[[1,C.track]]}},progress:{show:true,width:7,itemStyle:{color:C.cyan}},pointer:{show:false},
+    axisTick:{distance:-13,length:4,splitNumber:4,lineStyle:{color:C.muted,width:1}},splitLine:{distance:-15,length:8,lineStyle:{color:C.ink2,width:1}},axisLabel:{show:false},
+    title:{offsetCenter:[0,'74%'],fontSize:rad<52?9:10,lineHeight:13,color:C.ink2,fontFamily:MONO},detail:{offsetCenter:[0,'18%'],fontSize:fs,fontWeight:600,fontFamily:MONO,color:C.ink,formatter:v=>f1(v)+'%'},
+    tooltip:{...TT(),formatter:()=>`<b>${it[0]}</b><br>${f1(it[1])}% · target ${it[2]}% · ${it[1]>=it[2]?'▲ at target':'▼ '+f1(it[2]-it[1])+' pts below'}`},
+    data:[{value:+it[1].toFixed(1),name:it[0]+'\ntarget '+it[2]+'% '+(it[1]>=it[2]?'▲':'▼')}]})),tooltip:{...TT()}})}
+function renderShift(){const{sc}=CUR;const ts=[0,1,2].map(s=>aggregate({...sc,shiftMask:1<<s},{totalsOnly:true}).T);const sel=state.shift==='ALL'?-1:+state.shift;
+  setChart('shiftc',{...BASE(),grid:{left:62,right:50,top:4,bottom:20},tooltip:{...TT(),formatter:p=>{const o=oeeOf(ts[p.dataIndex]);return`<b>${SHIFT_NAMES[p.dataIndex]} shift</b>${row('OEE',f1(o.oee*100)+'%')}${row('Availability',f1(o.A*100)+'%')}${row('Performance',f1(o.P*100)+'%')}${row('Quality',f1(o.Q*100)+'%')}${hint('Click to '+(sel===p.dataIndex?'clear the':'filter to this')+' shift')}`}},
+    xAxis:{type:'value',min:0,max:100,...AX(),axisLabel:{...AX().axisLabel,formatter:v=>v+'%'}},yAxis:{type:'category',data:SHIFT_NAMES,inverse:true,...AX(),splitLine:{show:false}},
+    series:[{type:'bar',data:ts.map((t,i)=>({value:+(oeeOf(t).oee*100).toFixed(1),itemStyle:{color:sel<0||sel===i?C.cyan:C.other}})),barMaxWidth:18,itemStyle:{borderRadius:[0,4,4,0]},label:{show:true,position:'right',color:C.ink2,fontFamily:MONO,fontSize:10,formatter:p=>f1(p.value)+'%'},cursor:'pointer'}]},
+    p=>{state.shift=state.shift===String(p.dataIndex)?'ALL':String(p.dataIndex);update()})}
+function renderBullet(){const{cur,sc}=CUR;const el=$('bullet');const narrow=el.clientWidth<520;let rows;
+  if(sc.line){rows=[...cur.perMachine.entries()].map(([m,t])=>({label:machines[m].id.split('-')[2]+' '+machines[m].code,t,mc:machines[m]}));$('bulletSub').textContent='Per machine on '+sc.plant+'-'+sc.line+' · click for profile'}
+  else{rows=[...cur.perLine.entries()].sort().map(([k,t])=>({key:k,label:narrow?(sc.plant==='ALL'?k.replace('-','·'):k.split('-')[1]+' '+t.mc.lineName.slice(0,6)):(sc.plant==='ALL'?k.replace('-',' · '):k.split('-')[1])+' '+t.mc.lineName,t}));$('bulletSub').textContent='Per line · click a bar to filter'}
+  const h=el.clientHeight||400;const rowH=(h-56)/Math.max(1,rows.length);const pw=clamp(Math.round(rowH*0.55),8,16),aw=Math.max(4,Math.round(pw/2));
+  setChart('bullet',{...BASE(),legend:LEG({data:['Actual','Plan']}),grid:{left:narrow?66:(sc.plant==='ALL'&&!sc.line?118:104),right:62,top:26,bottom:24},
+    tooltip:{...TT(),trigger:'axis',axisPointer:{type:'shadow',shadowStyle:{color:C.zone}},formatter:ps=>{const r=rows[ps[0].dataIndex];return`<b>${esc(r.mc?r.mc.id:lineLabel(r.key))}</b><br>${row('Actual',fint(r.t.act)+' units')}${row('Plan',fint(r.t.plU))}${row('vs plan',f1(r.t.plU?r.t.act/r.t.plU*100:0)+'%')}${row('OEE',f1(oeeOf(r.t).oee*100)+'%')}${hint(r.mc?'Click for machine profile':'Click to filter every page to this line')}`}},
+    xAxis:{type:'value',...AX(),axisLabel:{...AX().axisLabel,formatter:v=>fkAxis(v),hideOverlap:true}},yAxis:{type:'category',data:rows.map(r=>r.label),inverse:true,...AX(),splitLine:{show:false},axisLabel:{...AX().axisLabel,fontSize:9.5}},
+    series:[{name:'Plan',type:'bar',data:rows.map(r=>({value:r.t.plU,label:{formatter:()=>{const p=r.t.plU?r.t.act/r.t.plU*100:0;return(p<95?'▼ ':'')+f1(p)+'%'}}})),barWidth:pw,itemStyle:{color:C.planTrack,borderRadius:[0,3,3,0]},label:{show:true,position:'right',color:C.ink2,fontFamily:MONO,fontSize:10,offset:[6,0]},z:1,cursor:'pointer'},
+      {name:'Actual',type:'bar',data:rows.map(r=>r.t.act),barWidth:aw,barGap:'-75%',itemStyle:{color:C.cyan,borderRadius:[0,4,4,0]},z:3,cursor:'pointer'},
+      {name:'Plan',type:'scatter',data:rows.map(r=>r.t.plU),symbol:'rect',symbolSize:[3,pw+6],itemStyle:{color:C.ink},z:4,tooltip:{show:false},silent:true}]},
+    p=>{const r=rows[p.dataIndex];if(!r)return;if(r.mc)goDetail(r.mc.id);else{const[pl,ln]=r.key.split('-');toggleLine(pl,ln)}})}
+function renderHeat(){const{cur,sc}=CUR;const lines=[...cur.perLine.keys()].sort();const rows=lines.map(k=>sc.plant==='ALL'?k.replace('-',' · '):k.split('-')[1]+' '+cur.perLine.get(k).mc.lineName.slice(0,6));const isRisk=state.heatMode==='risk';const el=$('heat');
+  const data=[];lines.forEach((lk,y)=>{for(let x=0;x<8;x++){const mc=machines.find(m=>m.lineKey===lk&&m.station===x+1);const mt=cur.perMachine.get(mc.idx);const v=isRisk?CUR_RISK_ALL.get(mc.idx).score:(mt&&mt.pl?oeeOf(mt).oee*100:0);const hi=isRisk?v>=55:v>=78;data.push({value:[x,y,+v.toFixed(1)],mc,label:{color:hi?C.hiText:C.ink}})}});
+  const cellH=(el.clientHeight-76)/Math.max(1,lines.length),cellW=(el.clientWidth-(sc.plant==='ALL'?64:96))/8;const showLabel=cellH>=15&&cellW>=30;
+  setChart('heat',{...BASE(),grid:{left:sc.plant==='ALL'?62:96,right:8,top:22,bottom:46},tooltip:{...TT(),formatter:p=>{const mc=p.data.mc;const mt=cur.perMachine.get(mc.idx);const o=mt?oeeOf(mt):{oee:0,A:0};const r=CUR_RISK_ALL.get(mc.idx);return`<b>${mc.id}</b> · ${esc(mc.type)}<br>${row('OEE',f1(o.oee*100)+'%')}${row('Availability',f1(o.A*100)+'%')}${row('Risk',r.score+' · '+r.tier)}${row('Status',mc.status)}${hint('Click for machine profile')}`}},
+    xAxis:{type:'category',data:MT.map(t=>t.c),position:'top',...AX(),splitLine:{show:false},axisLabel:{...AX().axisLabel,fontSize:9,interval:0}},yAxis:{type:'category',data:rows,inverse:true,...AX(),splitLine:{show:false},axisLabel:{...AX().axisLabel,fontSize:9.5}},
+    visualMap:{min:isRisk?0:40,max:isRisk?100:95,calculable:false,orient:'horizontal',left:'center',bottom:0,itemWidth:9,itemHeight:130,text:[isRisk?'high risk':'high OEE','low'],textStyle:{color:C.ink2,fontFamily:MONO,fontSize:10},inRange:{color:C.ramp}},
+    series:[{type:'heatmap',data,label:{show:showLabel,fontFamily:MONO,fontSize:9.5,formatter:p=>Math.round(p.value[2])},itemStyle:{borderColor:C.panel,borderWidth:2,borderRadius:2},emphasis:{itemStyle:{borderColor:C.ink,borderWidth:2}},cursor:'pointer'}]},
+    p=>{if(p.data&&p.data.mc)goDetail(p.data.mc.id)})}
+
+/* ───────── L2 · downtime ───────── */
+function renderPareto(){const T=CUR.cur.T;const tot=T.dn||1;const items=REASONS.map((r,j)=>({r,s:RSHORT[j],min:T.dr[j]})).sort((a,b)=>b.min-a.min);let cum=0;const cumv=items.map(it=>{cum+=it.min/tot*100;return +cum.toFixed(1)});
+  setChart('pareto',{...BASE(),legend:LEG({data:['Share of downtime','Cumulative']}),grid:{left:40,right:12,top:28,bottom:52},
+    tooltip:{...TT(),trigger:'axis',formatter:ps=>{const i=ps[0].dataIndex;const it=items[i];return`<b>${it.r}</b><br>${row('Downtime',fint(it.min/60)+' h')}${row('Share',f1(it.min/tot*100)+'%')}${row('Cumulative',f1(cumv[i])+'%')}`}},
+    xAxis:{type:'category',data:items.map(i=>i.s),...AX(),splitLine:{show:false},axisLabel:{...AX().axisLabel,rotate:30,interval:0,fontSize:9.5}},yAxis:{type:'value',min:0,max:100,...AX(),axisLabel:{...AX().axisLabel,formatter:v=>v+'%'}},
+    series:[{name:'Share of downtime',type:'bar',data:items.map(it=>+(it.min/tot*100).toFixed(1)),barMaxWidth:22,itemStyle:{color:C.cyan,borderRadius:[4,4,0,0]},markLine:{silent:true,symbol:'none',lineStyle:{color:C.axis,type:'solid',width:1},label:{position:'insideEndTop',color:C.muted,fontFamily:MONO,fontSize:9,formatter:'80 %'},data:[{yAxis:80}]}},
+      {name:'Cumulative',type:'line',data:cumv,lineStyle:{width:2,color:C.ink},itemStyle:{color:C.ink,borderColor:C.panel,borderWidth:2},symbol:'circle',symbolSize:8,z:3}]})}
+function donutOpt(df,def,act,w,legendRight){const cols=[C.cyan,C.lime,C.violet,C.amber,C.coral];const data=DEFECTS.map((n,i)=>({name:n,value:Math.round(df[i])}));const tot=def||1;
+  return{...BASE(),color:cols,title:{text:fk(def),subtext:legendRight?'':'rejects',left:legendRight?'32%':'center',textAlign:legendRight?'center':'auto',top:legendRight?'38%':'38%',textStyle:{color:C.ink,fontFamily:MONO,fontSize:legendRight?15:19,fontWeight:600},subtextStyle:{color:C.muted,fontFamily:MONO,fontSize:9.5}},
+    legend:legendRight?{orient:'vertical',right:0,top:'middle',itemWidth:10,itemHeight:10,icon:'roundRect',textStyle:{color:C.ink2,fontFamily:MONO,fontSize:10}}:{bottom:0,left:'center',itemWidth:10,itemHeight:10,icon:'roundRect',textStyle:{color:C.ink2,fontFamily:MONO,fontSize:10}},
+    tooltip:{...TT(),formatter:p=>`<b>${p.name}</b><br>${row('Rejects',fint(p.value))}${row('Share',f1(p.value/tot*100)+'%')}`},
+    series:[{type:'pie',radius:legendRight?['46%','68%']:(w<460?['42%','60%']:['48%','68%']),center:[legendRight?'32%':'50%','46%'],data,itemStyle:{borderColor:C.panel,borderWidth:2,borderRadius:3},label:{show:!legendRight,color:C.ink2,fontFamily:MONO,fontSize:10,formatter:p=>f1(p.percent)+'%',alignTo:w<460?'edge':'none',edgeDistance:8},labelLine:{length:8,length2:6,lineStyle:{color:C.axis}},emphasis:{scale:true,scaleSize:4}}]}}
+function renderDefects(){const T=CUR.cur.T;$('defSub').textContent=`Share of rejects · reject rate ${f1(T.act?T.def/T.act*100:0)} %`;setChart('defects',donutOpt(T.df,T.def,T.act,$('defects').clientWidth,false))}
+function renderScatter(){const{cur,risk,eIdx}=CUR;const el=$('scatter');const maxB=clamp(el.clientHeight/12,14,26);const pts={Low:[],Watch:[],High:[]};let maxDn=1;cur.perMachine.forEach(t=>{maxDn=Math.max(maxDn,t.dn)});
+  cur.perMachine.forEach((t,m)=>{if(!t.act||!t.plU)return;const mc=machines[m];const r=risk.get(m);pts[r.tier].push({value:[+(t.act/t.plU*100).toFixed(1),+(eIdx.get(m)||100).toFixed(1)],mc,dn:t.dn,r,symbolSize:7+Math.sqrt(t.dn/maxDn)*maxB})});
+  const mk=(name,arr,color,symbol)=>({name,type:'scatter',data:arr,symbol,itemStyle:{color,opacity:.85,borderColor:C.panel,borderWidth:2},emphasis:{itemStyle:{borderColor:C.ink}},z:name==='High risk'?4:2,cursor:'pointer'});
+  setChart('scatter',{...BASE(),legend:LEG({data:['Low risk','Watch','High risk'],itemWidth:12,itemHeight:12}),grid:{left:46,right:16,top:28,bottom:38},
+    tooltip:{...TT(),formatter:p=>{const d=p.data;return`<b>${d.mc.id}</b> · ${esc(d.mc.type)}<br>${row('Output vs plan',f1(d.value[0])+'%')}${row('Energy index',f1(d.value[1]))}${row('Downtime',f1(d.dn/60)+' h')}${row('Risk',d.r.score+' · '+d.r.tier)}${hint('Click for machine profile')}`}},
+    xAxis:{type:'value',name:'Output vs plan %',nameLocation:'middle',nameGap:24,...AX(),axisLabel:{...AX().axisLabel,formatter:v=>v+'%'},scale:true},yAxis:{type:'value',name:'Energy index',nameLocation:'middle',nameGap:32,...AX(),scale:true},
+    series:[mk('Low risk',pts.Low,C.lime,'circle'),mk('Watch',pts.Watch,C.amber,'diamond'),{...mk('High risk',pts.High,C.coral,'triangle'),markLine:{silent:true,symbol:'none',lineStyle:{color:C.axis,type:'solid',width:1},label:{color:C.muted,fontFamily:MONO,fontSize:9,position:'insideEndTop'},data:[{xAxis:100,label:{formatter:'plan'}},{yAxis:100,label:{formatter:'type median'}}]}}]},
+    p=>{if(p.data&&p.data.mc)goDetail(p.data.mc.id)})}
+function renderTopDown(){const{cur}=CUR;const el=$('topdn');const n=clamp(Math.floor((el.clientHeight-30)/22),4,10);const rows=[...cur.perMachine.entries()].map(([m,t])=>({mc:machines[m],t})).filter(r=>r.t.dn>0).sort((a,b)=>b.t.dn-a.t.dn).slice(0,n);
+  if(!rows.length){chart('topdn').clear();emptyOverlay(el,true,'No downtime recorded for this filter');return}
+  setChart('topdn',{...BASE(),grid:{left:86,right:52,top:4,bottom:20},tooltip:{...TT(),formatter:p=>{const r=rows[p.dataIndex];const top=REASONS.map((x,j)=>[x,r.t.dr[j]]).sort((a,b)=>b[1]-a[1])[0];return`<b>${r.mc.id}</b> · ${esc(r.mc.type)}${row('Downtime',f1(r.t.dn/60)+' h')}${row('Top reason',top[0])}${row('Unplanned failures',r.t.fail)}${hint('Click for machine profile')}`}},
+    xAxis:{type:'value',...AX(),axisLabel:{...AX().axisLabel,formatter:v=>v+' h'}},yAxis:{type:'category',data:rows.map(r=>r.mc.id),inverse:true,...AX(),splitLine:{show:false},axisLabel:{...AX().axisLabel,fontSize:9.5}},
+    series:[{type:'bar',data:rows.map(r=>+(r.t.dn/60).toFixed(1)),barMaxWidth:12,itemStyle:{color:C.cyan,borderRadius:[0,4,4,0]},label:{show:true,position:'right',color:C.ink2,fontFamily:MONO,fontSize:10,formatter:p=>f1(p.value)+' h'},cursor:'pointer'}]},
+    p=>goDetail(rows[p.dataIndex].mc.id))}
+
+/* ───────── L2 · maintenance ───────── */
+function maintEvents(){const{cur,risk}=CUR;const rows=[];cur.perMachine.forEach((t,m)=>{const mc=machines[m];const r=risk.get(m);if(mc.pf!=null)rows.push({mc,r,start:mc.pf,dur:1,type:'Pull-forward (AI)'});if(mc.nextPM<=30&&!(mc.pf!=null&&mc.pf===mc.nextPM))rows.push({mc,r,start:mc.nextPM,dur:mc.typeIdx===1||mc.typeIdx===2?2:1,type:mc.pf!=null?'Planned PM (superseded)':'Planned PM'});if(r.tier==='Watch'&&mc.nextPM>14)rows.push({mc,r,start:3+(mc.idx%9),dur:0.5,type:'Inspection'})});
+  return rows.sort((a,b)=>a.start-b.start||b.r.score-a.r.score)}
+function renderGantt(){const el=$('gantt');const rows=maintEvents();const total=rows.length;const maxRows=desk()?clamp(Math.floor((el.clientHeight-56)/19),3,16):14;const shown=rows.slice(0,maxRows);
+  $('ganttSub').textContent=`${shown.length} of ${total} events · next 30 days · earliest first`;
+  if(!shown.length){chart('gantt').clear();emptyOverlay(el,true,'No maintenance events in the next 30 days for this filter');return}
+  const colors={'Planned PM':C.cyan,'Pull-forward (AI)':C.coral,'Inspection':C.amber,'Planned PM (superseded)':C.other};
+  const types=['Planned PM','Pull-forward (AI)','Inspection'];if(shown.some(x=>x.type==='Planned PM (superseded)'))types.push('Planned PM (superseded)');
+  const mk=type=>({name:type,type:'custom',renderItem:(params,api)=>{const cat=api.value(0),s0=api.coord([api.value(1),cat]),s1=api.coord([api.value(2),cat]);const hh=Math.min(14,api.size([0,1])[1]*0.62);return{type:'rect',shape:{x:s0[0],y:s0[1]-hh/2,width:Math.max(6,s1[0]-s0[0]),height:hh,r:3},style:{fill:colors[type],stroke:C.panel,lineWidth:2}}},encode:{x:[1,2],y:0},data:shown.map((x,i)=>x.type===type?[i,x.start,x.start+x.dur,x.mc.id,x.r.score,x.type]:null).filter(Boolean),cursor:'pointer'});
+  setChart('gantt',{...BASE(),color:types.map(t=>colors[t]),legend:LEG({data:types,icon:'roundRect'}),grid:{left:104,right:14,top:28,bottom:22},
+    tooltip:{...TT(),formatter:p=>{const v=p.value;const x=shown[v[0]];return`<b>${v[3]}</b> · ${esc(x.mc.type)}<br>${row('Event',v[5])}${row('Window',dstr(D-1+v[1])+(v[2]-v[1]>1?' → '+dstr(D-1+v[2]):''))}${row('Risk',v[4]+' · '+x.r.tier)}${row('Technician',esc(TECHS[x.mc.tech].short))}${x.mc.pf!=null&&x.type==='Pull-forward (AI)'?row('Was due',dstr(D-1+x.mc.nextPM)):''}${hint('Click for machine profile')}`}},
+    xAxis:{type:'value',min:0,max:30,interval:5,...AX(),axisLabel:{...AX().axisLabel,formatter:v=>v===0?'today':dstr(D-1+v),hideOverlap:true}},yAxis:{type:'category',data:shown.map(x=>x.mc.id+' '+x.mc.code),inverse:true,...AX(),splitLine:{show:false},axisLabel:{...AX().axisLabel,fontSize:9.5}},
+    series:types.map(mk).concat([{type:'line',data:[],markLine:{silent:true,symbol:'none',lineStyle:{color:C.ink,width:1,type:'solid',opacity:.5},label:{show:false},data:[{xAxis:0}]}}])},
+    p=>{if(p.value&&p.value[3])goDetail(p.value[3])})}
+const RF=[['Temperature',25,'temp'],['Vibration',30,'vib'],['Downtime trend',20,'down'],['Wear / cycles',15,'cyc'],['Quality drift',10,'q']];
+function renderRiskStack(){const{risk}=CUR;const el=$('riskstack');const n=clamp(Math.floor((el.clientHeight-(el.clientWidth<470?70:54))/19),3,10);const rows=[...risk.entries()].sort((a,b)=>b[1].score-a[1].score).slice(0,n).map(([m,r])=>({mc:machines[m],r}));const cols=[C.cyan,C.lime,C.violet,C.amber,C.coral];
+  const twoRow=el.clientWidth<470;
+  setChart('riskstack',{...BASE(),color:cols,legend:LEG({data:RF.map(f=>f[0]),icon:'roundRect',itemWidth:10,itemHeight:8,itemGap:8,textStyle:{color:C.ink2,fontFamily:MONO,fontSize:9.5},width:el.clientWidth-10}),grid:{left:104,right:14,top:twoRow?44:28,bottom:20},
+    tooltip:{...TT(),trigger:'axis',axisPointer:{type:'shadow',shadowStyle:{color:C.zone}},formatter:ps=>{const x=rows[ps[0].dataIndex];return`<b>${x.mc.id}</b> · risk ${x.r.score}/100<br>${ps.map(p=>`<div style="display:flex;justify-content:space-between;gap:14px">${key(p.color,p.seriesName)}<b style="font-family:${MONO}">${f1(p.value)} / ${RF[p.seriesIndex][1]}</b></div>`).join('')}${hint('Click for machine profile')}`}},
+    xAxis:{type:'value',max:100,...AX()},yAxis:{type:'category',data:rows.map(x=>x.mc.id+' · '+x.r.score),inverse:true,...AX(),splitLine:{show:false},axisLabel:{...AX().axisLabel,fontSize:9.5}},
+    series:RF.map((f,i)=>({name:f[0],type:'bar',stack:'r',data:rows.map(x=>+(f[1]*x.r.f[f[2]]).toFixed(1)),itemStyle:{color:cols[i],borderColor:C.panel,borderWidth:1},barMaxWidth:12,cursor:'pointer'}))},
+    p=>goDetail(rows[p.dataIndex].mc.id))}
+function techsInScope(){const{sc}=CUR;return TECHS.filter(t=>(sc.plant==='ALL'||t.plant===sc.plant)&&(!sc.line||t.machines.some(m=>machines[m].line===sc.line)))}
+function renderTechList(){const list=techsInScope().map(t=>({t,s:CUR.tstats[t.idx],sc:CUR.tscore[t.idx]})).sort((a,b)=>b.sc.score-a.sc.score);
+  fitList('techs','techList','techPager',list.map(x=>`<button type="button" class="rrow" data-tech="${x.t.id}" aria-label="${esc(x.t.name)}, reliability impact score ${x.sc.score}. Open technician profile"><span class="av">${x.t.initials}</span><span><b>${esc(x.t.name)}</b><span class="sub">${x.t.plant} · ${esc(x.t.spec)} · ${x.s.closed} WO · MTTR ${f1(x.s.mttr)} h · FTF ${Math.round(x.s.ftf*100)} %</span></span><span class="rn">${x.sc.score}</span></button>`),'technicians')}
+const COLS=[{k:'id',l:'Machine'},{k:'line',l:'Line'},{k:'plant',l:'Plant'},{k:'oee',l:'OEE',n:1},{k:'A',l:'Avail.',n:1},{k:'mtbf',l:'MTBF',n:1},{k:'dn',l:'Downtime',n:1},{k:'risk',l:'AI risk',n:1},{k:'next',l:'Next maint.',n:1},{k:'status',l:'Status'}];
+function tableRows(){const{cur}=CUR;const rows=[...cur.perMachine.entries()].map(([m,t])=>{const mc=machines[m];const o=oeeOf(t);const r=CUR_RISK_ALL.get(m);const nxt=mc.pf!=null?mc.pf:mc.nextPM;return{mc,id:mc.id,line:mc.line,plant:mc.plant,oee:o.oee*100,A:o.A*100,mtbf:t.fail?t.run/60/t.fail:t.run/60,fail:t.fail,dn:t.dn/60,risk:r.score,tier:r.tier,next:nxt,pf:mc.pf!=null,status:mc.status}});
+  const{key:k,dir}=state.sort;rows.sort((a,b)=>{const x=a[k],y=b[k];return(typeof x==='number'?x-y:String(x).localeCompare(String(y)))*dir});return rows}
+function renderTable(){const rows=tableRows();const{key:k,dir}=state.sort;
+  $('thead').innerHTML=COLS.map(c=>`<th scope="col" aria-sort="${k===c.k?(dir>0?'ascending':'descending'):'none'}"><button type="button" data-k="${c.k}">${c.l}</button></th>`).join('');
+  let ps=10;if(desk()){const wrap=$('tablewrap');const th=$('thead').offsetHeight||30;ps=Math.max(3,Math.floor((wrap.clientHeight-th-2)/36))}
+  const pages=Math.max(1,Math.ceil(rows.length/ps));state.tablePage=clamp(state.tablePage,0,pages-1);const st=state.tablePage*ps;const slice=rows.slice(st,st+ps);
+  $('tbody').innerHTML=slice.map(r=>{const m=STATUS_META[r.status];return`<tr tabindex="0" data-id="${r.id}" aria-label="${r.id}: open machine profile"><td>${r.id}<span class="sub">${esc(r.mc.type)} · ${r.mc.installed}</span></td><td>${r.line}<span class="sub">${esc(r.mc.lineName)}</span></td><td>${r.plant}</td><td><span class="bar"><i style="width:${clamp(r.oee,0,100).toFixed(0)}%"></i></span>${f1(r.oee)}%</td><td>${f1(r.A)}%</td><td>${r.fail?fint(r.mtbf)+' h':'> '+fint(r.mtbf)+' h'}<span class="sub">${r.fail} failure${r.fail===1?'':'s'}</span></td><td>${f1(r.dn)} h</td><td>${ring(r.risk,r.tier)}</td><td>${dstr(D-1+r.next)}<span class="sub">in ${r.next} d${r.pf?' · pulled fwd':''} · ${esc(TECHS[r.mc.tech].short)}</span></td><td><span class="pill ${r.status}">${m.glyph} ${m.label}</span></td></tr>`}).join('');
+  $('tableSub').textContent=`${rows.length} machines · sorted by ${COLS.find(c=>c.k===k).l.toLowerCase()} ${dir>0?'↑':'↓'} · click a row for its profile`;
+  $('tpager').innerHTML=`<span>${rows.length?st+1:0}–${Math.min(rows.length,st+ps)} of ${rows.length} machines</span><button type="button" data-d="-1" aria-label="Previous page" ${state.tablePage===0?'disabled':''}>‹</button><span style="margin:0">${state.tablePage+1} / ${pages}</span><button type="button" data-d="1" aria-label="Next page" ${state.tablePage>=pages-1?'disabled':''}>›</button>`}
+
+/* ───────── L3 · machine profile ───────── */
+function explainMachineDay(m,d,sm,z){let flag=0;const dr=new Array(8).fill(0),base=new Array(8).fill(0);
+  for(let s=0;s<3;s++){if(!(sm&(1<<s)))continue;const i=(m*D+d)*S+s;flag|=A_flag[i];for(let j=0;j<8;j++)dr[j]+=A_dr[i*8+j];for(let k=1;k<=14;k++){const ii=(m*D+d-k)*S+s;for(let j=0;j<8;j++)base[j]+=A_dr[ii*8+j]/14}}
+  const ex=dr.map((v,j)=>[j,v-base[j]]).sort((a,b)=>b[1]-a[1])[0];
+  const cause=flag&1?'Power outage':flag&2?'Material shortage':(flag&4&&z<0)?'Quality excursion':z>0?'Strong run':flag&8?'Breakdown':REASONS[ex[0]];
+  return{cause,text:z>0?'Above-normal day: downtime below the 14-day mean.':`${cause}: ${REASONS[ex[0]].toLowerCase()} +${f1(Math.max(0,ex[1])/60)} h vs 14-day mean.`}}
+function computeDetail(mc){const{sc,period}=CUR;const sm=sc.shiftMask;const m=mc.idx;const f={ms:[m],shiftMask:sm,d0:sc.d0,d1:sc.d1};
+  const cur=aggregate(f),prev=aggregate({...f,d0:f.d0-period,d1:f.d0-1},{totalsOnly:true});
+  const fit=aggregate({...f,d0:D-Math.max(period,56)});const fitSeries=fillNull(oeeSeries(fit.daily));const model=forecastModel(fitSeries,dow(fit.d0),14,7);
+  const ext=aggregate({...f,d0:f.d0-14});const extS=fillNull(oeeSeries(ext.daily));
+  const anoms=zscores(extS,14).filter(o=>Math.abs(o.z)>=2.5).map(o=>({...o,d:ext.d0+o.i})).map(o=>({...o,...explainMachineDay(m,o.d,sm,o.z)}));
+  const lineAgg=aggregate({...f,ms:machines.filter(x=>x.lineKey===mc.lineKey).map(x=>x.idx)});
+  const sd0=D-Math.max(period,30);const sens={cats:[],t:[],v:[]};for(let d=sd0;d<D;d++){let ts=0,vs=0,n=0;for(let s=0;s<3;s++){if(!(sm&(1<<s)))continue;const i=(m*D+d)*S+s;ts+=A_temp[i];vs+=A_vib[i];n++}sens.cats.push(dstr(d));sens.t.push(+(ts/n).toFixed(2));sens.v.push(+(vs/n).toFixed(3))}
+  return{mc,cur,prev,fit,fitSeries,model,anoms,lineAgg,risk:CUR_RISK_ALL.get(m),sens}}
+function machineRecs(mc,det){const{period}=CUR;const weeks=period/7;const r=det.risk;const t=det.cur.T;const o=oeeOf(t);const recs=[];
+  if(r.score>=40){const hAvoid=r.score/100*18;const units=hAvoid*60*mc.rate*0.9;recs.push({title:r.score>=70?`Pull PM forward to ${dstr(D-1+(mc.pf!=null?mc.pf:3))}`:`Add a condition check before PM on ${dstr(D-1+mc.nextPM)}`,ev:`Risk ${r.score}/100, led by ${r.drivers[0][0]} (${f1(r.drivers[0][1])} pts) and ${r.drivers[1][0]} (${f1(r.drivers[1][1])} pts).`,impact:`est. −${f1(hAvoid)} h unplanned downtime · +${fint(units)} units`,score:units})}
+  const j=[...t.dr].map((v,i)=>[i,v]).sort((a,b)=>b[1]-a[1])[0];if(j&&j[1]>0){const act=['Pre-stage changeover kits and sequence similar jobs','Raise the kanban buffer at this station','Move to condition-based tool change','Recalibrate and replace drifting sensors','Add a jam sensor and a clear-down routine','Pair with a lead operator on start-up','Check feeder breaker and UPS coverage','Book a root-cause review with the OEM'][j[0]];const units=j[1]*0.35*mc.rate*o.P*0.9/weeks;recs.push({title:`${act}`,ev:`${REASONS[j[0]]} is this machine's largest downtime reason: ${f1(j[1]/60)} h (${f1(j[1]/Math.max(1,t.dn)*100)} %) in ${period} days.`,impact:`est. +${fint(units)} units/week`,score:units})}
+  const lq=oeeOf(det.lineAgg.T).Q;if(o.Q<lq-0.002&&t.def>0){const dt=DEFECTS.map((d,i)=>[d,t.df[i]]).sort((a,b)=>b[1]-a[1])[0];const units=t.def*0.4/weeks;recs.push({title:`Contain ${dt[0].toLowerCase()} defects`,ev:`Quality ${f1(o.Q*100)} % vs ${f1(lq*100)} % for the line; ${dt[0].toLowerCase()} is ${f1(dt[1]/Math.max(1,t.def)*100)} % of ${fint(t.def)} rejects.`,impact:`est. +${fint(units)} good units/week`,score:units})}
+  const ei=CUR.eIdx.get(mc.idx)||100;if(ei>103){const kwh=(ei-100)/ei*t.kwh/weeks;recs.push({title:'Audit idle and standby power draw',ev:`Energy per unit is ${f1(ei)} vs 100 for the ${mc.type.toLowerCase()} median.`,impact:`est. −${fint(kwh)} kWh/week`,score:kwh*0.3})}
+  if(recs.length<2)recs.push({title:'Hold the current PM interval',ev:`Risk ${r.score}/100 and OEE ${f1(o.oee*100)} % are within the normal band for this machine type.`,impact:'no change needed',score:0});
+  return recs.sort((a,b)=>b.score-a.score).slice(0,3)}
+function riskPanelHTML(mc,r){const col=r.tier==='High'?C.coral:r.tier==='Watch'?C.amber:C.lime;
+  const F=[['Temp. drift',25,r.f.temp,`${sgn(r.tSlope,2)} °C/d`],['Vibration',30,r.f.vib,`${sgn(r.vSlope*1000,0)} µm/s/d`],['Downtime',20,r.f.down,`×${f1(r.ratio)}`],['Wear',15,r.f.cyc,`${mc.pmAgo}/${mc.pmInterval} d`],['Quality',10,r.f.q,`${f1(r.r14*100)} %`]];
+  return`<div class="rtop">${bigRing(r.score,col,'Risk score '+r.score)}<div><div class="rtier">${r.tier==='High'?'▲ ':r.tier==='Watch'?'◆ ':'● '}${r.tier} risk</div><div class="sub">PM due ${dstr(D-1+mc.nextPM)}${mc.pf!=null?' · AI: pull to '+dstr(D-1+mc.pf):''}</div></div></div>`+F.map(f=>`<div class="fac"><span class="fl">${f[0]}<small>${f[3]}</small></span><span class="fb"><i style="width:${(f[2]*100).toFixed(0)}%"></i></span><span class="fv">${f1(f[1]*f[2])}<small>/${f[1]}</small></span></div>`).join('')}
+function renderDetail(){const mc=machines.find(x=>x.id===state.detailId)||machines[topRisk()];state.detailId=mc.id;const det=computeDetail(mc);const{period}=CUR;const plant=PLANTS.find(p=>p.id===mc.plant);const t=TECHS[mc.tech];
+  const fromAn=state.from&&state.from!=='overview'&&state.from!=='detail'&&state.from!=='tech';
+  $('dCrumbs').innerHTML=`<li><a href="#overview">Overview</a></li>${fromAn?`<li><a href="#${state.from}">${PAGES[state.from]}</a></li>`:''}<li><button type="button" class="crumbbtn" data-line="${mc.plant}|${mc.line}" title="Filter every page to this line">${mc.lineKey} ${esc(mc.lineName)}</button></li><li aria-current="page">${mc.id}</li>`;
+  $('dTitle').textContent=mc.id+' · '+mc.type;const sm=STATUS_META[mc.status];$('dPill').innerHTML=`<span class="pill ${mc.status}">${sm.glyph} ${sm.label}</span>`;
+  $('dMeta').innerHTML=`${esc(plant.name)} · station ${mc.station} · installed ${mc.installed} · PM every ${mc.pmInterval} d, last ${mc.pmAgo} d ago · Technician <button type="button" class="crumbbtn" data-tech="${t.id}">${esc(t.name)} →</button>`;
+  $('dSel').value=mc.id;
+  renderKPIs($('dKpis'),det.cur,det.prev,period);
+  const cats=catsFor(det.cur.d0,period);const main=oeeSeries(det.cur.daily).map(r2);const lineAvg=oeeSeries(det.lineAgg.daily).map(r2);
+  const anom=det.anoms.map(a=>[a.d-det.cur.d0,main[a.d-det.cur.d0]]).filter(p=>p[0]>=0&&p[1]!=null);
+  setChart('dTrend',trendOption({cats,period,lines:[{name:'Line '+mc.line+' avg',data:lineAvg,c:C.steel,w:1.4,op:.9},{name:mc.id,data:main,c:C.ink,w:2.2}],model:det.model,last:det.fitSeries[det.fitSeries.length-1],anom,anomText:i=>{const a=det.anoms.find(x=>x.d-det.cur.d0===i);return a?'z '+f1(a.z)+' · '+a.text:''},w:$('dTrend').clientWidth}));
+  $('dModel').textContent=`MAPE ${f1(det.model.mape)} % · h 14 d`;
+  const sx=det.sens;const nS=sx.t.length;const lastN=Math.min(30,nS);const fitLine=arr=>{const xs=[],ys=[];for(let i=nS-lastN;i<nS;i++){xs.push(i);ys.push(arr[i])}const b=slope(xs,ys),a=mean(ys)-b*mean(xs);return arr.map((v,i)=>i>=nS-lastN?+(a+b*i).toFixed(3):null)};
+  $('dSensSub').textContent=`30-day slope ${sgn(det.risk.tSlope,2)} °C/d · ${sgn(det.risk.vSlope,3)} mm/s/d`;
+  const ttl=(text,top)=>({text,left:46,top,textStyle:{color:C.ink2,fontFamily:MONO,fontSize:10,fontWeight:500}});
+  setChart('dSens',{...BASE(),title:[ttl('TEMPERATURE °C',0),ttl('VIBRATION mm/s','50%')],grid:[{left:46,right:10,top:18,height:'30%'},{left:46,right:10,top:'64%',bottom:20}],
+    tooltip:{...TT(),trigger:'axis',formatter:ps=>{const i=ps[0].dataIndex;return`<div style="font-family:${MONO};color:${C.muted};font-size:11px">${sx.cats[i]}</div>${row('Temperature',f1(sx.t[i])+' °C')}${row('Vibration',sx.v[i].toFixed(2)+' mm/s')}`}},axisPointer:{link:[{xAxisIndex:'all'}]},
+    xAxis:[{gridIndex:0,type:'category',data:sx.cats,boundaryGap:false,...AX(),axisLabel:{show:false}},{gridIndex:1,type:'category',data:sx.cats,boundaryGap:false,...AX(),axisLabel:{...AX().axisLabel,hideOverlap:true}}],
+    yAxis:[{gridIndex:0,type:'value',...AX(),...niceAxis(sx.t)},{gridIndex:1,type:'value',...AX(),...niceAxis(sx.v)}],
+    series:[{name:'Temperature',type:'line',xAxisIndex:0,yAxisIndex:0,data:sx.t,showSymbol:false,lineStyle:{width:1.6,color:C.cyan},itemStyle:{color:C.cyan}},{name:'Temp trend',type:'line',xAxisIndex:0,yAxisIndex:0,data:fitLine(sx.t),showSymbol:false,lineStyle:{width:1.4,color:C.ink,opacity:.7},silent:true},
+      {name:'Vibration',type:'line',xAxisIndex:1,yAxisIndex:1,data:sx.v,showSymbol:false,lineStyle:{width:1.6,color:C.cyan},itemStyle:{color:C.cyan}},{name:'Vib trend',type:'line',xAxisIndex:1,yAxisIndex:1,data:fitLine(sx.v),showSymbol:false,lineStyle:{width:1.4,color:C.ink,opacity:.7},silent:true}]});
+  $('dRisk').innerHTML=riskPanelHTML(mc,det.risk);
+  const T=det.cur.T;const items=REASONS.map((r,j)=>({r:RSHORT[j],h:T.dr[j]/60})).sort((a,b)=>b.h-a.h);
+  if(T.dn<=0){chart('dReasons').clear();emptyOverlay($('dReasons'),true,'No downtime for this filter')}else
+  setChart('dReasons',{...BASE(),grid:{left:78,right:44,top:2,bottom:18},tooltip:{...TT(),formatter:p=>`<b>${p.name}</b> · ${f1(p.value)} h (${f1(p.value/(T.dn/60)*100)} %)`},xAxis:{type:'value',...AX(),axisLabel:{...AX().axisLabel,formatter:v=>v+' h',hideOverlap:true}},yAxis:{type:'category',data:items.map(i=>i.r),inverse:true,...AX(),splitLine:{show:false},axisLabel:{...AX().axisLabel,fontSize:9,interval:0}},series:[{type:'bar',data:items.map(i=>+i.h.toFixed(1)),barMaxWidth:10,itemStyle:{color:C.cyan,borderRadius:[0,4,4,0]},label:{show:true,position:'right',color:C.ink2,fontFamily:MONO,fontSize:9.5,formatter:p=>f1(p.value)}}]});
+  if(T.def<=0){chart('dDef').clear();emptyOverlay($('dDef'),true,'No rejects for this filter')}else setChart('dDef',donutOpt(T.df,T.def,T.act,$('dDef').clientWidth,true));
+  fitList('drecs','dRecs','dRecsPager',machineRecs(mc,det).map(recHTML),'actions')}
+
+/* ───────── L3 · technician profile ───────── */
+function techRecs(t,st){const{period}=CUR;const weeks=period/7;const recs=[];const peers=CUR.tstats;
+  const top=t.machines.map(m=>({mc:machines[m],r:CUR_RISK_ALL.get(m)})).sort((a,b)=>b.r.score-a.r.score)[0];
+  if(top.r.score>=40){const h=top.r.score/100*18;recs.push({title:`Prioritise a condition check on ${top.mc.id} (${top.mc.type})`,ev:`Highest risk in the assigned fleet at ${top.r.score}/100, led by ${top.r.drivers[0][0]}. PM due ${dstr(D-1+top.mc.nextPM)}${top.mc.pf!=null?'; AI pull-forward to '+dstr(D-1+top.mc.pf):''}.`,impact:`est. −${f1(h)} h unplanned downtime`,score:h*3})}
+  const rj=[...st.byRrep].map((v,i)=>[i,v]).sort((a,b)=>b[1]-a[1])[0];if(rj[1]>0){const repM=[...st.perM.entries()].sort((a,b)=>b[1].rep-a[1].rep)[0];const gain=st.wo?(rj[1]/2)/st.wo*100:0;recs.push({title:`Root-cause repeat ${REASONS[rj[0]].toLowerCase()} failures`,ev:`${rj[1]} of ${st.rep} repeats (same cause again within 48 h) were ${REASONS[rj[0]].toLowerCase()}; ${machines[repM[0]].id} had the most repeats (${repM[1].rep}).`,impact:`est. +${f1(gain)} pts first-time fix`,score:gain*2})}
+  const best=[...st.byR].map((v,i)=>[i,v]).filter(x=>x[1]>=2).sort((a,b)=>st.byRmin[b[0]]-st.byRmin[a[0]])[0];
+  if(best){const j=best[0];const mine=st.byRmin[j]/st.byR[j]/60;let pn=0,pm=0;peers.forEach((p,k)=>{if(k!==t.idx){pn+=p.byR[j];pm+=p.byRmin[j]}});const peer=pn?pm/pn/60:mine;
+    if(mine>peer*1.1){const save=(mine-peer)*st.byR[j];recs.push({title:`Pre-stage spares for ${REASONS[j].toLowerCase()} repairs`,ev:`MTTR on ${REASONS[j].toLowerCase()} is ${f1(mine)} h vs ${f1(peer)} h for peers over ${fint(st.byR[j])} work orders.`,impact:`est. −${f1(save/weeks)} h repair time/week`,score:save/weeks*4})}
+    else{const save=(peer-mine)*pn*0.25;recs.push({title:`Share the ${REASONS[j].toLowerCase()} repair routine with peers`,ev:`MTTR on ${REASONS[j].toLowerCase()} is ${f1(mine)} h vs ${f1(peer)} h for peers; a written routine could close a quarter of the gap across the team.`,impact:`est. −${f1(Math.max(0,save)/weeks)} h team repair time/week`,score:Math.max(0,save)/weeks*2})}}
+  if(recs.length<2)recs.push({title:'Keep the current maintenance cadence',ev:`Fleet OEE ${f1(st.oee*100)} % with first-time fix ${Math.round(st.ftf*100)} %; no gap above peer median.`,impact:'no change needed',score:0});
+  return recs.sort((a,b)=>b.score-a.score).slice(0,3)}
+function renderTech(){const t=TECHS.find(x=>x.id===state.techId)||TECHS[machines[topRisk()].tech];state.techId=t.id;const{sc,period,tmed}=CUR;const st=CUR.tstats[t.idx];const scr=CUR.tscore[t.idx];
+  const crumbs=[`<li><a href="#overview">Overview</a></li>`];
+  if(state.techFromMachine){const mc=machines.find(x=>x.id===state.techFromMachine);const fromAn=state.from&&!['overview','detail','tech'].includes(state.from);if(fromAn)crumbs.push(`<li><a href="#${state.from}">${PAGES[state.from]}</a></li>`);if(mc)crumbs.push(`<li><a href="#detail/${mc.id}">${mc.id}</a></li>`)}
+  else if(state.techFrom&&!['overview','tech','detail'].includes(state.techFrom))crumbs.push(`<li><a href="#${state.techFrom}">${PAGES[state.techFrom]}</a></li>`);
+  crumbs.push(`<li aria-current="page">${esc(t.name)} (Maintenance technician)</li>`);$('tCrumbs').innerHTML=crumbs.join('');
+  $('tAv').textContent=t.initials;$('tName').textContent=t.name;$('tSel').value=t.id;
+  const rank=CUR.tscore.map((s,i)=>[i,s.score]).sort((a,b)=>b[1]-a[1]).findIndex(x=>x[0]===t.idx)+1;
+  $('tMeta').textContent=`Maintenance technician · ${t.spec} · base ${t.plant} ${t.plantName} · ${t.shift} shift · since ${t.since} · ${t.machines.length} machines · rank ${rank}/${TECHS.length}`;$('tMeta').title=`${t.spec}: ${t.specTypes}`;
+  const cap='vs peer median';const fleetDaily=aggregate({ms:t.machines,shiftMask:sc.shiftMask,d0:sc.d0,d1:sc.d1});
+  const tiles=[
+    {lab:'WOs closed',val:fint(st.closed),unit:'',d:st.closed-tmed.closed,ds:'',good:1,info:'Corrective work orders (unplanned stoppages of 35 min or more on assigned machines) plus planned PM orders in the period.',svg:spark(st.woDaily,C.cyan)},
+    {lab:'MTTR',val:f1(st.mttr),unit:'h',d:st.mttr-tmed.mttr,ds:' h',good:-1,info:'Mean time to repair = total repair hours on corrective work orders ÷ number of those orders. Repair time depends on the failure cause.',svg:spark(st.mttrW,C.cyan)},
+    {lab:'First-time fix',val:f1(st.ftf*100),unit:'%',d:(st.ftf-tmed.ftf)*100,ds:' pts',good:1,info:'Share of corrective work orders not followed by a same-cause failure on the same machine within 48 h.',svg:spark(st.ftfW,C.cyan)},
+    {lab:'Fleet OEE',val:f1(st.oee*100),unit:'%',d:(st.oee-tmed.oee)*100,ds:' pts',good:1,info:'OEE of the machines assigned to this technician for the filtered period and shift.',svg:spark(fleetDaily.daily.map(x=>x.pl?oeeOf(x).oee:null),C.cyan)},
+    {lab:'Fleet avg risk',val:f1(st.risk),unit:'',d:st.risk-tmed.risk,ds:'',good:-1,info:'Mean failure-risk score (0–100) across assigned machines. Bars: each machine, highest first.',svg:sparkBars(st.risks.slice().sort((a,b)=>b-a),C.coral)},
+    {lab:'DT / machine',val:f1(st.dnPerM),unit:'h',d:st.dnPerM-tmed.dnPerM,ds:' h',good:-1,info:'Downtime hours on assigned machines ÷ number of assigned machines.',svg:spark(fleetDaily.daily.map(x=>x.dn/60),C.cyan)}];
+  $('tKpis').innerHTML=tiles.map(x=>tileHTML({...x,cap})).join('');
+  const fit=aggregate({ms:t.machines,shiftMask:sc.shiftMask,d0:D-Math.max(period,56),d1:D-1});const fitS=fillNull(oeeSeries(fit.daily));const model=forecastModel(fitS,dow(fit.d0),14,7);
+  const cats=catsFor(sc.d0,period);const main=oeeSeries(fleetDaily.daily).map(r2);const allAvg=oeeSeries(CUR.all.daily).map(r2);
+  const ext=aggregate({ms:t.machines,shiftMask:sc.shiftMask,d0:sc.d0-14,d1:D-1});const zs=zscores(fillNull(oeeSeries(ext.daily)),14).filter(o=>Math.abs(o.z)>=2.5);const anom=zs.map(o=>[o.i-14,main[o.i-14]]).filter(p=>p[0]>=0&&p[1]!=null);
+  setChart('tTrend',trendOption({cats,period,lines:[{name:'All plants avg',data:allAvg,c:C.steel,w:1.4,op:.9},{name:'Assigned fleet',data:main,c:C.ink,w:2.2}],model,last:fitS[fitS.length-1],anom,anomText:i=>{const o=zs.find(x=>x.i-14===i);return o?'z '+f1(o.z):''},w:$('tTrend').clientWidth}));
+  $('tModel').textContent=`MAPE ${f1(model.mape)} % · h 14 d`;
+  const rel=(v,m,dir)=>m?(v-m)/Math.abs(m)*100*dir:0;
+  const met=[['First-time fix',rel(st.ftf,tmed.ftf,1)],['Repair speed (MTTR)',rel(st.mttr,tmed.mttr,-1)],['Fleet OEE',rel(st.oee,tmed.oee,1)],['Downtime / machine',rel(st.dnPerM,tmed.dnPerM,-1)],['Repeat failures',rel(st.repPerM,tmed.repPerM,-1)],['Fleet risk',rel(st.risk,tmed.risk,-1)]].map(x=>[x[0],clamp(x[1],-60,60)]).sort((a,b)=>b[1]-a[1]);
+  setChart('tSG',{...BASE(),grid:{left:122,right:44,top:4,bottom:20},tooltip:{...TT(),formatter:p=>`<b>${p.name}</b><br>${p.value>=0?'Strength':'Gap'} · ${p.value>=0?'+':'−'}${f1(Math.abs(p.value))} % vs peer median`},
+    xAxis:{type:'value',min:v=>Math.min(-10,Math.floor(v.min/10)*10),max:v=>Math.max(10,Math.ceil(v.max/10)*10),...AX(),axisLabel:{...AX().axisLabel,formatter:v=>(v>0?'+':'')+v+'%'}},yAxis:{type:'category',data:met.map(m=>m[0]),inverse:true,...AX(),splitLine:{show:false},axisLine:{show:false},axisLabel:{...AX().axisLabel,fontSize:9,interval:0}},
+    series:[{type:'bar',data:met.map(m=>({value:+m[1].toFixed(1),itemStyle:{color:m[1]>=0?C.cyan:C.coral,borderRadius:m[1]>=0?[0,4,4,0]:[4,0,0,4]}})),barMaxWidth:12,label:{show:true,position:'right',color:C.ink2,fontFamily:MONO,fontSize:9.5,formatter:p=>(p.value>=0?'▲ +':'▼ −')+f1(Math.abs(p.value))},markLine:{silent:true,symbol:'none',lineStyle:{color:C.ink2,type:'solid',width:1},label:{show:false},data:[{xAxis:0}]}}]});
+  const col=scr.score>=70?C.lime:scr.score>=45?C.amber:C.coral;
+  $('tScore').innerHTML=`<div class="rtop">${bigRing(scr.score,col,'Score '+scr.score)}<div><div class="rtier">Rank ${rank} of ${TECHS.length}</div><div class="sub">peer median ${median(CUR.tscore.map(s=>s.score))}</div></div></div>`+scr.parts.map(p=>`<div class="fac"><span class="fl">${p[0]}<small>${p[3]}</small></span><span class="fb"><i style="width:${(p[2]*100).toFixed(0)}%"></i></span><span class="fv">${f1(p[1]*p[2])}<small>/${p[1]}</small></span></div>`).join('');
+  const ml=t.machines.map(m=>({mc:machines[m],r:CUR_RISK_ALL.get(m),pm:st.perM.get(m)})).sort((a,b)=>b.r.score-a.r.score);
+  fitList('tmach','tMachList','tMachPager',ml.map(x=>`<button type="button" class="rrow" data-id="${x.mc.id}" aria-label="${x.mc.id}, risk ${x.r.score}. Open machine profile">${ring(x.r.score,x.r.tier)}<span><b>${x.mc.id}</b><span class="sub">${esc(x.mc.type)} · ${STATUS_META[x.mc.status].glyph} ${x.mc.status}</span></span><span class="rn">${x.pm.wo} WO · ${x.pm.rep} rep.</span></button>`),'machines');
+  const rs=REASONS.map((r,j)=>({j,r:RSHORT[j],wo:st.byR[j],rep:st.byRrep[j]})).filter(x=>UNPL[x.j]);
+  if(!st.wo){chart('tWO').clear();emptyOverlay($('tWO'),true,'No corrective work orders in this period')}else
+  setChart('tWO',{...BASE(),legend:LEG({data:['First-time fixed','Repeat'],icon:'roundRect'}),grid:{left:76,right:30,top:26,bottom:18},tooltip:{...TT(),trigger:'axis',axisPointer:{type:'shadow',shadowStyle:{color:C.zone}},formatter:ps=>`<b>${ps[0].name}</b>${ps.map(p=>row(p.seriesName,fint(p.value))).join('')}`},
+    xAxis:{type:'value',minInterval:1,...AX()},yAxis:{type:'category',data:rs.map(x=>x.r),inverse:true,...AX(),splitLine:{show:false},axisLabel:{...AX().axisLabel,fontSize:9.5}},
+    series:[{name:'First-time fixed',type:'bar',stack:'w',data:rs.map(x=>x.wo-x.rep),barMaxWidth:12,itemStyle:{color:C.cyan,borderColor:C.panel,borderWidth:1}},{name:'Repeat',type:'bar',stack:'w',data:rs.map(x=>x.rep),barMaxWidth:12,itemStyle:{color:C.amber,borderColor:C.panel,borderWidth:1},label:{show:true,position:'right',color:C.ink2,fontFamily:MONO,fontSize:9.5,formatter:p=>fint(rs[p.dataIndex].wo)}}]});
+  fitList('trecs','tRecs','tRecsPager',techRecs(t,st).map(recHTML),'actions')}
+
+/* ───────── routing ───────── */
+function buildHash(page){page=page||state.page||'overview';let h='#'+page;if(page==='detail'&&state.detailId)h+='/'+state.detailId;if(page==='tech'&&state.techId)h+='/'+state.techId;const p=new URLSearchParams();p.set('period',state.period);p.set('plant',state.plant);p.set('shift',state.shift);if(state.drill)p.set('line',state.drill.plant+'-'+state.drill.line);return h+'?'+p.toString()}
+function syncHash(){try{history.replaceState(history.state,'',location.pathname+location.search+buildHash())}catch(e){}}
+function parseHash(){let h=location.hash.slice(1);let q='';const qi=h.indexOf('?');if(qi>=0){q=h.slice(qi+1);h=h.slice(0,qi)}h=decodeURIComponent(h);const params=new URLSearchParams(q);const s=new URLSearchParams(location.search.slice(1));if(s.get('theme')&&!params.get('theme'))params.set('theme',s.get('theme'));const slash=h.indexOf('/');const base=slash>=0?h.slice(0,slash):h;const id=slash>=0?h.slice(slash+1):null;return{page:PAGE_ORDER.includes(base)?base:'overview',id,params}}
+function applyParams(p){if(![...p.keys()].some(k=>['period','plant','shift','line'].includes(k)))return false;const before=JSON.stringify([state.period,state.plant,state.shift,state.drill]);
+  const per=+p.get('period');if([7,30,60,90].includes(per))state.period=per;const pl=p.get('plant');if(pl&&(pl==='ALL'||PLANTS.some(x=>x.id===pl)))state.plant=pl;const sh=p.get('shift');if(sh&&['ALL','0','1','2'].includes(sh))state.shift=sh;
+  const ln=p.get('line');if(ln&&/^P[1-3]-L[1-5]$/.test(ln)){const[a,b]=ln.split('-');state.drill={plant:a,line:b}}else state.drill=null;
+  if(state.plant!=='ALL')state.floorPlant=state.plant;return before!==JSON.stringify([state.period,state.plant,state.shift,state.drill])}
+function nav(hash){hideCtx();hideTip();const d=(history.state&&history.state.d)||0;try{history.pushState({d:d+1},'',location.pathname+location.search+hash)}catch(e){location.hash=hash;return}route()}
+function replaceNav(hash){try{history.replaceState(history.state,'',location.pathname+location.search+hash)}catch(e){}route()}
+const goDetail=id=>nav('#detail/'+encodeURIComponent(id));
+const goTech=id=>nav('#tech/'+encodeURIComponent(id));
+function route(){const r=parseHash();const tp=r.params.get('theme');if((tp==='light'||tp==='dark')&&tp!==C.name)applyTheme(tp,false);
+  if(applyParams(r.params)||!CUR){state.fit={};state.tablePage=0;compute()}
+  const prev=state.page;
+  if(r.page==='detail'){let mc=machines.find(x=>x.id===r.id);if(!mc)mc=machines.find(x=>x.id===state.detailId)||machines[topRisk()];state.detailId=mc.id;if(prev!=='detail'&&prev!=='tech')state.from=prev||'overview'}
+  if(r.page==='tech'){let t=TECHS.find(x=>x.id===r.id);if(!t)t=TECHS.find(x=>x.id===state.techId)||TECHS[machines[topRisk()].tech];state.techId=t.id;if(prev==='detail')state.techFromMachine=state.detailId;else if(prev!=='tech'){state.techFromMachine=null;state.techFrom=prev||'overview'}}
+  state.page=r.page;
+  document.querySelectorAll('.page').forEach(p=>p.classList.toggle('on',p.id==='pg-'+r.page));
+  document.querySelectorAll('#menu a').forEach(a=>{if(a.dataset.page===r.page)a.setAttribute('aria-current','page');else a.removeAttribute('aria-current')});
+  $('menuDetail').href='#detail/'+(state.detailId||machines[topRisk()].id);$('menuTech').href='#tech/'+(state.techId||TECHS[machines[topRisk()].tech].id);
+  hideCtx();hideTip();$('ftip').style.display='none';syncControls();renderChips();renderPage();syncHash();
+  if(prev&&prev!==r.page&&!desk())window.scrollTo(0,0)}
+function goBack(fallback){if(history.state&&history.state.d>0)history.back();else nav(fallback)}
+
+/* ───────── page render + status ───────── */
+function renderPage(){const p=state.page;
+  if(p==='overview'){renderKPIs($('kpis'),CUR.cur,CUR.prev,CUR.period);renderFloor();renderTrend();renderSummary()}
+  else if(p==='insights'){renderForecast();renderNarrative();renderAnomalies();renderAsk();renderRecs();renderRiskList()}
+  else if(p==='lines'){renderGauges();renderShift();renderBullet();renderHeat()}
+  else if(p==='downtime'){renderPareto();renderDefects();renderScatter();renderTopDown()}
+  else if(p==='maintenance'){renderGantt();renderRiskStack();renderTechList();renderTable()}
+  else if(p==='detail')renderDetail();
+  else if(p==='tech')renderTech();
+  const i=PAGE_ORDER.indexOf(p);$('sbPage').textContent=`Page ${i+1} of ${PAGE_ORDER.length} · ${PAGES[p]}`;
+  $('sbRows').innerHTML=`Rows <b>${(machines.length*D*S).toLocaleString('en-US')}</b> generated · <b>${CUR.cur.T.n.toLocaleString('en-US')}</b> in scope · <b>${CUR.sc.ms.length}</b> machines`;
+  measureSoon()}
+let mt=null;function measureSoon(){clearTimeout(mt);mt=setTimeout(measureFit,120)}
+function measureFit(){const de=document.documentElement;let sc=0;const ids=[];document.querySelectorAll('body *').forEach(el=>{const cs=getComputedStyle(el);if(((cs.overflowY==='auto'||cs.overflowY==='scroll')&&el.scrollHeight>el.clientHeight+1)||((cs.overflowX==='auto'||cs.overflowX==='scroll')&&el.scrollWidth>el.clientWidth+1)){sc++;ids.push(el.id||el.className)}});
+  const ov=[];document.querySelectorAll('.page.on .panel,.page.on .kpi,.page.on .phd').forEach(p=>{if(p.scrollHeight>p.clientHeight+2||p.scrollWidth>p.clientWidth+2)ov.push((p.id||p.className.split(' ')[0])+':'+(p.scrollHeight-p.clientHeight))});
+  if(state.page==='insights'&&desk()){const qs=document.querySelectorAll('#qchips .qchip');const last=qs[qs.length-1];if(last&&last.getBoundingClientRect().bottom>$('askForm').getBoundingClientRect().top+1)ov.push('ask:chips-overlap-input')}
+  document.querySelectorAll('.page.on .rpanel').forEach(f=>{const k=f.lastElementChild;if(desk()&&k){const d=k.getBoundingClientRect().bottom-f.getBoundingClientRect().bottom;if(d>1)ov.push('rpanel:'+f.id+':'+Math.round(d)+'px of '+Math.round(f.clientHeight))}});
+  document.querySelectorAll('.page.on .fit').forEach(f=>{const k=f.firstElementChild;if(k&&k.getBoundingClientRect().bottom>f.getBoundingClientRect().bottom+1)ov.push('fit:'+f.id)});
+  const tr=[];document.querySelectorAll('.page.on .ptitle,.page.on .psub,.page.on .kpi .lab span,.page.on .fac .fl').forEach(el=>{if(el.offsetParent!==null&&el.scrollWidth>el.clientWidth+1)tr.push(el.textContent.replace(/\s+/g,' ').trim().slice(0,32))});
+  document.querySelectorAll('.page.on .phead').forEach(h=>{const t=h.querySelector('.ptitle'),r=h.querySelector(':scope > .pright, :scope > .cm');if(t&&r){const a=t.getBoundingClientRect(),b=r.getBoundingClientRect();if(b.top<a.bottom-2&&a.right>b.left+1)tr.push('overlap:'+t.textContent.trim().slice(0,24))}});
+  de.dataset.trunc=tr.length?tr.join(' | '):'none';
+  de.dataset.fit=`page=${state.page} theme=${C.name} sh=${de.scrollHeight} ih=${innerHeight} sw=${de.scrollWidth} iw=${innerWidth} scrollers=${sc}${sc?' ['+ids.join(',')+']':''} overflow=${ov.length}${ov.length?' ['+ov.join(',')+']':''}`}
+
+/* ───────── theme ───────── */
+const SUN='<svg viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="3" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M8 1v2M8 13v2M1 8h2M13 8h2M3 3l1.4 1.4M11.6 11.6 13 13M3 13l1.4-1.4M11.6 4.4 13 3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>';
+const MOON='<svg viewBox="0 0 16 16" aria-hidden="true"><path d="M13.5 10.2A6 6 0 0 1 5.8 2.5a6 6 0 1 0 7.7 7.7z" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/></svg>';
+function paintThemeBtn(){const b=$('themeBtn');const dark=C.name==='dark';b.innerHTML=dark?SUN:MOON;b.setAttribute('aria-label',dark?'Switch to light theme':'Switch to dark theme');b.title=b.getAttribute('aria-label')}
+function applyTheme(t,save){document.documentElement.setAttribute('data-theme',t);C=THEMES[t];if(save){try{localStorage.setItem('sft-theme',t)}catch(e){}}paintThemeBtn()}
+
+/* ───────── controls, chips, menus ───────── */
+function renderChips(){const c=$('chips');if(!state.drill){c.innerHTML='';return}const ln=LINES[+state.drill.line.slice(1)-1];c.innerHTML=`<span class="chip">Line ${state.drill.plant}-${state.drill.line} · ${esc(ln)}<button type="button" aria-label="Clear line filter" id="chipClear">×</button></span>`;$('chipClear').addEventListener('click',()=>{state.drill=null;update()})}
+function syncControls(){document.querySelectorAll('#periodSeg button').forEach(b=>b.setAttribute('aria-pressed',String(+b.dataset.p===state.period)));$('plantSel').value=state.plant;$('shiftSel').value=state.shift;document.querySelectorAll('#heatSeg button').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.m===state.heatMode)))}
+function update(){state.fit={};state.tablePage=0;compute();syncControls();renderChips();renderPage();syncHash()}
+function toggleLine(plant,line,force){if(!force&&state.drill&&state.drill.line===line&&state.drill.plant===plant)state.drill=null;else state.drill={plant,line};if(state.plant!=='ALL'&&state.plant!==plant)state.plant='ALL';update()}
+const ctx=$('ctx');
+function showCtx(x,y,items){ctx.innerHTML=items.map((it,i)=>`<button type="button" role="menuitem" data-i="${i}">${esc(it.label)}</button>`).join('');ctx.hidden=false;const w=ctx.offsetWidth,h=ctx.offsetHeight;ctx.style.left=Math.max(4,Math.min(x,innerWidth-w-8))+'px';ctx.style.top=Math.max(4,Math.min(y,innerHeight-h-8))+'px';ctx.onclick=e=>{const b=e.target.closest('button');if(b){hideCtx();items[+b.dataset.i].fn()}};const f=ctx.querySelector('button');if(f)f.focus()}
+function hideCtx(){ctx.hidden=true}
+ctx.addEventListener('keydown',e=>{const bs=[...ctx.querySelectorAll('button')];const i=bs.indexOf(document.activeElement);if(e.key==='ArrowDown'){e.preventDefault();bs[(i+1)%bs.length].focus()}else if(e.key==='ArrowUp'){e.preventDefault();bs[(i-1+bs.length)%bs.length].focus()}});
+const itip=$('itip');let tipFor=null;
+function showTip(el){itip.textContent=el.dataset.info;itip.hidden=false;const b=el.getBoundingClientRect();const w=itip.offsetWidth,h=itip.offsetHeight;let x=b.left,y=b.bottom+6;if(x+w>innerWidth-8)x=innerWidth-w-8;if(y+h>innerHeight-8)y=b.top-h-6;itip.style.left=Math.max(8,x)+'px';itip.style.top=Math.max(8,y)+'px';el.setAttribute('aria-describedby','itip');tipFor=el}
+function hideTip(){itip.hidden=true;if(tipFor){tipFor.removeAttribute('aria-describedby');tipFor=null}}
+function toast(msg){const t=$('toast');t.textContent=msg;t.hidden=false;clearTimeout(toast.t);toast.t=setTimeout(()=>t.hidden=true,2200)}
+function download(name,blob){const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=name;document.body.appendChild(a);a.click();setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove()},500)}
+const csvCell=v=>{const s=String(v==null?'':v);return/[",\n]/.test(s)?'"'+s.replace(/"/g,'""')+'"':s};
+function pageCSV(){const p=state.page;const{cur,model,period}=CUR;let rows;
+  if(p==='maintenance'){rows=[['machine','type','line','plant','oee_pct','availability_pct','mtbf_h','failures','downtime_h','risk_score','risk_tier','next_maintenance','technician','status']].concat(tableRows().map(r=>[r.id,r.mc.type,r.mc.lineKey,r.plant,f1(r.oee),f1(r.A),f1(r.mtbf),r.fail,f1(r.dn),r.risk,r.tier,diso(D-1+r.next),TECHS[r.mc.tech].name,r.status]))}
+  else if(p==='lines'){rows=[['line','plan_units','actual_units','vs_plan_pct','oee_pct','availability_pct','performance_pct','quality_pct']].concat([...cur.perLine.entries()].sort().map(([k,t])=>{const o=oeeOf(t);return[k,t.plU,t.act,f1(t.plU?t.act/t.plU*100:0),f1(o.oee*100),f1(o.A*100),f1(o.P*100),f1(o.Q*100)]}))}
+  else if(p==='downtime'){rows=[['reason','downtime_h','share_pct']].concat(REASONS.map((r,j)=>[r,f1(cur.T.dr[j]/60),f1(cur.T.dr[j]/Math.max(1,cur.T.dn)*100)])).concat([[],['defect_type','rejects']]).concat(DEFECTS.map((d,i)=>[d,Math.round(cur.T.df[i])]))}
+  else if(p==='insights'){rows=[['machine','risk_score','tier','temperature_pts','vibration_pts','downtime_trend_pts','wear_pts','quality_pts']].concat([...CUR.risk.entries()].sort((a,b)=>b[1].score-a[1].score).map(([m,r])=>[machines[m].id,r.score,r.tier,...RF.map(f=>f1(f[1]*r.f[f[2]]))]))}
+  else if(p==='detail'){const mc=machines.find(x=>x.id===state.detailId);const det=computeDetail(mc);rows=[['date','oee_pct','downtime_min','actual_units','plan_units']].concat(det.cur.daily.map((t,i)=>[diso(det.cur.d0+i),t.pl?f1(oeeOf(t).oee*100):'',t.dn,t.act,t.plU]))}
+  else if(p==='tech'){const t=TECHS.find(x=>x.id===state.techId);const st=CUR.tstats[t.idx];rows=[['machine','type','risk_score','corrective_work_orders','repeat_work_orders']].concat(t.machines.map(m=>[machines[m].id,machines[m].type,CUR_RISK_ALL.get(m).score,st.perM.get(m).wo,st.perM.get(m).rep]))}
+  else{const s=[0,1,2].map(i=>oeeSeries(cur.dailyShift[i]));rows=[['date','oee_all_pct','oee_day_pct','oee_evening_pct','oee_night_pct','forecast_pct','forecast_lo_pct','forecast_hi_pct']].concat(cur.daily.map((t,i)=>[diso(cur.d0+i),t.pl?f1(oeeOf(t).oee*100):'',...s.map(a=>a[i]==null?'':f1(a[i])),'','',''])).concat(model.fc.map((v,j)=>[diso(D+j),'','','','',f1(v),f1(model.lo[j]),f1(model.hi[j])]))}
+  const scopeTxt=`${state.plant}_${state.drill?state.drill.plant+'-'+state.drill.line+'_':''}${state.shift==='ALL'?'all-shifts':SHIFT_NAMES[+state.shift]}_${period}d`;
+  download(`helix-twin_${p}_${scopeTxt}.csv`,new Blob(['﻿'+rows.map(r=>r.map(csvCell).join(',')).join('\r\n')],{type:'text/csv;charset=utf-8'}));toast('CSV exported · '+(rows.length-1)+' rows')}
+function copyLink(){syncHash();const url=location.href;const done=()=>toast('Link copied · page and filters encoded');const fallback=()=>{const ta=document.createElement('textarea');ta.value=url;ta.setAttribute('readonly','');ta.style.position='fixed';ta.style.opacity='0';document.body.appendChild(ta);ta.select();let ok=false;try{ok=document.execCommand('copy')}catch(e){}ta.remove();ok?done():toast('Copy this link: '+url)};
+  let settled=false;const once=fn=>()=>{if(settled)return;settled=true;fn()};const ok=once(done),fb=once(fallback);
+  if(navigator.clipboard&&window.isSecureContext){navigator.clipboard.writeText(url).then(ok,fb);setTimeout(fb,1200)}else fb()}
+let fsReturn=null;
+function openFocus(id,title,btn){const opt=OPT[id];if(!opt)return;$('fs').hidden=false;$('fsTitle').textContent=title;fsReturn=btn;if(charts.fsChart){charts.fsChart.dispose();delete charts.fsChart}const ch=chart('fsChart');ch.setOption(opt,true);ch.off('click');setTimeout(()=>ch.resize(),30);$('fsClose').focus()}
+function closeFocus(){if($('fs').hidden)return;$('fs').hidden=true;if(charts.fsChart){charts.fsChart.dispose();delete charts.fsChart}if(fsReturn)fsReturn.focus()}
+function pngOf(id,title){const ch=charts[id];if(!ch)return;const url=ch.getDataURL({type:'png',pixelRatio:2,backgroundColor:C.panel});fetch(url).then(r=>r.blob()).then(b=>download(`helix-twin_${id}.png`,b)).catch(()=>{const a=document.createElement('a');a.href=url;a.download=`helix-twin_${id}.png`;a.click()});toast('PNG downloaded · '+title)}
+
+/* ───────── bindings ───────── */
+function bind(){
+  $('periodSeg').addEventListener('click',e=>{const b=e.target.closest('button');if(b){state.period=+b.dataset.p;update()}});
+  $('plantSel').addEventListener('change',e=>{state.plant=e.target.value;if(state.drill&&state.plant!=='ALL'&&state.drill.plant!==state.plant)state.drill=null;if(state.plant!=='ALL')state.floorPlant=state.plant;update()});
+  $('shiftSel').addEventListener('change',e=>{state.shift=e.target.value;update()});
+  $('resetBtn').addEventListener('click',()=>{Object.assign(state,{period:30,plant:'ALL',shift:'ALL',drill:null,floorPlant:'P1',heatMode:'oee',question:0,askMiss:false,sort:{key:'risk',dir:-1}});$('askInput').value='';update()});
+  $('heatSeg').addEventListener('click',e=>{const b=e.target.closest('button');if(b){state.heatMode=b.dataset.m;syncControls();renderHeat()}});
+  $('themeBtn').addEventListener('click',()=>{applyTheme(C.name==='dark'?'light':'dark',true);renderPage()});
+  $('csvBtn').addEventListener('click',pageCSV);$('linkBtn').addEventListener('click',copyLink);
+  $('fsClose').addEventListener('click',closeFocus);
+  document.addEventListener('click',e=>{if(!ctx.hidden&&!ctx.contains(e.target)&&!e.target.closest('.cm'))hideCtx();
+    const a=e.target.closest('a[href^="#"]');if(a&&!e.ctrlKey&&!e.metaKey&&!e.shiftKey){e.preventDefault();nav(a.getAttribute('href'));return}
+    const cm=e.target.closest('.cm');if(cm){const id=cm.dataset.chart,title=cm.dataset.title;const b=cm.getBoundingClientRect();showCtx(b.left-150,b.bottom+4,[{label:'Download PNG',fn:()=>pngOf(id,title)},{label:'Focus view (fullscreen)',fn:()=>openFocus(id,title,cm)},{label:'Export page CSV',fn:pageCSV}]);return}
+    const rr=e.target.closest('.rrow[data-id]');if(rr){goDetail(rr.dataset.id);return}
+    const rt=e.target.closest('[data-tech]');if(rt){goTech(rt.dataset.tech);return}
+    const cl=e.target.closest('.crumbbtn[data-line]');if(cl){const[p,l]=cl.dataset.line.split('|');state.drill={plant:p,line:l};state.fit={};state.tablePage=0;compute();nav('#overview')}});
+  document.addEventListener('keydown',e=>{if(e.key==='Escape'){hideCtx();hideTip();closeFocus()}});
+  document.addEventListener('mouseover',e=>{const b=e.target.closest('.ib');if(b)showTip(b)});document.addEventListener('mouseout',e=>{const b=e.target.closest('.ib');if(b)hideTip()});
+  document.addEventListener('focusin',e=>{const b=e.target.closest('.ib');if(b)showTip(b)});document.addEventListener('focusout',e=>{const b=e.target.closest('.ib');if(b)hideTip()});
+  $('menu').addEventListener('keydown',e=>{const links=[...document.querySelectorAll('#menu a')];const i=links.indexOf(document.activeElement);if(i<0)return;let j=null;if(e.key==='ArrowDown'||e.key==='ArrowRight')j=(i+1)%links.length;else if(e.key==='ArrowUp'||e.key==='ArrowLeft')j=(i-1+links.length)%links.length;else if(e.key==='Home')j=0;else if(e.key==='End')j=links.length-1;if(j!=null){e.preventDefault();links[j].focus()}});
+  const host=$('floor'),tip=$('ftip');
+  host.addEventListener('mousemove',e=>{const g=e.target.closest('.mach');if(g)floorTip(+g.dataset.m,e);else tip.style.display='none'});
+  host.addEventListener('mouseleave',()=>tip.style.display='none');
+  host.addEventListener('focusin',e=>{const g=e.target.closest('.mach');if(g){const b=g.getBoundingClientRect();floorTip(+g.dataset.m,{clientX:b.right,clientY:b.bottom})}});
+  host.addEventListener('focusout',()=>tip.style.display='none');
+  host.addEventListener('click',e=>{const m=e.target.closest('.mach');if(m){goDetail(machines[+m.dataset.m].id);return}const g=e.target.closest('.lanehit');if(g)toggleLine(g.dataset.plant,g.dataset.line)});
+  host.addEventListener('keydown',e=>{if(e.key!=='Enter'&&e.key!==' ')return;const m=e.target.closest('.mach');if(m){e.preventDefault();goDetail(machines[+m.dataset.m].id);return}const g=e.target.closest('.lanehit');if(g){e.preventDefault();toggleLine(g.dataset.plant,g.dataset.line)}});
+  host.addEventListener('contextmenu',e=>{const m=e.target.closest('.mach');if(!m)return;e.preventDefault();tip.style.display='none';const mc=machines[+m.dataset.m];const b=m.getBoundingClientRect();showCtx(e.clientX||b.right,e.clientY||b.bottom,[{label:'Drill through → Machine profile',fn:()=>goDetail(mc.id)},{label:'Drill through → Technician '+TECHS[mc.tech].short,fn:()=>goTech(TECHS[mc.tech].id)},{label:'Filter every page to '+mc.lineKey,fn:()=>toggleLine(mc.plant,mc.line,true)}])});
+  $('floorTabs').addEventListener('click',e=>{const b=e.target.closest('button');if(b){state.floorPlant=b.dataset.fp;renderFloor()}});
+  $('thead').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;const k=b.dataset.k;if(state.sort.key===k)state.sort.dir*=-1;else state.sort={key:k,dir:(COLS.find(c=>c.k===k).n?-1:1)};state.tablePage=0;renderTable()});
+  $('tpager').addEventListener('click',e=>{const b=e.target.closest('button');if(!b||b.disabled)return;state.tablePage+=+b.dataset.d;renderTable()});
+  const tb=$('tbody');tb.addEventListener('click',e=>{const tr=e.target.closest('tr');if(tr)goDetail(tr.dataset.id)});tb.addEventListener('keydown',e=>{if(e.key==='Enter'){const tr=e.target.closest('tr');if(tr){e.preventDefault();goDetail(tr.dataset.id)}}});
+  tb.addEventListener('contextmenu',e=>{const tr=e.target.closest('tr');if(!tr)return;e.preventDefault();const mc=machines.find(x=>x.id===tr.dataset.id);const b=tr.getBoundingClientRect();showCtx(e.clientX||b.left+40,e.clientY||b.bottom,[{label:'Drill through → Machine profile',fn:()=>goDetail(mc.id)},{label:'Drill through → Technician '+TECHS[mc.tech].short,fn:()=>goTech(TECHS[mc.tech].id)}])});
+  $('dSel').innerHTML=PLANTS.map(p=>LINES.map((ln,li)=>`<optgroup label="${p.id}-L${li+1} ${ln}">${machines.filter(m=>m.lineKey===p.id+'-L'+(li+1)).map(m=>`<option value="${m.id}">${m.id} · ${m.code}</option>`).join('')}</optgroup>`).join('')).join('');
+  $('tSel').innerHTML=PLANTS.map(p=>`<optgroup label="${p.id} ${p.name}">${TECHS.filter(t=>t.plant===p.id).map(t=>`<option value="${t.id}">${esc(t.name)} · ${esc(t.spec)}</option>`).join('')}</optgroup>`).join('');
+  $('dSel').addEventListener('change',e=>replaceNav('#detail/'+e.target.value));
+  $('dPrev').addEventListener('click',()=>{const i=machines.findIndex(m=>m.id===state.detailId);replaceNav('#detail/'+machines[(i-1+machines.length)%machines.length].id)});
+  $('dNext').addEventListener('click',()=>{const i=machines.findIndex(m=>m.id===state.detailId);replaceNav('#detail/'+machines[(i+1)%machines.length].id)});
+  $('tSel').addEventListener('change',e=>replaceNav('#tech/'+e.target.value));
+  $('tPrev').addEventListener('click',()=>{const i=TECHS.findIndex(t=>t.id===state.techId);replaceNav('#tech/'+TECHS[(i-1+TECHS.length)%TECHS.length].id)});
+  $('tNext').addEventListener('click',()=>{const i=TECHS.findIndex(t=>t.id===state.techId);replaceNav('#tech/'+TECHS[(i+1)%TECHS.length].id)});
+  $('dBack').addEventListener('click',()=>goBack('#'+(state.from||'overview')));
+  $('tBack').addEventListener('click',()=>goBack(state.techFromMachine?'#detail/'+state.techFromMachine:'#'+(state.techFrom||'overview')));
+  $('qchips').innerHTML=QUESTIONS.map((q,i)=>`<button type="button" class="qchip" data-q="${i}" aria-pressed="false" aria-label="${esc(q)}">${esc(QCHIP[i])}</button>`).join('');
+  $('qchips').addEventListener('click',e=>{const b=e.target.closest('.qchip');if(b){state.question=+b.dataset.q;state.askMiss=false;$('askInput').value='';answer(state.question)}});
+  $('askForm').addEventListener('submit',e=>{e.preventDefault();const t=$('askInput').value.trim().toLowerCase();const found=QUESTIONS.findIndex((q,i)=>t&&(q.toLowerCase()===t||[/fail|risk|break/,/downtime|cause|reason/,/plan|under|behind/,/forecast|expect|next week|predict/][i].test(t)));
+    if(found>=0){state.question=found;state.askMiss=false;answer(found)}else{state.askMiss=true;if(charts.askChart){charts.askChart.dispose();delete charts.askChart}$('answer').innerHTML=`<div class="q">${esc(t||'…')}</div><div class="h">Try one of the suggested questions</div><div class="e">This panel answers a fixed set of questions with statistics computed from the filtered data; it does not use a language model.</div>`;document.querySelectorAll('#qchips .qchip').forEach(b=>b.setAttribute('aria-pressed','false'))}});
+  window.addEventListener('hashchange',()=>{try{route()}catch(err){document.documentElement.dataset.status='error: '+err.message}});
+  let rt=null;window.addEventListener('resize',()=>{clearTimeout(rt);rt=setTimeout(()=>{Object.values(charts).forEach(c=>c.resize());renderPage()},140)});
+  if(mqDesk.addEventListener)mqDesk.addEventListener('change',()=>renderPage());
+  let lastMain='',rf=null;new ResizeObserver(()=>{const m=$('main');const k=m.clientWidth+'x'+m.clientHeight;if(k===lastMain)return;const first=!lastMain;lastMain=k;if(first||!CUR)return;clearTimeout(rf);rf=setTimeout(()=>renderPage(),60)}).observe($('main'));
+  if(document.fonts&&document.fonts.ready)document.fonts.ready.then(()=>{if(CUR&&state.page)renderPage()});
+}
+
+try{paintThemeBtn();bind();compute();route();$('boot').hidden=true;document.documentElement.dataset.status='ok'}
+catch(e){document.documentElement.dataset.status='error: '+(e&&e.message||e);$('boot').textContent='Could not initialise: '+(e&&e.message||e);if(window.console)console.error(e)}
+})();
+</script>
+</body>
+</html>

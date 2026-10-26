@@ -4,11 +4,12 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Amisha Gupta | Analytics &amp; AI Engineer</title>
-<meta name="description" content="Amisha Gupta, Analytics &amp; AI Engineer in Ahmedabad, India. Planner Assistant: an AI assistant inside Microsoft Teams that answers questions about your project plans, updates Microsoft Planner only after you confirm, and turns emails and meetings into tasks.">
+<meta name="description" content="Amisha Gupta, Analytics &amp; AI Engineer in Ahmedabad, India. Five live AI reports with forecasts, anomaly detection and recommendations across retail, healthcare, manufacturing, SaaS and logistics, plus an AI assistant inside Microsoft Teams that answers questions about your project plans.">
 <meta property="og:title" content="Amisha Gupta | Analytics &amp; AI Engineer">
-<meta property="og:description" content="Project plans that answer questions. An assistant that does the follow-up.">
+<meta property="og:description" content="Dashboards that think ahead. An assistant that does the follow-up.">
+<meta property="og:image" content="https://amishaautomates.com/assets/reports/retail-omnichannel.jpg">
 <meta property="og:url" content="https://amishaautomates.com/">
-<meta name="twitter:card" content="summary">
+<meta name="twitter:card" content="summary_large_image">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500..800&family=Hanken+Grotesk:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap">
@@ -282,6 +283,28 @@ section{padding-block:clamp(56px, 8vw, 104px)}
 @media (max-width:900px){.safe ul{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media (max-width:520px){.safe ul{grid-template-columns:minmax(0,1fr)}}
 
+/* AI reports */
+.reports-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:clamp(16px,2.5vw,28px)}
+.report{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);overflow:hidden;display:grid;grid-template-rows:auto 1fr;box-shadow:var(--shadow);transition:transform .2s ease}
+.report:hover{transform:translateY(-3px)}
+.report:first-child{grid-column:1 / -1}
+.report-shot{display:block;position:relative;background:#0b0f1a;border-bottom:1px solid var(--line)}
+.report-shot img{width:100%;aspect-ratio:16/10;object-fit:cover;object-position:top;display:block}
+.report:first-child .report-shot img{aspect-ratio:21/9}
+.report-open{position:absolute;right:12px;bottom:12px;font:600 .74rem/1 var(--font-mono);letter-spacing:.06em;padding:8px 11px;border-radius:99px;background:var(--ink);color:var(--paper);opacity:0;transition:opacity .2s ease}
+.report:hover .report-open,.report-shot:focus-visible .report-open{opacity:.95}
+.report-body{padding:20px 22px 22px;display:grid;gap:10px;align-content:start}
+.report-top{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:8px}
+.report-top .domain{font:500 .72rem/1.3 var(--font-mono);letter-spacing:.1em;text-transform:uppercase;color:var(--ink-3)}
+.style-pill{font:600 .72rem/1 var(--font-mono);letter-spacing:.06em;padding:5px 9px;border-radius:999px;background:var(--marker);color:var(--marker-ink)}
+.report h3{font-size:1.25rem}
+.report h3 a{text-decoration:none;color:inherit}
+.report h3 a:hover{color:var(--cobalt)}
+.report p{color:var(--ink-2);font-size:.97rem}
+.report-feats{list-style:none;margin:4px 0 0;padding:0;display:flex;flex-wrap:wrap;gap:6px}
+.report-feats li{font:500 .74rem/1 var(--font-mono);padding:6px 9px;border-radius:99px;border:1px solid var(--line);color:var(--ink-2)}
+@media (max-width:820px){.reports-grid{grid-template-columns:minmax(0,1fr)}.report:first-child .report-shot img{aspect-ratio:16/10}}
+
 /* Hero credentials */
 .creds{display:flex;flex-wrap:wrap;gap:8px}
 .cred{display:inline-flex;align-items:center;gap:8px;padding:7px 12px;border-radius:999px;background:var(--surface);border:1px solid var(--line);font-size:.86rem;font-weight:600;color:var(--ink)}
@@ -344,6 +367,7 @@ footer{padding-block:28px 40px;display:flex;flex-wrap:wrap;justify-content:space
   <div class="topbar-inner">
     <a class="brand" href="#top"><span class="brand-mark" aria-hidden="true">AG</span>Amisha Gupta</a>
     <nav aria-label="Sections">
+      <a href="#reports">AI reports</a>
       <a href="#assistant">AI assistant</a>
       <a href="#process">How we'd work</a>
       <a href="#about">About</a>
@@ -360,18 +384,18 @@ footer{padding-block:28px 40px;display:flex;flex-wrap:wrap;justify-content:space
 <section class="hero" id="top">
   <div class="hero-copy">
     <p class="eyebrow">Analytics &amp; AI Engineer · Ahmedabad, India</p>
-    <h1>Project plans that <mark class="hl">answer questions.</mark> An assistant that <mark class="hl">does the follow-up.</mark></h1>
-    <p class="lede">I'm Amisha Gupta, an analytics and AI engineer with an MBA. I build AI assistants and automations inside Microsoft 365, so managers spend their time making decisions instead of digging through plans, emails and spreadsheets.</p>
+    <h1>Dashboards that <mark class="hl">think ahead.</mark> An assistant that <mark class="hl">does the follow-up.</mark></h1>
+    <p class="lede">I'm Amisha Gupta, an analytics and AI engineer with an MBA. I build AI-powered reports that forecast and flag what matters, and assistants that handle the follow-up, so managers spend their time making decisions instead of digging through spreadsheets.</p>
     <div class="cta-row">
-      <a class="btn btn-primary" href="#assistant">See the AI assistant
+      <a class="btn btn-primary" href="#reports">Explore the AI reports
         <svg viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M4 10h11m-4-4 4 4-4 4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
-      <a class="btn btn-ghost" href="#process">How we'd work together</a>
+      <a class="btn btn-ghost" href="#assistant">See the AI assistant</a>
     </div>
     <div class="creds">
       <span class="cred"><svg viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M3 4.5h14v9H8l-4 3v-3H3z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/><path d="M7 8h6M7 10.5h4" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg>Runs inside Microsoft Teams</span>
       <span class="cred"><svg viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M3 17V8l7-5 7 5v9H3z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/><path d="M8 17v-5h4v5" stroke="currentColor" stroke-width="1.7"/></svg>FMCG · Retail · Healthcare · Manufacturing · Property</span>
     </div>
-    <div class="tools" aria-label="Works with"><span>Microsoft Teams</span><span>Microsoft Planner</span><span>Outlook</span><span>Word</span><span>Microsoft 365</span></div>
+    <div class="tools" aria-label="Built with"><span>ECharts</span><span>JavaScript</span><span>Forecasting</span><span>Anomaly detection</span><span>Microsoft Teams</span><span>Microsoft Planner</span></div>
   </div>
 
   <div class="hero-art">
@@ -412,11 +436,83 @@ footer{padding-block:28px 40px;display:flex;flex-wrap:wrap;justify-content:space
 <!-- PROOF -->
 <section class="proof" aria-label="What the assistant does, in numbers">
   <div class="proof-grid">
+    <div class="stat"><span class="num">5</span><span class="lbl">live AI reports on this site, each with forecasts and anomaly flags</span></div>
     <div class="stat"><span class="num">160</span><span class="lbl">project tasks scheduled by the assistant in minutes, not days</span></div>
     <div class="stat"><span class="num">1,000s</span><span class="lbl">of tasks across dozens of plans, answered from one Teams chat</span></div>
-    <div class="stat"><span class="num">1</span><span class="lbl">sentence is all an everyday plan update takes</span></div>
     <div class="stat"><span class="num">0</span><span class="lbl">new systems to roll out. It runs inside Microsoft Teams.</span></div>
   </div>
+</section>
+
+<!-- AI REPORTS -->
+<section id="reports" aria-labelledby="reports-title">
+  <div class="section-head">
+    <p class="eyebrow">Live AI reports · five domains, five visual languages</p>
+    <h2 id="reports-title">Dashboards that forecast, flag anomalies and recommend the next move.</h2>
+    <p class="lede">Five multi-page report apps, each designed as its own product, in light and dark themes. Drill through three layers, from the executive overview to analysis pages to a single store, machine or account and the person behind it. Every number is generated in your browser from a synthetic dataset, and every forecast, anomaly, risk score and recommendation is computed live as you filter.</p>
+  </div>
+  <div class="reports-grid">
+    <article class="report">
+      <a class="report-shot" href="dashboards/retail-omnichannel.html" aria-label="Open the Omnichannel Retail Intelligence report">
+        <img src="assets/reports/retail-omnichannel.jpg" width="1200" height="750" loading="lazy" alt="Omnichannel Retail Intelligence report in a dark holographic style with KPI tiles, a revenue forecast and a store league table">
+        <span class="report-open" aria-hidden="true">Open live report →</span>
+      </a>
+      <div class="report-body">
+        <div class="report-top"><span class="domain">Retail</span><span class="style-pill">Holographic HUD</span></div>
+        <h3><a href="dashboards/retail-omnichannel.html">Omnichannel Retail Intelligence</a></h3>
+        <p>Revenue, channels, categories and 24 stores in one flight-deck view, with an 8-week forecast, anomaly flags and a health score for every store.</p>
+        <ul class="report-feats" aria-label="Highlights"><li>7 pages</li><li>Store → manager drill-through</li><li>8-week forecast</li><li>Light + dark</li></ul>
+      </div>
+    </article>
+    <article class="report">
+      <a class="report-shot" href="dashboards/hospital-operations.html" aria-label="Open the Hospital Operations Intelligence report">
+        <img src="assets/reports/hospital-operations.jpg" width="1200" height="750" loading="lazy" alt="Hospital Operations Intelligence report in a light clinical style with occupancy trend, ER heatmap and department board">
+        <span class="report-open" aria-hidden="true">Open live report →</span>
+      </a>
+      <div class="report-body">
+        <div class="report-top"><span class="domain">Healthcare</span><span class="style-pill">Lab-light iridescence</span></div>
+        <h3><a href="dashboards/hospital-operations.html">Hospital Operations Intelligence</a></h3>
+        <p>Bed occupancy, ER demand, patient flow and staffing across four hospitals, with a 14-day demand forecast and a capacity-risk score per department.</p>
+        <ul class="report-feats" aria-label="Highlights"><li>7 pages</li><li>Department → clinician drill-through</li><li>Patient-flow sankey</li><li>Light + dark</li></ul>
+      </div>
+    </article>
+    <article class="report">
+      <a class="report-shot" href="dashboards/smart-factory-twin.html" aria-label="Open the Factory Digital Twin: OEE & Predictive Maintenance report">
+        <img src="assets/reports/smart-factory-twin.jpg" width="1200" height="750" loading="lazy" alt="Factory Digital Twin report in a blueprint style with a schematic floor plan, OEE gauges and a machine table">
+        <span class="report-open" aria-hidden="true">Open live report →</span>
+      </a>
+      <div class="report-body">
+        <div class="report-top"><span class="domain">Manufacturing</span><span class="style-pill">Blueprint digital twin</span></div>
+        <h3><a href="dashboards/smart-factory-twin.html">Factory Digital Twin: OEE & Predictive Maintenance</a></h3>
+        <p>A schematic floor plan of every line and machine, OEE gauges, downtime Pareto and a failure-risk score that tells maintenance where to go next.</p>
+        <ul class="report-feats" aria-label="Highlights"><li>7 pages</li><li>Machine → technician drill-through</li><li>Failure-risk score</li><li>Light + dark</li></ul>
+      </div>
+    </article>
+    <article class="report">
+      <a class="report-shot" href="dashboards/saas-revenue-copilot.html" aria-label="Open the SaaS Revenue Copilot report">
+        <img src="assets/reports/saas-revenue-copilot.jpg" width="1200" height="750" loading="lazy" alt="SaaS Revenue Copilot report in an aurora glassmorphism bento style with ARR trend, MRR waterfall and cohort heatmap">
+        <span class="report-open" aria-hidden="true">Open live report →</span>
+      </a>
+      <div class="report-body">
+        <div class="report-top"><span class="domain">SaaS finance</span><span class="style-pill">Aurora glass bento</span></div>
+        <h3><a href="dashboards/saas-revenue-copilot.html">SaaS Revenue Copilot</a></h3>
+        <p>MRR movements, cohort retention, pipeline and runway in a luminous bento layout, with an ARR forecast and a churn-risk score for every account.</p>
+        <ul class="report-feats" aria-label="Highlights"><li>8 pages</li><li>Account → manager drill-through</li><li>Churn-risk score</li><li>Light + dark</li></ul>
+      </div>
+    </article>
+    <article class="report">
+      <a class="report-shot" href="dashboards/logistics-mission-control.html" aria-label="Open the Logistics Mission Control report">
+        <img src="assets/reports/logistics-mission-control.jpg" width="1200" height="750" loading="lazy" alt="Logistics Mission Control report in a dark telemetry style with a network map, on-time trend and a live shipments board">
+        <span class="report-open" aria-hidden="true">Open live report →</span>
+      </a>
+      <div class="report-body">
+        <div class="report-top"><span class="domain">Logistics</span><span class="style-pill">Mission control</span></div>
+        <h3><a href="dashboards/logistics-mission-control.html">Logistics Mission Control</a></h3>
+        <p>A live network map of hubs and lanes, on-time delivery, carrier scorecards and inventory heat, with a delay-risk score for every shipment in transit.</p>
+        <ul class="report-feats" aria-label="Highlights"><li>9 pages</li><li>Hub → driver drill-through</li><li>Delay-risk score</li><li>Light + dark</li></ul>
+      </div>
+    </article>
+  </div>
+  <p class="sample-note">All five run on synthetic data generated in the browser. No client data, no client screenshots, no logins.</p>
 </section>
 
 <!-- AI ASSISTANT -->
@@ -490,16 +586,16 @@ footer{padding-block:28px 40px;display:flex;flex-wrap:wrap;justify-content:space
 <section id="process" aria-labelledby="process-title">
   <div class="section-head">
     <p class="eyebrow">How we'd work together</p>
-    <h2 id="process-title">From "where is that plan?" to an assistant your team asks every morning.</h2>
+    <h2 id="process-title">From "we have the data somewhere" to a report your team opens every morning.</h2>
   </div>
   <div class="process">
     <div class="step"><h3>Start with your questions</h3><p>We list the questions you ask about your projects every week and the updates that eat your time.</p></div>
-    <div class="step"><h3>Connect what you already use</h3><p>Planner, Outlook, Teams meetings and Word. The assistant works inside your Microsoft 365, with your own access and nothing more.</p></div>
-    <div class="step"><h3>Build it with your team</h3><p>You try a working assistant early, with your real questions, and shape the answers as we go.</p></div>
+    <div class="step"><h3>Connect what you already use</h3><p>Your ERP, CRM, spreadsheets, Planner or Outlook. I clean and join the data into one reliable model, with your own access and nothing more.</p></div>
+    <div class="step"><h3>Build it with your team</h3><p>You try working reports and assistants early, with your real questions, and shape them as we go.</p></div>
     <div class="step"><h3>Automate the follow-up</h3><p>Status reports, tasks from emails and meetings, and schedule updates run on their own once you trust the answers.</p></div>
   </div>
   <div class="toolkit" aria-label="Toolkit">
-    <span>AI assistants</span><span>Microsoft Teams and Planner</span><span>Outlook and Word</span><span>Power Automate</span><span>Python</span><span>SQL and T-SQL</span><span>Azure</span>
+    <span>Interactive web reports (ECharts, SVG)</span><span>Forecasting and anomaly detection</span><span>AI assistants</span><span>Microsoft Teams and Planner</span><span>Outlook and Word</span><span>Power Automate</span><span>Python</span><span>JavaScript</span><span>SQL and T-SQL</span><span>Azure</span>
   </div>
 </section>
 
@@ -509,7 +605,7 @@ footer{padding-block:28px 40px;display:flex;flex-wrap:wrap;justify-content:space
     <div style="display:grid;gap:16px">
       <p class="eyebrow">Let's talk</p>
       <h2 id="contact-title">Got a plan nobody can keep up with, or a follow-up everyone dreads?</h2>
-      <p>Tell me about it. I'll show you what an assistant or an automation could do for your team, using your own plans.</p>
+      <p>Tell me about it. I'll show you what a report, an assistant or an automation could do for your team, using your own data.</p>
     </div>
     <div class="contact-box">
       <div class="email-row"><code id="email">29amishagupta@gmail.com</code><button class="copy" id="copyBtn" type="button">Copy email</button></div>
@@ -527,7 +623,7 @@ footer{padding-block:28px 40px;display:flex;flex-wrap:wrap;justify-content:space
 
 <footer>
   <span>© 2026 Amisha Gupta · amishaautomates.com · amisha-2908.github.io</span>
-  <span>AI assistant examples use sample projects, people and dates. The client's real data is kept private.</span>
+  <span>AI reports run on synthetic data generated in your browser. AI assistant examples use sample projects, people and dates.</span>
 </footer>
 </div>
 
