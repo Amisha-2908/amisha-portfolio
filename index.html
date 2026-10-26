@@ -4,17 +4,16 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Amisha Gupta | Analytics &amp; AI Engineer</title>
-<meta name="description" content="Amisha Gupta, Analytics &amp; AI Engineer in Ahmedabad, India. Power BI dashboards, AI assistants, automations and Azure and Snowflake data pipelines for FMCG, retail, healthcare and manufacturing.">
+<meta name="description" content="Amisha Gupta, Analytics &amp; AI Engineer in Ahmedabad, India. Planner Assistant: an AI assistant inside Microsoft Teams that answers questions about your project plans, updates Microsoft Planner only after you confirm, and turns emails and meetings into tasks.">
 <meta property="og:title" content="Amisha Gupta | Analytics &amp; AI Engineer">
-<meta property="og:description" content="Dashboards that answer questions. Assistants that do the follow-up.">
-<meta property="og:image" content="https://amishaautomates.com/assets/sop-overview.jpg">
+<meta property="og:description" content="Project plans that answer questions. An assistant that does the follow-up.">
 <meta property="og:url" content="https://amishaautomates.com/">
-<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:card" content="summary">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500..800&family=Hanken+Grotesk:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap">
 <style>
-/* Layout: an analyst's graph-paper notebook. Work is pinned up as framed exhibits with mono captions; a highlighter marks the phrases a busy reader should catch. */
+/* Layout: an analyst's graph-paper notebook. The assistant's chat is pinned up as a framed exhibit with mono captions; a highlighter marks the phrases a busy reader should catch. */
 :root{
   --paper:#F3F5F9;
   --grid:rgba(36,71,214,.055);
@@ -143,6 +142,7 @@ section{padding-block:clamp(56px, 8vw, 104px)}
 .frame-bar{display:flex;align-items:center;gap:6px;padding:9px 12px;border-bottom:1px solid var(--line);background:var(--surface-2);font:500 .7rem/1 var(--font-mono);color:var(--ink-3);letter-spacing:.04em}
 .frame-bar i{width:9px;height:9px;border-radius:50%;background:var(--line);display:inline-block}
 .frame-bar b{font-weight:500;margin-left:8px}
+.hero-chat{padding:18px;display:flex;flex-direction:column;gap:12px;background:var(--surface)}
 .float{position:absolute;background:var(--surface);border:1px solid var(--line);border-radius:14px;box-shadow:var(--shadow);font-size:.9rem}
 .float-ask{left:-18px;bottom:0;width:min(340px,78%);padding:14px;display:grid;gap:10px}
 .float-flow{right:-14px;top:0;padding:10px 14px;display:flex;align-items:center;gap:10px;max-width:290px;line-height:1.35}
@@ -174,16 +174,6 @@ section{padding-block:clamp(56px, 8vw, 104px)}
   .stat:nth-child(3){padding-left:0;border-left:0}
   .stat:nth-child(n+3){border-top:1px solid var(--line)}
 }
-
-/* What I build */
-.build-grid{display:grid;grid-template-columns:repeat(2, minmax(0,1fr));gap:clamp(14px,2vw,24px)}
-.build{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:26px;display:grid;gap:14px;align-content:start}
-.build .tag{display:inline-flex;align-items:center;gap:8px;font:500 .72rem/1 var(--font-mono);letter-spacing:.1em;text-transform:uppercase;color:var(--ink-3)}
-.build .tag svg{width:20px;height:20px;color:var(--cobalt)}
-.build p{color:var(--ink-2);font-size:1rem}
-.build .eg{font-size:.9rem;color:var(--ink-3);border-top:1px dashed var(--line);padding-top:12px}
-.build .eg a{color:var(--cobalt);font-weight:600;text-decoration:none}
-@media (max-width:900px){.build-grid{grid-template-columns:minmax(0,1fr)}}
 
 /* Project header */
 .project-head{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,1fr);gap:clamp(20px,4vw,56px);align-items:end;margin-bottom:clamp(28px,4vw,44px)}
@@ -292,84 +282,10 @@ section{padding-block:clamp(56px, 8vw, 104px)}
 @media (max-width:900px){.safe ul{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media (max-width:520px){.safe ul{grid-template-columns:minmax(0,1fr)}}
 
-/* Exhibit viewer (SOP) */
-.viewer{display:grid;grid-template-columns:minmax(0,260px) minmax(0,1fr);gap:clamp(16px,3vw,32px);align-items:start}
-.tablist{display:grid;gap:4px;position:sticky;top:96px}
-.tab{
-  text-align:left;background:none;border:0;border-left:2px solid var(--line);padding:10px 14px;cursor:pointer;
-  font:600 1rem/1.3 var(--font-body);color:var(--ink-2);display:grid;gap:2px;
-}
-.tab small{font:500 .7rem/1.3 var(--font-mono);letter-spacing:.08em;text-transform:uppercase;color:var(--ink-3)}
-.tab:hover{color:var(--ink)}
-.tab[aria-selected="true"]{color:var(--ink);border-left-color:var(--cobalt);background:linear-gradient(90deg, var(--cobalt-soft), transparent)}
-.tab[aria-selected="true"] small{color:var(--cobalt)}
-.panel{display:grid;gap:20px;min-width:0}
-.panel-text{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.15fr);gap:clamp(16px,3vw,36px);align-items:start}
-.panel-text h3{font-size:clamp(1.4rem,2.2vw,1.8rem)}
-.panel-text p{color:var(--ink-2);margin-top:10px}
-.checks{list-style:none;margin:0;padding:0;display:grid;gap:10px}
-.checks li{display:grid;grid-template-columns:22px minmax(0,1fr);gap:8px;font-size:.98rem;line-height:1.5}
-.checks li::before{content:"";width:16px;height:16px;margin-top:4px;border-radius:5px;background:var(--cobalt-soft) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M4 8.5l2.5 2.5L12 5.5' fill='none' stroke='%232447D6' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center/14px no-repeat}
-.checks b{font-weight:700}
-@media (max-width:1000px){
-  .viewer{grid-template-columns:minmax(0,1fr)}
-  .tablist{position:static;display:flex;overflow-x:auto;gap:6px;padding-bottom:6px;scrollbar-width:thin}
-  .tab{border-left:0;border-bottom:2px solid var(--line);white-space:nowrap;flex:none}
-  .tab[aria-selected="true"]{border-bottom-color:var(--cobalt);background:var(--cobalt-soft)}
-  .panel-text{grid-template-columns:minmax(0,1fr)}
-}
-
-/* Exhibit (screenshot) */
-.exhibit{margin:0;display:grid;gap:0}
-.zoom{all:unset;display:block;cursor:zoom-in;position:relative}
-.zoom:focus-visible{outline:3px solid var(--cobalt);outline-offset:3px}
-.zoom img{width:100%;height:auto;background:#fff}
-.zoom::after{
-  content:"Click to enlarge";position:absolute;right:12px;bottom:12px;
-  font:500 .7rem/1 var(--font-mono);letter-spacing:.06em;padding:7px 10px;border-radius:99px;
-  background:var(--ink);color:var(--paper);opacity:0;transition:opacity .2s ease;
-}
-.zoom:hover::after,.zoom:focus-visible::after{opacity:.92}
-.exhibit figcaption{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;padding:10px 14px;border-top:1px solid var(--line);font:500 .74rem/1.4 var(--font-mono);color:var(--ink-3);letter-spacing:.04em}
-
-.extras{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:clamp(14px,2vw,24px);margin-top:clamp(28px,4vw,44px)}
-.extra{display:grid;grid-template-columns:minmax(0,190px) minmax(0,1fr);gap:18px;align-items:center;background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:16px}
-.extra .zoom img{border-radius:8px;border:1px solid var(--line)}
-.extra p{color:var(--ink-2);font-size:.95rem;margin-top:6px}
-@media (max-width:900px){.extras{grid-template-columns:minmax(0,1fr)}}
-@media (max-width:460px){.extra{grid-template-columns:minmax(0,1fr)}}
-
-/* Orders grid */
-.orders-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:clamp(16px,2.5vw,28px)}
-.order-card{display:grid;gap:14px;align-content:start}
-.order-card .frame .zoom img{aspect-ratio:16/10.5;object-fit:cover;object-position:top}
-.order-card h3{font-size:1.2rem}
-.order-card p{color:var(--ink-2);font-size:.97rem;margin-top:6px}
-.kpis{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}
-.kpis span{font:500 .74rem/1 var(--font-mono);padding:6px 9px;border-radius:99px;border:1px solid var(--line);background:var(--surface);color:var(--ink-2);font-variant-numeric:tabular-nums}
-.kpis span b{color:var(--ink);font-weight:500}
-.confid{display:flex;align-items:center;gap:8px;margin-top:20px;font:500 .74rem/1.4 var(--font-mono);color:var(--ink-3);letter-spacing:.03em}
-.confid svg{width:16px;height:16px;flex:none}
-@media (max-width:820px){.orders-grid{grid-template-columns:minmax(0,1fr)}}
-
 /* Hero credentials */
 .creds{display:flex;flex-wrap:wrap;gap:8px}
 .cred{display:inline-flex;align-items:center;gap:8px;padding:7px 12px;border-radius:999px;background:var(--surface);border:1px solid var(--line);font-size:.86rem;font-weight:600;color:var(--ink)}
 .cred svg{width:16px;height:16px;color:var(--cobalt);flex:none}
-
-/* More projects */
-.more-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:clamp(14px,2vw,24px)}
-.proj{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:clamp(20px,2.4vw,28px);display:grid;gap:16px;align-content:start}
-.proj-top{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:8px}
-.proj-top .domain{font:500 .72rem/1.3 var(--font-mono);letter-spacing:.1em;text-transform:uppercase;color:var(--ink-3)}
-.pill-ai{font:600 .72rem/1 var(--font-mono);letter-spacing:.06em;padding:5px 9px;border-radius:999px;background:var(--marker);color:var(--marker-ink)}
-.proj dl{margin:0;display:grid;gap:10px}
-.proj dl div{display:grid;grid-template-columns:5.2rem minmax(0,1fr);gap:12px}
-.proj dt{font:500 .72rem/1.9 var(--font-mono);letter-spacing:.08em;text-transform:uppercase;color:var(--cobalt)}
-.proj dd{margin:0;color:var(--ink-2);font-size:.97rem;line-height:1.55}
-.proj .kpis{margin-top:0}
-@media (max-width:820px){.more-grid{grid-template-columns:minmax(0,1fr)}}
-@media (max-width:420px){.proj dl div{grid-template-columns:minmax(0,1fr);gap:2px}}
 
 /* About */
 .about{display:grid;grid-template-columns:minmax(0,1.2fr) minmax(0,1fr);gap:clamp(24px,4vw,56px);align-items:start}
@@ -417,15 +333,6 @@ section{padding-block:clamp(56px, 8vw, 104px)}
 
 footer{padding-block:28px 40px;display:flex;flex-wrap:wrap;justify-content:space-between;gap:12px;font:500 .76rem/1.5 var(--font-mono);color:var(--ink-3);letter-spacing:.03em}
 
-/* Lightbox */
-dialog.lb{border:0;padding:0;background:transparent;max-width:min(96vw,1700px);width:100%;color:var(--ink)}
-dialog.lb::backdrop{background:rgba(8,12,24,.86)}
-.lb-inner{display:grid;gap:10px}
-.lb-top{display:flex;justify-content:space-between;align-items:center;gap:12px;color:#E9EDF8;font:500 .8rem/1.4 var(--font-mono)}
-.lb-top button,.lb-nav button{font:600 .9rem/1 var(--font-body);padding:9px 14px;border-radius:10px;border:1px solid rgba(233,237,248,.35);background:rgba(233,237,248,.08);color:#E9EDF8;cursor:pointer}
-.lb-img{max-height:80vh;width:auto;max-width:100%;margin-inline:auto;border-radius:10px;background:#fff}
-.lb-nav{display:flex;justify-content:center;gap:10px}
-
 @media (prefers-reduced-motion: reduce){
   html{scroll-behavior:auto}
   *,*::before,*::after{animation:none!important;transition:none!important}
@@ -438,8 +345,7 @@ dialog.lb::backdrop{background:rgba(8,12,24,.86)}
     <a class="brand" href="#top"><span class="brand-mark" aria-hidden="true">AG</span>Amisha Gupta</a>
     <nav aria-label="Sections">
       <a href="#assistant">AI assistant</a>
-      <a href="#sop">Dashboards</a>
-      <a href="#more">More projects</a>
+      <a href="#process">How we'd work</a>
       <a href="#about">About</a>
       <a class="nav-cta" href="#contact">Work with me</a>
     </nav>
@@ -454,80 +360,62 @@ dialog.lb::backdrop{background:rgba(8,12,24,.86)}
 <section class="hero" id="top">
   <div class="hero-copy">
     <p class="eyebrow">Analytics &amp; AI Engineer · Ahmedabad, India</p>
-    <h1>Dashboards that <mark class="hl">answer questions.</mark> Assistants that <mark class="hl">do the follow-up.</mark></h1>
-    <p class="lede">I'm Amisha Gupta, an analytics and AI engineer with an MBA. I build Power BI dashboards, AI assistants, automations and the data pipelines behind them, so managers spend their time making decisions instead of digging through spreadsheets.</p>
+    <h1>Project plans that <mark class="hl">answer questions.</mark> An assistant that <mark class="hl">does the follow-up.</mark></h1>
+    <p class="lede">I'm Amisha Gupta, an analytics and AI engineer with an MBA. I build AI assistants and automations inside Microsoft 365, so managers spend their time making decisions instead of digging through plans, emails and spreadsheets.</p>
     <div class="cta-row">
       <a class="btn btn-primary" href="#assistant">See the AI assistant
         <svg viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M4 10h11m-4-4 4 4-4 4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
-      <a class="btn btn-ghost" href="#sop">Browse the dashboards</a>
+      <a class="btn btn-ghost" href="#process">How we'd work together</a>
     </div>
     <div class="creds">
-      <span class="cred"><svg viewBox="0 0 20 20" fill="none" aria-hidden="true"><circle cx="10" cy="8" r="5" stroke="currentColor" stroke-width="1.7"/><path d="m7 12-1.5 6L10 16l4.5 2L13 12" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/></svg>Microsoft Certified: Power BI Data Analyst (PL-300)</span>
-      <span class="cred"><svg viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M3 17V8l7-5 7 5v9H3z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/><path d="M8 17v-5h4v5" stroke="currentColor" stroke-width="1.7"/></svg>FMCG · Retail · Healthcare · Manufacturing</span>
+      <span class="cred"><svg viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M3 4.5h14v9H8l-4 3v-3H3z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/><path d="M7 8h6M7 10.5h4" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg>Runs inside Microsoft Teams</span>
+      <span class="cred"><svg viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M3 17V8l7-5 7 5v9H3z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/><path d="M8 17v-5h4v5" stroke="currentColor" stroke-width="1.7"/></svg>FMCG · Retail · Healthcare · Manufacturing · Property</span>
     </div>
-    <div class="tools" aria-label="Tools used"><span>Power BI</span><span>Azure</span><span>Snowflake</span><span>dbt</span><span>Power Automate</span><span>Microsoft Teams</span></div>
+    <div class="tools" aria-label="Works with"><span>Microsoft Teams</span><span>Microsoft Planner</span><span>Outlook</span><span>Word</span><span>Microsoft 365</span></div>
   </div>
 
   <div class="hero-art">
     <div class="frame">
-      <div class="frame-bar"><i></i><i></i><i></i><b>SOP Intelligence · Overview</b></div>
-      <img src="assets/sop-overview.jpg" width="1800" height="1019" alt="SOP Intelligence dashboard overview showing 30 stores, 54% compliance rate and a compliance trend rising to 62%">
+      <div class="frame-bar"><i></i><i></i><i></i><b>Planner Assistant · Microsoft Teams</b></div>
+      <div class="hero-chat" aria-label="Example conversation with the Planner Assistant">
+        <div class="bubble-user">What needs attention across my projects?</div>
+        <div class="pa-msg">
+          <span class="pa-avatar" aria-hidden="true">PA</span>
+          <div class="pa-stack">
+            <div class="pa-card">
+              <div class="pa-title">6 items need attention, most urgent first</div>
+              <ul class="pa-list">
+                <li><span class="dot bad"></span><span>Building permit · Sunrise Heights<span class="pa-sub">Critical path · 9 days overdue · the finish date will slip</span></span></li>
+                <li><span class="dot warn"></span><span>Milestone "30% completion" · Greenfield Commons<span class="pa-sub">Due in 6 days · the task before it is running late</span></span></li>
+                <li><span class="dot warn"></span><span>4 tasks due this week · Willow Park<span class="pa-sub">Nobody is assigned yet</span></span></li>
+              </ul>
+              <div class="pa-foot">Reply with a number to act: 1 reassign · 2 move the date · 3 open in Planner</div>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
     <div class="float float-flow" aria-hidden="true">
       <span class="ico"><svg viewBox="0 0 20 20" width="18" height="18" fill="none"><path d="M3 5.5h14v9H3z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/><path d="m3.5 6 6.5 5 6.5-5" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/></svg></span>
-      <span><small>Power Automate</small>Compliance list emailed to the store supervisor</span>
+      <span><small>Outlook → Planner</small>The bank's email turned into 3 tracked tasks</span>
     </div>
     <div class="float float-ask" aria-hidden="true">
-      <div class="mini-user">What needs attention across my projects?</div>
+      <div class="mini-user">Move 'Permit filing' to Friday and mark it 60%</div>
       <div class="mini-pa">
         <span class="pa-avatar">PA</span>
-        <p><strong>6 items need attention, most urgent first.</strong> Sunrise Heights is 9 days overdue on the critical path…</p>
+        <p><strong>Here's the change. Shall I save it?</strong> Due date → Friday, progress → 60%. Nothing saves until you confirm.</p>
       </div>
     </div>
   </div>
 </section>
 
 <!-- PROOF -->
-<section class="proof" aria-label="The scale of recent work">
+<section class="proof" aria-label="What the assistant does, in numbers">
   <div class="proof-grid">
-    <div class="stat"><span class="num">26</span><span class="lbl">Power BI dashboards running a global manufacturer's plants</span></div>
-    <div class="stat"><span class="num">43,543</span><span class="lbl">retail outlets tracked by one field sales team</span></div>
-    <div class="stat"><span class="num">100s</span><span class="lbl">of restaurant outlets checked for SOP compliance with AI</span></div>
-    <div class="stat"><span class="num">160</span><span class="lbl">project tasks scheduled by an AI assistant in minutes</span></div>
-  </div>
-</section>
-
-<!-- WHAT I BUILD -->
-<section aria-labelledby="build-title">
-  <div class="section-head">
-    <p class="eyebrow">What I build</p>
-    <h2 id="build-title">Four kinds of work, one goal: fewer hours lost to chasing information.</h2>
-  </div>
-  <div class="build-grid">
-    <article class="build">
-      <span class="tag"><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M4 20V10m6 10V4m6 16v-7m4 7H2" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>Power BI dashboards</span>
-      <h3>Your whole business on one screen</h3>
-      <p>Clear numbers with filters anyone can use. Start with the big picture, then click down to a single store, team or person to see what is going on.</p>
-      <p class="eg">For example: the <a href="#sop">SOP compliance dashboard</a>, the <a href="#orders">field sales tracker</a> and <a href="#more">26 factory dashboards</a>.</p>
-    </article>
-    <article class="build">
-      <span class="tag"><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 3l1.8 4.6L18.5 9l-4.7 1.4L12 15l-1.8-4.6L5.5 9l4.7-1.4z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M18 15l.8 2 2 .8-2 .7-.8 2-.8-2-2-.7 2-.8z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/></svg>AI assistants</span>
-      <h3>Ask in plain English, get a straight answer</h3>
-      <p>Type a question in Microsoft Teams and get a ranked answer with the reasons spelled out. The assistant can also update your plans, but only after you confirm.</p>
-      <p class="eg">For example: the <a href="#assistant">Planner Assistant</a> and a <a href="#more">pricing simulator</a> that predicts sales lift.</p>
-    </article>
-    <article class="build">
-      <span class="tag"><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M13 2 4 14h7l-1 8 9-12h-7z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg>Automations</span>
-      <h3>The follow-up happens on its own</h3>
-      <p>Emails go to the right supervisor, meeting notes become tracked tasks and the weekly report drafts itself. Nobody has to remember to do it.</p>
-      <p class="eg">For example: the <a href="#sop">one-click supervisor email</a> built with Power Automate.</p>
-    </article>
-    <article class="build">
-      <span class="tag"><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><ellipse cx="12" cy="6" rx="7" ry="3" stroke="currentColor" stroke-width="1.8"/><path d="M5 6v6c0 1.7 3.1 3 7 3s7-1.3 7-3V6M5 12v6c0 1.7 3.1 3 7 3s7-1.3 7-3v-6" stroke="currentColor" stroke-width="1.8"/></svg>Data pipelines</span>
-      <h3>Trusted data behind every number</h3>
-      <p>Sales systems, stores, websites and ad platforms are joined into one reliable source on Azure or Snowflake. Automatic quality checks catch bad data before anyone sees a wrong figure.</p>
-      <p class="eg">For example: a <a href="#more">unified retail data model</a> and an <a href="#more">automated data-quality framework</a>.</p>
-    </article>
+    <div class="stat"><span class="num">160</span><span class="lbl">project tasks scheduled by the assistant in minutes, not days</span></div>
+    <div class="stat"><span class="num">1,000s</span><span class="lbl">of tasks across dozens of plans, answered from one Teams chat</span></div>
+    <div class="stat"><span class="num">1</span><span class="lbl">sentence is all an everyday plan update takes</span></div>
+    <div class="stat"><span class="num">0</span><span class="lbl">new systems to roll out. It runs inside Microsoft Teams.</span></div>
   </div>
 </section>
 
@@ -579,288 +467,39 @@ dialog.lb::backdrop{background:rgba(8,12,24,.86)}
   </div>
 </section>
 
-<!-- SOP INTELLIGENCE -->
-<section id="sop" aria-labelledby="sop-title">
-  <div class="project-head">
-    <div class="left">
-      <p class="eyebrow">Featured project · AI + Power BI + Power Automate</p>
-      <h2 id="sop-title">SOP Intelligence: are 30 stores following the rules, and what should each one fix?</h2>
-      <p class="lede">Built for a large restaurant chain. Machine-learning models review store camera footage and flag missed procedures. This dashboard turns those flags into scores, trends and clear next steps for every outlet and every employee, replacing manual audits.</p>
-    </div>
-    <dl class="facts">
-      <div><dt>Client</dt><dd>Restaurant chain with hundreds of outlets (name kept private)</dd></div>
-      <div><dt>AI</dt><dd>Machine-learning models analyse surveillance footage to detect non-compliance</dd></div>
-      <div><dt>Built in</dt><dd>Power BI, DAX, Python, Power Automate</dd></div>
-      <div><dt>Automation</dt><dd>One click emails each supervisor their team's compliance list</dd></div>
-    </dl>
-  </div>
-
-  <div class="viewer">
-    <div class="tablist" role="tablist" aria-label="Dashboard pages">
-      <button class="tab" role="tab" id="t-overview" aria-controls="p-overview" aria-selected="true"><small>Big picture</small>Chain overview</button>
-      <button class="tab" role="tab" id="t-store" aria-controls="p-store" aria-selected="false" tabindex="-1"><small>Automation</small>Store deep-dive</button>
-      <button class="tab" role="tab" id="t-whatif" aria-controls="p-whatif" aria-selected="false" tabindex="-1"><small>Planning</small>What-if target planner</button>
-      <button class="tab" role="tab" id="t-analysis" aria-controls="p-analysis" aria-selected="false" tabindex="-1"><small>Ranking</small>Store league table</button>
-      <button class="tab" role="tab" id="t-employee" aria-controls="p-employee" aria-selected="false" tabindex="-1"><small>People</small>Employee profile</button>
-      <button class="tab" role="tab" id="t-team" aria-controls="p-team" aria-selected="false" tabindex="-1"><small>Coaching</small>Training and improvement</button>
-    </div>
-
-    <div>
-      <div class="panel" role="tabpanel" id="p-overview" aria-labelledby="t-overview">
-        <figure class="frame exhibit">
-          <button class="zoom" data-group="sop" data-caption="SOP Intelligence · Chain overview"><img src="assets/sop-overview.jpg" width="1800" height="1019" loading="lazy" alt="Overview page with total stores, best and worst store, compliance trend by month, compliance by SOP category and by city"></button>
-          <figcaption><span>Power BI · Overview page</span><span>Nov 2023 to Apr 2024</span></figcaption>
-        </figure>
-        <div class="panel-text">
-          <div><h3>The whole chain on one screen</h3><p>Leaders see in five seconds how the business is doing and where to look first.</p></div>
-          <ul class="checks">
-            <li><span><b>54% compliance</b> across 30 stores, with the best store (63%) and the weakest (47%) named automatically.</span></li>
-            <li><span>The monthly trend shows compliance <b>climbing to 62% in April</b>, so the team can see whether changes are working.</span></li>
-            <li><span>Filter by city, SOP category, department, store or date, and every chart updates together.</span></li>
-          </ul>
-        </div>
-      </div>
-
-      <div class="panel" role="tabpanel" id="p-store" aria-labelledby="t-store" hidden>
-        <figure class="frame exhibit">
-          <button class="zoom" data-group="sop" data-caption="SOP Intelligence · Store deep-dive with one-click email"><img src="assets/sop-store.jpg" width="1800" height="1019" loading="lazy" alt="Store comparison page with this store's compliance, best and worst stores, a Send Email button, a monthly trend, compliance by department and customer ratings"></button>
-          <figcaption><span>Power BI · Store page</span><span>Send Email runs a Power Automate flow</span></figcaption>
-        </figure>
-        <div class="panel-text">
-          <div><h3>Click a store, see its story, email the fix</h3><p>Any store opens into its own page. The <b>Send Email</b> button sends the supervisor a list of their staff, each person's compliance rate and pending training.</p></div>
-          <ul class="checks">
-            <li><span>Compares the store against the best and the weakest store in the chain.</span></li>
-            <li><span>Shows which department is slipping. Here, <b>Front House and Kitchen</b> are at about 50%, while Management is at 91%.</span></li>
-            <li><span>Adds the customer's view: <b>2,004 ratings</b> averaging 3.11 out of 5.</span></li>
-          </ul>
-        </div>
-      </div>
-
-      <div class="panel" role="tabpanel" id="p-whatif" aria-labelledby="t-whatif" hidden>
-        <figure class="frame exhibit">
-          <button class="zoom" data-group="sop" data-caption="SOP Intelligence · What-if target planner"><img src="assets/sop-whatif.jpg" width="1800" height="1019" loading="lazy" alt="What-if analysis page where the user enters a target compliance rate and weightages, and the dashboard calculates the gap and required rates"></button>
-          <figcaption><span>Power BI · What-if page</span><span>Inputs recalculate instantly</span></figcaption>
-        </figure>
-        <div class="panel-text">
-          <div><h3>Set a target and get the plan to reach it</h3><p>A manager types the goal, and the dashboard works out exactly how much each area has to improve. A smart-suggestion engine recommends corrective actions based on each outlet's history.</p></div>
-          <ul class="checks">
-            <li><span>Enter a <b>target of 60%</b> and the store's current 51% shows a <b>9-point gap</b>, which means 67 more compliant checks.</span></li>
-            <li><span>Choose how much hygiene, operations and customer service should each contribute. The required rate for each area updates immediately.</span></li>
-            <li><span>A ready list of suggested actions sits alongside, such as "Complete safety checks daily".</span></li>
-          </ul>
-        </div>
-      </div>
-
-      <div class="panel" role="tabpanel" id="p-analysis" aria-labelledby="t-analysis" hidden>
-        <figure class="frame exhibit">
-          <button class="zoom" data-group="sop" data-caption="SOP Intelligence · Store league table"><img src="assets/sop-analysis.jpg" width="1800" height="1019" loading="lazy" alt="Analysis page with average customer rating, compliance rates by area, compliance bins chart and a ranked store table with adjustable weightages"></button>
-          <figcaption><span>Power BI · Analysis page</span><span>Top or bottom N, your own weightings</span></figcaption>
-        </figure>
-        <div class="panel-text">
-          <div><h3>A fair league table you can tune</h3><p>Stores are ranked on a combined score, and the business decides what matters most.</p></div>
-          <ul class="checks">
-            <li><span>Set the weight of each area, for example 50% customer service, 20% hygiene and 30% operations, and the ranking re-orders.</span></li>
-            <li><span>Show the <b>top or bottom 10</b> stores, or any other number, with one input.</span></li>
-            <li><span>The spread chart shows 29 of 30 stores sitting between 50% and 75%, so the team knows how much headroom there is.</span></li>
-          </ul>
-        </div>
-      </div>
-
-      <div class="panel" role="tabpanel" id="p-employee" aria-labelledby="t-employee" hidden>
-        <figure class="frame exhibit">
-          <button class="zoom" data-group="sop" data-caption="SOP Intelligence · Employee profile (contact details blurred)"><img src="assets/sop-employee.jpg" width="1800" height="1112" loading="lazy" alt="Employee profile page greeting the employee by name, with role, store, compliance trend, training status and most frequent incident"></button>
-          <figcaption><span>Power BI · Employee page</span><span>Contact details blurred</span></figcaption>
-        </figure>
-        <div class="panel-text">
-          <div><h3>Every person gets their own page</h3><p>Opens with a personal greeting, then shows how this person is doing and where they need support.</p></div>
-          <ul class="checks">
-            <li><span>Personal compliance (94%) next to the store's (53%), so strong performers stand out.</span></li>
-            <li><span>The <b>most frequent incident</b> is named in plain words: "Unprepared for Opening".</span></li>
-            <li><span>Training status by trainer, and a monthly trend that flags a slide from 100% to 82%.</span></li>
-          </ul>
-        </div>
-      </div>
-
-      <div class="panel" role="tabpanel" id="p-team" aria-labelledby="t-team" hidden>
-        <figure class="frame exhibit">
-          <button class="zoom" data-group="sop" data-caption="SOP Intelligence · Training and areas of improvement"><img src="assets/sop-team.jpg" width="1800" height="1112" loading="lazy" alt="Employee details table with department, position, compliance rate, training and status, plus a list of areas of improvement"></button>
-          <figcaption><span>Power BI · Team page</span><span>Searchable by name</span></figcaption>
-        </figure>
-        <div class="panel-text">
-          <div><h3>From numbers to coaching</h3><p>Supervisors see who needs which training, next to practical tips they can use in the next shift.</p></div>
-          <ul class="checks">
-            <li><span>Search any employee by name and see their department, role, compliance and training.</span></li>
-            <li><span>Incomplete training stands out so supervisors know who to schedule next.</span></li>
-            <li><span>An "Areas of improvement" list gives concrete actions, such as "Prepare checklist the night before".</span></li>
-          </ul>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <p class="confid"><svg viewBox="0 0 20 20" fill="none" aria-hidden="true"><rect x="4" y="9" width="12" height="8" rx="2" stroke="currentColor" stroke-width="1.6"/><path d="M7 9V6.5a3 3 0 0 1 6 0V9" stroke="currentColor" stroke-width="1.6"/></svg>Screenshots show an anonymised 30-store sample.</p>
-
-  <div class="extras">
-    <div class="extra">
-      <button class="zoom" data-group="sop" data-caption="Hover tooltip: what each SOP means and how well it's followed"><img src="assets/sop-tooltip.jpg" width="1000" height="746" loading="lazy" alt="Tooltip listing SOP IDs with their descriptions and compliance rates"></button>
-      <div><h3>Hover to understand</h3><p>Point at any chart and a tooltip explains each rule in plain words, for example "Store must open at 10:00 and close at 22:00", with its compliance rate.</p></div>
-    </div>
-    <div class="extra">
-      <button class="zoom" data-group="sop" data-caption="Customer feedback for a store, summarised as a word cloud"><img src="assets/sop-wordcloud.jpg" width="498" height="378" loading="lazy" alt="Word cloud of customer feedback words such as inconsistent, outstanding, satisfactory and needs improvement"></button>
-      <div><h3>Customer voice at a glance</h3><p>Customer feedback comments turn into a word cloud, so the most repeated words, such as "inconsistent" or "outstanding", are easy to spot.</p></div>
-    </div>
-  </div>
-</section>
-
-<!-- ORDERS TRACKER -->
-<section id="orders" aria-labelledby="orders-title">
-  <div class="project-head">
-    <div class="left">
-      <p class="eyebrow">Featured project · Azure + Power BI</p>
-      <h2 id="orders-title">Orders Tracker: the daily pulse of a field sales team</h2>
-      <p class="lede">Built for a major FMCG company whose sales reps take orders at thousands of shops every day. Data flows in automatically, and managers check it on their phones each morning: who is in the field, which shops ordered, and how this month compares with last.</p>
-    </div>
-    <dl class="facts">
-      <div><dt>Built in</dt><dd>Azure Data Factory, Azure SQL, Power BI (mobile and web)</dd></div>
-      <div><dt>Security</dt><dd>Row-level security, so every manager sees only their own team</dd></div>
-      <div><dt>Covers</dt><dd>135 sales reps, 43,543 outlets</dd></div>
-      <div><dt>Used by</dt><dd>Leadership, from the CEO to regional sales managers</dd></div>
-    </dl>
-  </div>
-
-  <div class="orders-grid">
-    <article class="order-card">
-      <figure class="frame exhibit">
-        <button class="zoom" data-group="orders" data-caption="Orders Tracker · Daily summary (names blurred)"><img src="assets/orders-daily.jpg" width="1800" height="1690" loading="lazy" alt="Daily summary with reporting managers, call summary, user attendance, category-wise sales donut, rep-wise orders and subcategory sales"></button>
-        <figcaption><span>Daily summary</span><span>04 Mar 2024</span></figcaption>
-      </figure>
-      <div>
-        <h3>Today's sales in one view</h3>
-        <p>How many shops were visited, how many placed an order and what sold, by category, product and rep.</p>
-        <div class="kpis"><span><b>3,464</b> shop visits</span><span><b>1,531</b> orders</span><span><b>72%</b> coverage</span><span><b>₹41.08 Lac</b> sales</span></div>
-      </div>
-    </article>
-    <article class="order-card">
-      <figure class="frame exhibit">
-        <button class="zoom" data-group="orders" data-caption="Orders Tracker · Field attendance and calls (names blurred)"><img src="assets/orders-field.jpg" width="1800" height="1597" loading="lazy" alt="Field attendance page with average retailing time, attendance counts, user attendance summary with call times, and trend charts"></button>
-        <figcaption><span>Field team</span><span>Attendance and call times</span></figcaption>
-      </figure>
-      <div>
-        <h3>Who's in the field, and for how long</h3>
-        <p>Every rep's log-in time, first and last shop visit and route, plus the team's average time spent selling.</p>
-        <div class="kpis"><span><b>130</b> reps selling today</span><span><b>4h 35m</b> average selling time</span><span><b>₹41.07 Lac</b> net value</span></div>
-      </div>
-    </article>
-    <article class="order-card">
-      <figure class="frame exhibit">
-        <button class="zoom" data-group="orders" data-caption="Orders Tracker · Growth KPIs and targets (names blurred)"><img src="assets/orders-growth.jpg" width="1800" height="1202" loading="lazy" alt="Growth KPI cards comparing month to date with last month, a secondary targets table and channel-wise sales"></button>
-        <figcaption><span>Growth and targets</span><span>This month vs last month</span></figcaption>
-      </figure>
-      <div>
-        <h3>Are we ahead of last month?</h3>
-        <p>Green and red cards compare this month with the same point last month, and each rep's target sits next to what they've achieved.</p>
-        <div class="kpis"><span><b>+3.47%</b> revenue</span><span><b>68.2%</b> shops covered</span><span>Target vs achieved per rep</span></div>
-      </div>
-    </article>
-    <article class="order-card">
-      <figure class="frame exhibit">
-        <button class="zoom" data-group="orders" data-caption="Orders Tracker · Monthly trends and outlet health (names blurred)"><img src="assets/orders-trends.jpg" width="1800" height="1173" loading="lazy" alt="Past analysis with outlet status donut, orders summary by manager, cumulative call trend, order value trend and outlet status comparison"></button>
-        <figcaption><span>Past analysis</span><span>3 or 6 month view, CSV export</span></figcaption>
-      </figure>
-      <div>
-        <h3>Which shops are going quiet</h3>
-        <p>Outlets are grouped as active, dormant, never visited or new, and compared with last month so lost shops get a visit before they're gone.</p>
-        <div class="kpis"><span><b>43,543</b> outlets</span><span><b>71.7%</b> active</span><span><b>70.58%</b> conversion</span></div>
-      </div>
-    </article>
-  </div>
-  <p class="confid"><svg viewBox="0 0 20 20" fill="none" aria-hidden="true"><rect x="4" y="9" width="12" height="8" rx="2" stroke="currentColor" stroke-width="1.6"/><path d="M7 9V6.5a3 3 0 0 1 6 0V9" stroke="currentColor" stroke-width="1.6"/></svg>Employee names and the client's brand are blurred to protect confidentiality.</p>
-</section>
-
-<!-- MORE PROJECTS -->
-<section id="more" aria-labelledby="more-title">
-  <div class="section-head">
-    <p class="eyebrow">More projects</p>
-    <h2 id="more-title">From factory floors to price tags.</h2>
-    <p class="lede">Four more projects for global and Indian companies. Client names are kept private.</p>
-  </div>
-  <div class="more-grid">
-    <article class="proj">
-      <div class="proj-top"><span class="domain">FMCG</span><span class="pill-ai">AI + Automation</span></div>
-      <h3>Predictive Pricing &amp; Promotion Simulator</h3>
-      <dl>
-        <div><dt>Problem</dt><dd>Marketing teams kept launching discounts that lost money, because nobody could see how a price change would affect sales.</dd></div>
-        <div><dt>Built</dt><dd>A what-if simulator inside Power BI. Enter a discount, dates and region, and an AutoML model predicts the extra sales and the cost in real time.</dd></div>
-        <div><dt>Result</dt><dd>Fewer loss-making offers and a clear rise in campaign return on investment.</dd></div>
-      </dl>
-      <div class="kpis"><span>Power BI</span><span>Power Apps</span><span>AutoML</span><span>Power Automate</span></div>
-    </article>
-    <article class="proj">
-      <div class="proj-top"><span class="domain">CPG · Manufacturing</span></div>
-      <h3>Global Smart Factory &amp; Shopfloor Intelligence</h3>
-      <dl>
-        <div><dt>Problem</dt><dd>One of the world's largest consumer-goods companies had plants that each kept their own data, so downtime, breakdowns and purchasing delays were invisible centrally.</dd></div>
-        <div><dt>Built</dt><dd>26 connected Power BI dashboards in a single app, linking production cycles, machine health and inventory.</dd></div>
-        <div><dt>Result</dt><dd>Plant managers cut machine downtime and planned purchases from data instead of guesswork.</dd></div>
-      </dl>
-      <div class="kpis"><span>Power BI Apps</span><span>Data modelling</span><span>DAX</span></div>
-    </article>
-    <article class="proj">
-      <div class="proj-top"><span class="domain">Fashion retail</span></div>
-      <h3>Unified Data Model &amp; Multi-Channel Analytics</h3>
-      <dl>
-        <div><dt>Problem</dt><dd>Store sales, online sales and ad spend sat in separate systems, so nobody could tell which marketing actually drove revenue.</dd></div>
-        <div><dt>Built</dt><dd>One single source of truth in Snowflake, refreshed daily from every channel, with layered dbt transformations and an executive Tableau dashboard.</dd></div>
-        <div><dt>Result</dt><dd>Much faster, scalable reporting and a clear view of return on every marketing channel.</dd></div>
-      </dl>
-      <div class="kpis"><span>Snowflake</span><span>dbt</span><span>Azure Data Factory</span><span>Tableau</span></div>
-    </article>
-    <article class="proj">
-      <div class="proj-top"><span class="domain">Cross-industry</span><span class="pill-ai">Automation</span></div>
-      <h3>Automated Data Quality Framework</h3>
-      <dl>
-        <div><dt>Problem</dt><dd>Bad data kept breaking executive reports, and manual checks only caught it after the damage was done.</dd></div>
-        <div><dt>Built</dt><dd>A reusable framework inside Snowflake that checks new data continuously and logs every issue it finds.</dd></div>
-        <div><dt>Result</dt><dd>Hours of manual checking saved every week, with errors caught before they reach a report.</dd></div>
-      </dl>
-      <div class="kpis"><span>Snowflake streams &amp; tasks</span><span>Stored procedures</span><span>SQL</span></div>
-    </article>
-  </div>
-</section>
-
 <!-- ABOUT -->
 <section id="about" aria-labelledby="about-title">
   <div class="about">
     <div class="about-copy">
       <p class="eyebrow">About</p>
       <h2 id="about-title">I turn complex data into clear business value.</h2>
-      <p>I'm an analytics engineer and consultant with an MBA, so I think about return on investment, marketing and operations as much as about data models. That's why my dashboards answer the "so what?" and not only the "what".</p>
-      <p>I've delivered for FMCG, retail, healthcare and manufacturing companies, from global consumer-goods brands to restaurant chains, covering everything from the data pipeline to the screen a CEO opens in the morning.</p>
+      <p>I'm an analytics and AI engineer and consultant with an MBA, so I think about return on investment, operations and people's time as much as about the technology. That's why the assistant answers the "so what?" and not only the "what".</p>
+      <p>I've delivered for FMCG, retail, healthcare, manufacturing and property companies, from global consumer-goods brands to a property developer, covering everything from the data behind the scenes to the answer a manager reads in Teams each morning.</p>
     </div>
     <dl class="facts">
       <div><dt>Based in</dt><dd>Ahmedabad, India</dd></div>
       <div><dt>Certified</dt><dd>Microsoft Certified: Power BI Data Analyst Associate (PL-300)</dd></div>
       <div><dt>Education</dt><dd>MBA</dd></div>
-      <div><dt>Industries</dt><dd>FMCG, Retail, Healthcare, Manufacturing</dd></div>
+      <div><dt>Industries</dt><dd>FMCG, Retail, Healthcare, Manufacturing, Property</dd></div>
       <div><dt>Online</dt><dd><a href="https://www.linkedin.com/in/amisha-gupta29/" target="_blank" rel="noopener">LinkedIn</a> · <a href="https://amisha-2908.github.io/" target="_blank" rel="noopener">amisha-2908.github.io</a></dd></div>
     </dl>
   </div>
 </section>
 
 <!-- PROCESS -->
-<section aria-labelledby="process-title">
+<section id="process" aria-labelledby="process-title">
   <div class="section-head">
     <p class="eyebrow">How we'd work together</p>
-    <h2 id="process-title">From "we have the data somewhere" to a tool your team opens every morning.</h2>
+    <h2 id="process-title">From "where is that plan?" to an assistant your team asks every morning.</h2>
   </div>
   <div class="process">
-    <div class="step"><h3>Start with your decisions</h3><p>We list the questions you answer every week and the numbers you wish you had.</p></div>
-    <div class="step"><h3>Connect your data</h3><p>Excel, SQL, your ERP, POS or app. I clean it and link it into one reliable model on Azure or Snowflake.</p></div>
-    <div class="step"><h3>Build it with your team</h3><p>You see working screens early, try them with real users and shape them as we go.</p></div>
-    <div class="step"><h3>Automate the follow-up</h3><p>Alerts, emails, tasks and reports run on their own once the numbers are trusted.</p></div>
+    <div class="step"><h3>Start with your questions</h3><p>We list the questions you ask about your projects every week and the updates that eat your time.</p></div>
+    <div class="step"><h3>Connect what you already use</h3><p>Planner, Outlook, Teams meetings and Word. The assistant works inside your Microsoft 365, with your own access and nothing more.</p></div>
+    <div class="step"><h3>Build it with your team</h3><p>You try a working assistant early, with your real questions, and shape the answers as we go.</p></div>
+    <div class="step"><h3>Automate the follow-up</h3><p>Status reports, tasks from emails and meetings, and schedule updates run on their own once you trust the answers.</p></div>
   </div>
   <div class="toolkit" aria-label="Toolkit">
-    <span>Power BI (DAX, Service, Mobile)</span><span>Power Apps</span><span>Power Automate</span><span>AutoML</span><span>AI assistants</span><span>Azure Data Factory</span><span>Azure Databricks</span><span>Azure SQL</span><span>Snowflake</span><span>dbt</span><span>SQL and T-SQL</span><span>Python</span><span>Tableau</span><span>Row-level security</span><span>Microsoft Teams and Planner</span>
+    <span>AI assistants</span><span>Microsoft Teams and Planner</span><span>Outlook and Word</span><span>Power Automate</span><span>Python</span><span>SQL and T-SQL</span><span>Azure</span>
   </div>
 </section>
 
@@ -869,8 +508,8 @@ dialog.lb::backdrop{background:rgba(8,12,24,.86)}
   <div class="contact">
     <div style="display:grid;gap:16px">
       <p class="eyebrow">Let's talk</p>
-      <h2 id="contact-title">Got a report nobody reads, or a task everyone dreads?</h2>
-      <p>Tell me about it. I'll show you what a dashboard, an assistant or an automation could do for your team, using your own data.</p>
+      <h2 id="contact-title">Got a plan nobody can keep up with, or a follow-up everyone dreads?</h2>
+      <p>Tell me about it. I'll show you what an assistant or an automation could do for your team, using your own plans.</p>
     </div>
     <div class="contact-box">
       <div class="email-row"><code id="email">29amishagupta@gmail.com</code><button class="copy" id="copyBtn" type="button">Copy email</button></div>
@@ -888,17 +527,9 @@ dialog.lb::backdrop{background:rgba(8,12,24,.86)}
 
 <footer>
   <span>© 2026 Amisha Gupta · amishaautomates.com · amisha-2908.github.io</span>
-  <span>Screenshots come from delivered work, with client names and personal details blurred. AI assistant examples use sample data.</span>
+  <span>AI assistant examples use sample projects, people and dates. The client's real data is kept private.</span>
 </footer>
 </div>
-
-<dialog class="lb" id="lightbox" aria-label="Enlarged screenshot">
-  <div class="lb-inner">
-    <div class="lb-top"><span id="lbCap"></span><button type="button" id="lbClose">Close</button></div>
-    <img class="lb-img" id="lbImg" alt="">
-    <div class="lb-nav"><button type="button" id="lbPrev">Previous</button><button type="button" id="lbNext">Next</button></div>
-  </div>
-</dialog>
 
 <script>
 (() => {
@@ -1049,57 +680,6 @@ dialog.lb::backdrop{background:rgba(8,12,24,.86)}
     buttons.push(b);
   });
   show(QA[0], false);
-
-  /* ---------- Dashboard page tabs ---------- */
-  const tabs = Array.from(document.querySelectorAll('[role="tab"]'));
-  function selectTab(tab, focus) {
-    tabs.forEach(t => {
-      const on = t === tab;
-      t.setAttribute('aria-selected', String(on));
-      t.tabIndex = on ? 0 : -1;
-      document.getElementById(t.getAttribute('aria-controls')).hidden = !on;
-    });
-    if (focus) tab.focus();
-  }
-  tabs.forEach((t, i) => {
-    t.addEventListener('click', () => selectTab(t, false));
-    t.addEventListener('keydown', e => {
-      let j = null;
-      if (e.key === 'ArrowDown' || e.key === 'ArrowRight') j = (i + 1) % tabs.length;
-      if (e.key === 'ArrowUp' || e.key === 'ArrowLeft') j = (i - 1 + tabs.length) % tabs.length;
-      if (e.key === 'Home') j = 0;
-      if (e.key === 'End') j = tabs.length - 1;
-      if (j !== null) { e.preventDefault(); selectTab(tabs[j], true); }
-    });
-  });
-
-  /* ---------- Lightbox ---------- */
-  const dlg = document.getElementById('lightbox');
-  const lbImg = document.getElementById('lbImg');
-  const lbCap = document.getElementById('lbCap');
-  const zooms = Array.from(document.querySelectorAll('.zoom'));
-  let group = [], idx = 0;
-  function openAt(i) {
-    idx = (i + group.length) % group.length;
-    const z = group[idx], img = z.querySelector('img');
-    lbImg.src = img.currentSrc || img.src;
-    lbImg.alt = img.alt;
-    lbCap.textContent = z.dataset.caption || '';
-    document.getElementById('lbPrev').hidden = document.getElementById('lbNext').hidden = group.length < 2;
-  }
-  zooms.forEach(z => z.addEventListener('click', () => {
-    group = zooms.filter(o => o.dataset.group === z.dataset.group);
-    openAt(group.indexOf(z));
-    if (typeof dlg.showModal === 'function') dlg.showModal(); else dlg.setAttribute('open', '');
-  }));
-  document.getElementById('lbClose').addEventListener('click', () => dlg.close());
-  document.getElementById('lbPrev').addEventListener('click', () => openAt(idx - 1));
-  document.getElementById('lbNext').addEventListener('click', () => openAt(idx + 1));
-  dlg.addEventListener('click', e => { if (e.target === dlg) dlg.close(); });
-  dlg.addEventListener('keydown', e => {
-    if (e.key === 'ArrowRight') openAt(idx + 1);
-    if (e.key === 'ArrowLeft') openAt(idx - 1);
-  });
 
   /* ---------- Copy email ---------- */
   const copyBtn = document.getElementById('copyBtn');
